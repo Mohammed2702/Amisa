@@ -1,0 +1,192 @@
+{% extends 'Home/base.html' %}
+
+{% load static %}
+
+
+{% block title %}
+	<title>FAQ</title>
+{% endblock %}
+
+
+{% block page_header %}
+
+  <div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <div class="content-header">
+      <div class="container-fluid">
+        <div class="row mb-2">
+          <div class="col-sm-6">
+            <h1 class="m-0 text-dark">FAQ</h1>
+          </div><!-- /.col -->
+          <div class="col-sm-6">
+            <ol class="breadcrumb float-sm-right">
+              <li class="breadcrumb-item"><a href="{% url 'Home:faq' %}">FAQ</a></li>
+              <li class="breadcrumb-item active">FAQ</li>
+            </ol>
+          </div><!-- /.col -->
+        </div><!-- /.row -->
+      </div><!-- /.container-fluid -->
+    </div>
+    <!-- /.content-header -->
+{% endblock %}
+
+
+{% block main_content %}
+
+{% endblock %}
+
+
+{% block content %}
+
+	<div class="row">
+    <div class="col-md">
+      <div class="card callout callout-info">
+        <div class="card-header">
+          <h3 class="card-title">
+            <i class="fas fa-comments"></i>
+            FAQ
+          </h3>
+        </div>
+        <div class="card-body">
+          <div class="modal fade" id="aboutUS">
+            <div class="modal-dialog modal-lg">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h4 class="modal-title">Amisa</h4>
+                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                  </button>
+                </div>
+                <div class="modal-body">
+                  <div class="card">
+                    <div class="card-header">
+                      <div class="card-title">
+                        <h4>About Us</h4>
+                      </div>
+                    </div>
+                    <div class="card-body">
+                      <p>
+                        AMISA TECHNOLOGIES is a loyalty company that innovate services on how customers make purchases in order to increase the level of sales and Profit margin of a participating business outlets, providing a means of cashback solutions for both new and existing customers using AMISACARD(s).
+                      </p>
+                      <p>
+                        Customers/clients can contact us for business deals, partnership, purchases, sponsorship, support, enquiry etc.
+                      </p>
+                    </div>
+                    <div class="card-footer">
+                      <p>Office:</p>
+                      <p>Call:</p>
+                      <p>WhatsApp:</p>
+                      <p>E-Mail: amisatechnologies@gmail.com</p>
+                      <p>Thanks for being part of AMISA community.</p>
+                    </div>
+                </div>
+                <div class="modal-footer justify-content-between">
+                  <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <ul>
+            <li>What is AMISA loyalty service?
+              <ul>
+                <li>This is a services rendered by AMISA TECHNOLOGIES in order to increase the level of sales and profit margin for participating business outlets, providing a means of a cashback solutions for both new and existing customers using AMISACARD.</li>
+              </ul>
+            </li>
+
+            <li>What is AMISACARD?
+              <ul>
+                <li>This is a loyalty card produce by AMISA TECHNOLOGIES that has a price values, codes etc for the benefit of redemption.</li>
+              </ul>
+            </li>
+
+            <li>Where and how can I get the card?
+              <ul>
+                <li>Its can only be issued to customers by any participating business outlets after reaching the issuance range and requirements of purchases.</li>
+              </ul>
+            </li>
+
+            <li>How can I get the card values?
+              <ul>
+                <li>In the redemption platform (amisacb.com) after registration as user customer or you can use the service of a redemption agents.</li>
+              </ul>
+            </li>
+
+            <li>What are the requirements for redeeming the card?
+              <ul>
+                <li>The cards should be used before its expiry dates and users must meet the minimum redemption requirements which varies from type of accounts.</li>
+              </ul>
+            </li>
+
+            <li>What are the requirements for savings withdrawal to preferred bank account?
+              <ul>
+                <li>Users must provide the correct bank details, sufficient fund including the total charges (TC) and reaching the minimum number cards and their total price which varies from the type of accounts.</li>
+              </ul>
+            </li>
+
+            <li>What is a User customers Account?
+              <ul>
+                <li>This is a type of account provided for customers who want to take charge of all their transactions on the platform themselves.</li>
+              </ul>
+            </li>
+
+            <li>What is a User Redemption Agents Account?
+              <ul>
+                <li>This is a type of account provided for agents who want to take the responsibilities of redeeming cards and offer other services on the platform for customers.</li>
+              </ul>
+            </li>
+
+            <li>What are my roles as a Redemption Agent?
+              <ul>
+                <li>Redeeming of cards for customers, reselling of card packs to participating business outlets and other services on the platform.</li>
+              </ul>
+            </li>
+
+            <li>What is my commission as a Redemption Agent?
+              <ul>
+                <li>Agents charges 1.8 of what the company will charge them. The total charges (TC) will be 2.8 and N50 per head at the end of every months.</li>
+              </ul>
+            </li>
+
+            <li>How many cards all I collect from customers for redemption?
+              <ul>
+                <li>Minimum of 3 cards and their total price must not be below N150.</li>
+              </ul>
+            </li>
+
+            <li>What is the meaning of ACC, RAC, UCC and TC?
+              <ul>
+                <li>Minimum of 3 cards and their total price must not be below N150.</li>
+                <li>RAC means Redemption Agents Charges.</li>
+                <li>UCC means User Customers Charges.</li>
+                <li>TC means Total Charges.</li>
+              </ul>
+            </li>
+
+            <li>What Ratio do you use in calculating the charges?
+              <ul>
+                <li>ACC = 0.12 ×P</li>
+                <li>RAC = 0.12 ×P ×1.8</li>
+                <li>UCC = 0.08 × P</li>
+                <li>TC = ACC + RAC</li>
+                <li>Whereas P stands for the total price of cards</li>
+              </ul>
+            </li>
+
+            <li>How can I contact the customer care or company?
+              <ul>
+                <li>Use our information in the <a data-target="#aboutUS" data-toggle="modal" class="text-center text-blue">About Us</a> section.
+                </li>
+              </ul>
+            </li>
+          </ul>
+        </div>
+        <div class="card-footer">
+          <p>Visit <a href="{% url 'Home:posts' %}" class="text-blue">this</a> page for more FAQs</p>
+          <p>Thanks for being part of AMISA community.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+{% endblock %}

@@ -1,0 +1,194 @@
+{% extends 'Home/base.html' %}
+
+{% load static %}
+
+
+{% block title %}
+	<title>New Code</title>
+{% endblock %}
+
+
+{% block page_header %}
+
+  <div class="content-wrapper">
+    <div class="content-header">
+      <div class="container-fluid">
+        <div class="row mb-2">
+          <div class="col-sm-6">
+            <h1 class="m-0 text-dark">New Code</h1>
+          </div>
+          <div class="col-sm-6">
+            <ol class="breadcrumb float-sm-right">
+              <li class="breadcrumb-item"><a href="{% url 'Home:account_code_request' %}">New Code</a></li>
+              <li class="breadcrumb-item active">New Code</li>
+            </ol>
+          </div>
+        </div>
+      </div>
+    </div>
+{% endblock %}
+
+
+{% block content %}
+	<div class="row">
+		<section class="col-md-6 connectedSortable">
+			<div class="col-md">
+        		<form  method="POST">
+	    			{% csrf_token %}
+	
+		            <div class="card card-primary">
+		            	<div class="card-header">
+		                	<h3 class="card-title">Generate Code</h3>
+		            	</div>
+
+		            	<div class="card-body">
+		            		<table>
+		            			<!-- {{code_form.as_table}} -->
+		            			<label for="id_code_group">Code group</label></th><td>
+		            			<select name="code_group" required id="id_code_group" class="form-control">
+			                        {% for group in code_groups %}
+				                        	<option value="{{group.id}}">{{group}}</option>
+				                    {% endfor %}
+		                        </select>
+							
+								<div class="form-group">
+			                    	<label for="id_code">Code</label>
+			                        {% if code_form.code.errors %}
+			                        	<small>{{code_form.code.errors}}</small>
+			                        {% endif %}
+
+									<input type="text" name="code" value="{{code_value}}" maxlength="100" required readonly="true" id="id_code" class="form-control">
+								</div>
+
+								<div class="form-group">
+			                    	<label for="id_code">Amount</label>
+			                        {% if code_form.amount.errors %}
+			                        	<small>{{code_form.amount.errors}}</small>
+			                        {% endif %}
+
+									<input type="number" name="amount" value="100" required id="id_amount" class="form-control">
+								</div>
+								
+								<div class="form-group">
+				                  	<label>Expiry Date</label>
+				                    <div class="input-group date" id="expiryDate" data-target-input="nearest">
+				                        <input type="text" class="form-control datetimepicker-input" id="id_expiry_date" name="expiry_date" data-target="#expiryDate"/>
+				                        <div class="input-group-append" data-target="#expiryDate" data-toggle="datetimepicker">
+				                            <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+				                        </div>
+				                    </div>
+				                </div>
+		            		</table>
+	            		</div>
+						<br>
+						<div class="card-footer">
+			                <button type="submit" class="btn btn-primary">Generate Code</button>
+			            </div>
+	           	</form>
+	        </div>
+		</section>
+
+		<section class="col-lg-6 connectedSortable">
+			<div class="row connectedSortable">
+				<div class="col-lg connectedSortable">
+		    		<div class="container-fluid">
+				        <div class="row">
+				        	<div class="col-md-12">
+				            	<div class="card card-primary">
+				            	<div class="card-header">
+				                	<h3 class="card-title">Create Code Group</small></h3>
+				            	</div>
+				            	
+		                		<form method="POST">
+				            		{% csrf_token %}
+			                			
+		                			<div class="card-body">
+					                  	<div class="form-group">
+					                  		{% if code_group_form.code_group_name.errors %}
+												<small>{{code_group_form.code_group_name.errors}}</small>
+					                  		{% endif %}
+					                    	<label for="id_code_group">Group Name</label>
+					                    	<input type="text" name="code_group_name" class="form-control" required="true">
+					                  	</div>
+				                	</div>
+					                
+					                <div class="card-footer">
+					                	<button type="submit" class="btn btn-primary">Create Group</button>
+					                </div>
+			            		</form>
+				            </div>
+				        </div>
+				    </div>
+				</div>
+			</div>
+
+			<div class="row connectedSortable">
+		        <div class="col-lg connectedSortable">
+			        <div class="container-fluid">
+				        <div class="row">
+				        	<!-- left column -->
+				        	<div class="col-md-12">
+				            	<div class="card card-primary">
+					            	<div class="card-header">
+					                	<h3 class="card-title">Code Groups</small></h3>
+					            	</div>
+					            	<!-- /.card-header -->
+				                	
+				                	<div class="card-body">
+					                  	<div class="card-body p-0">
+										    <div class="table-responsive">
+									    		<table class="table m-0">
+									        		<thead>
+											            <tr>
+											            	<th>s/n</th>
+											            	<th>Group</th>
+											            	<th>Date Created</th>
+											            	<th>Status</th>
+											            </tr>
+										            </thead>
+										            <tbody>
+										            	{% if all_code_groups %}
+											            	{% for group in all_code_groups %}
+													            <tr>
+													            	<td>{{forloop.counter}}</td>
+													            	<td>{{group}}</td>
+													            	<td>{{group.date_created}}</td>
+													            	{% if group.status %}
+														            	<td>
+														            		<span class="badge badge-success">
+														            			Available
+														            		</span>
+														            	</td>
+														            {% else %}
+														            	<td>
+														            		<span class="badge badge-danger">
+														            			N/A
+														            		</span>
+														            	</td>
+														            {% endif %}
+													            </tr>
+													        {% endfor %}
+												        {% else %}
+												        	<h3>No Group Yet</h3>
+												        {% endif %}
+										            </tbody>
+									        	</table>
+										    </div>
+									    </div>
+				                	</div>
+					                <!-- /.card-body -->
+					                
+					                <div class="card-footer">
+					                	<button type="submit" class="btn btn-primary">Check Groups</button>
+					                </div>
+				            	</div>
+				            	<!-- /.card -->
+				            </div>
+				        </div>
+				    </div>
+		        </div>
+        		<!-- /.row -->
+    		</div><!-- /.container-fluid -->
+    	</section>
+	</div>
+{% endblock %}

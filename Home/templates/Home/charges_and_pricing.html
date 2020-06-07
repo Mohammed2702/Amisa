@@ -1,0 +1,66 @@
+{% extends 'Home/base.html' %}
+
+{% load static %}
+
+
+{% block title %}
+	<title>Pricing</title>
+{% endblock %}
+
+
+{% block page_header %}
+
+  <div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <div class="content-header">
+      <div class="container-fluid">
+        <div class="row mb-2">
+          <div class="col-sm-6">
+            <h1 class="m-0 text-dark">Pricing</h1>
+          </div><!-- /.col -->
+          <div class="col-sm-6">
+            <ol class="breadcrumb float-sm-right">
+              <li class="breadcrumb-item"><a href="{% url 'Home:charges_and_pricing' %}">Pricing</a></li>
+              <li class="breadcrumb-item active">Pricing</li>
+            </ol>
+          </div><!-- /.col -->
+        </div><!-- /.row -->
+      </div><!-- /.container-fluid -->
+    </div>
+    <!-- /.content-header -->
+{% endblock %}
+
+
+{% block main_content %}
+
+
+
+{% endblock %}
+
+{% block content %}
+<div class="card callout callout-info">
+	<div class="card-header">
+		<h3 class="card-title">Welcome to AMISA TECHNOLOGIES</h3>
+	</div>
+	<div class="card-body">
+		<p>
+			Charges on Redemption of card(s)
+			User customers account is 20% of each card price redeem.
+			User redemption agents is 15% of total price of cards redeem by agents called AMISA Company Charges (ACC) then charge Redemption Agents Charges (RAC) which is ACC multiply by  1.8 total charges (TC) will be 2.8 of the initial 20% the customers will be charged TC based on the price of their card(s)
+			 Services Rendered by Redemption Agents.
+			Redeeming of card(s) above N150 in pieces irrespective of their prices for benefit of the two party, selling of AMISACARD to business outlets and other services accepted on the Redemption platform by the Company.
+			The company services on the Redemption Platform.
+			Enable- Saving withdrawal, Buying of airtime, data and tickets, paying of Bills, payment for featured goods, transfer payment to business outlets, Digital wallet funding,  Fundraising, redemption gateway, website/online payment gateway, etc.
+		</p>
+	</div>
+	<div class="card-footer">
+		<ul>
+			<li><i class="fab fa-whatsapp"></i> WhatsApp - +2349033445157</li>
+			<li><i class="fas fa-phone"></i> Call - +2349033445157</li>
+		</ul>
+			Thanks for being part of AMISA community.
+		</p>
+	</div>
+</div>
+
+{% endblock %}
