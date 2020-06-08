@@ -20,8 +20,13 @@ from . import utils
 # ENV
 
 
+<<<<<<< HEAD
 # message_dir = '/home/mohammed/Desktop/Projects/Amisa/Amisacb/Home/'
 message_dir = '/home/Amisacb/GitProject/Home/'
+=======
+message_dir = '/home/mohammed/Desktop/Projects/Amisa/Amisacb/Home/'
+# message_dir = '/home/Amisacb/Amisacb/Home/'
+>>>>>>> 058327779ab5c8699a50a936c34baac2717be35f
 
 
 # External contexts
