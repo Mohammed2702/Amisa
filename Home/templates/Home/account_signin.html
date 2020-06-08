@@ -79,13 +79,16 @@
     <div class="card-body login-card-body">
       <p class="login-box-msg">Sign in</p>
 
-      {% if login_status %}
-        <small>Incorrect username or password</small>
-      {% endif %}
+      {% for message in messages %}
+        <div class="alert alert-warning">
+            <a class="close" href="#" data-dismiss="alert">×</a>
+            {{ message }}
+        </div>
+      {% endfor %}
 
       <form method="post">
       	{% csrf_token %}
-        
+
         <div class="input-group mb-3">
           <input type="text" class="form-control" placeholder="Username" name="username">
           <div class="input-group-append">
@@ -94,7 +97,7 @@
             </div>
           </div>
         </div>
-        
+
         <div class="input-group mb-3">
           <input type="password" class="form-control" placeholder="Password" name="password">
           <div class="input-group-append">
@@ -120,7 +123,7 @@
           <!-- /.col -->
         </div>
       </form>
-    
+
       <div class="row">
         <div class="col-sm-6">
            <p class="mb-1">

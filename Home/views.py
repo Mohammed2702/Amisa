@@ -6,6 +6,7 @@ from django.contrib.auth.forms import *
 from django.contrib.auth import *
 from django.http import JsonResponse
 from django.contrib.auth.decorators import *
+from django.contrib import messages
 from django.utils import timezone
 import random
 import datetime
@@ -20,8 +21,8 @@ from . import utils
 # ENV
 
 
-# message_dir = '/home/mohammed/Desktop/Projects/Amisa/Amisacb/Home/'
-message_dir = '/home/Amisacb/GitProject/Home/'
+message_dir = '/home/mohammed/Desktop/Projects/Amisa/Amisacb/Home/'
+# message_dir = '/home/Amisacb/GitProject/Home/'
 
 
 # External contexts
@@ -216,15 +217,13 @@ def account_signin(request):
 
                 user = authenticate(username=username, password=password)
                 if user:
-                    request.session['login_status'] = False
-
                     login(request, user)
 
                     request.session.set_expiry(86400)
 
                     return redirect('Home:home')
                 else:
-                    request.session['login_status'] = True
+                    messages.error(request,'Username or Password not correct')
 
                     return redirect('Home:account_signin')
         else:
