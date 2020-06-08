@@ -190,7 +190,7 @@ def account_signup(request):
                 context = utils.dict_merge(external_context(), context)
 
                 messages.info(request, 'Update your Profile to complete your registration')
-                
+
                 return redirect('Home:account_profile')
         else:
             form = forms.RegistrationForm()
@@ -1009,30 +1009,37 @@ def account_user_airtime(request):
 
                 minimum_amount = 5
 
-                if request.user.wallet.wallet_balance >= amount:
-                    user_wallet = models.Wallet.objects.get(user=request.user)
-                    user_wallet.wallet_balance -= amount
+                if amount >= minimum_amount:
+                    if request.user.wallet.wallet_balance >= amount:
+                        user_wallet = models.Wallet.objects.get(user=request.user)
+                        user_wallet.wallet_balance -= amount
 
-                    create_order = models.Order.objects.create(
-                        user=request.user,
-                        transaction='Airtime purchase request',
-                        amount=amount,
-                        recipient=user_phone,
-                        description=f'Airtime/{network}'
-                    )
+                        create_order = models.Order.objects.create(
+                            user=request.user,
+                            transaction='Airtime purchase request',
+                            amount=amount,
+                            recipient=user_phone,
+                            description=f'Airtime/{network}'
+                        )
+                        if create_order:
+                            user_wallet.save()
+                            create_order.save()
 
-                    request.session['amount_error'] = False
-                    if create_order:
-                        user_wallet.save()
-                        create_order.save()
-                        request.session['airtime_request_status'] = True
+                            messages.warning(request, f'''Your order has been placed, keep checking your notifications to track your order(s)''')
+
+                            return redirect('Home:account_user_airtime')
+                        else:
+                            messages.warning(request, 'Sorry, your requets could not be processed at the moment')
+                            
+                            return redirect('Home:account_user_airtime')
+                    else:
+                        messages.warning(request, 'Not sufficient funds')
 
                         return redirect('Home:account_user_airtime')
-                    else:
-                        request.session['airtime_request_status'] = False
-
                 else:
-                    request.session['amount_error'] = True
+                    messages.warning(request, f'Least amount is {minimum_amount}')
+
+                    return redirect('Home:account_user_airtime')
 
         context = utils.dict_merge(external_context(), context)
         context = utils.dict_merge(context, user_features(request.user.id))
