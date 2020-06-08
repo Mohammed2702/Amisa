@@ -60,7 +60,9 @@ networks = [
     ('9Mobile', '9Mobile'),
 ]
 
+
 banks = [(i, i) for i in utils.get_all_banks()]
+
 
 class Profile(models.Model):
 	user = models.OneToOneField(User, on_delete=models.CASCADE)
