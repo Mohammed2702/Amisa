@@ -20,16 +20,8 @@ from . import utils
 # ENV
 
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-# message_dir = '/home/mohammed/Desktop/Projects/Amisa/Amisacb/Home/'
 message_dir = '/home/Amisacb/GitProject/Home/'
-=======
-=======
->>>>>>> 1ca9845ed29179cdcad83f308148c51df4b505d2
-message_dir = '/home/mohammed/Desktop/Projects/Amisa/Amisacb/Home/'
-# message_dir = '/home/Amisacb/Amisacb/Home/'
->>>>>>> 058327779ab5c8699a50a936c34baac2717be35f
+# message_dir = '/home/mohammed/Desktop/Projects/Amisa/Amisacb/Home/'
 
 
 # External contexts
@@ -357,11 +349,13 @@ def account_profile(request):
                 new_account_type = profile_form.cleaned_data.get(
                     'account_type')
                 new_state = profile_form.cleaned_data.get('state')
+                new_phone_number = profile_form.cleaned_data.get('phone_number')
 
                 profile_user = User.objects.get(pk=request.user.id)
 
                 profile_user.profile.account_type = new_account_type
                 profile_user.profile.state = new_state
+                profile_user.profile.phone_number = new_phone_number
 
                 profile_user.save()
 

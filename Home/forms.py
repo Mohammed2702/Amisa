@@ -28,7 +28,7 @@ class UserUpdateForm(forms.ModelForm):
 class ProfileForm(forms.ModelForm):
     class Meta:
         model = models.Profile
-        fields = ('state', 'account_type',)
+        fields = ('state', 'account_type', 'phone_number',)
 
 
 class CodeGroupForm(forms.ModelForm):

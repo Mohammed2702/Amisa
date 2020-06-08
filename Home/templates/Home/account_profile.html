@@ -72,6 +72,9 @@
 					            	<th>State</th><td>{{user_profile.state}}</td>
 					            </tr>
 					            <tr>
+					            	<th>Phone number</th><td>{{user_profile.phone_number}}</td>
+					            </tr>
+					            <tr>
 					            	<th>Date Joined</th><td>{{user_profile.date_joined}}</td>
 					            </tr>
 				            </tbody>
@@ -118,6 +121,10 @@
 											{% endfor %}
 										</select>
 									</div>
+
+									<div class="form-group">
+					                    <input name="phone_number" type="text" class="form-control" placeholder="Phone number">
+					                </div>
 					            </table>
 			              	</div>
 
