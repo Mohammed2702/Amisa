@@ -2,7 +2,6 @@ from django.core.mail import send_mail
 import string
 import random
 import datetime
-
 # import africastalking
 
 
@@ -95,7 +94,6 @@ def dict_merge(dict1, dict2):
 	return {**dict1, **dict2}
 
 
-
 def deliver_mail(title, body, recipient):
     mail_delivery = send_mail(
         title,
@@ -138,3 +136,8 @@ def check_date(date):
 			return False
 	else:
 		return False
+
+
+def default_time():
+	now = str(datetime.datetime.now()).split(' ')[1]
+	return now

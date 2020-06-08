@@ -29,6 +29,21 @@ message_dir = '/home/mohammed/Desktop/Projects/Amisa/Amisacb/Home/'
 
 
 def checker():
+    current_hour = int(str(datetime.datetime.now()).split(' ')[1].split(':')[0])
+    all_orders = models.Order.objects.all()
+    for i in all_orders:
+        order = models.Order.objects.get(pk=i.id)
+        print((int(str(order.time).split(':')[0]) + 3), current_hour)
+        if (int(str(order.time).split(':')[0]) + 3) >= current_hour:
+            description = 'Order was Declined by admin.'
+            order.description = description
+            order.status = False
+        else:
+            description = 'Order was Accepted by admin.'
+            order.description = description
+            order.status = True
+    order.save()
+
     all_codes = models.Code.objects.all()
     for i in all_codes:
         if utils.check_date(i.expiry_date) == True:
@@ -594,7 +609,7 @@ def account_code_toggle(request, code_id):
         if request.user.is_superuser:
             code = models.Code.objects.get(pk=code_id)
             if code.status:
-                description = 'Order was Declined by admin.'
+                c
                 code.status = False
 
                 log_history = models.History.objects.create(
@@ -889,37 +904,44 @@ def account_user_withdrawal(request):
                     bank = withdrawal_form.cleaned_data.get('bank')
                     amount = withdrawal_form.cleaned_data.get('amount')
 
-                    minimum_amount = 5
+                    minimum_amount = 250
 
-                    if amount <= request.user.wallet.wallet_balance:
-                        user_wallet = models.Wallet.objects.get(
-                            user=request.user)
-                        user_wallet.wallet_balance -= amount
+                    if amount >= minimum_amount:
+                        if amount <= request.user.wallet.wallet_balance:
+                            user_wallet = models.Wallet.objects.get(
+                                user=request.user)
+                            user_wallet.wallet_balance -= amount
 
-                        request.session['amount_error'] = False
+                            request.session['amount_error'] = False
 
-                        create_order = models.Order.objects.create(
-                            user=request.user,
-                            transaction='Withdrawal request',
-                            amount=amount,
-                            recipient=account_number,
-                            description=f'{account_name}/ {bank}'
-                        )
-                        if create_order:
-                            user_wallet.save()
-                            create_order.save()
-                            request.session['withdrawal_request_status'] = True
+                            create_order = models.Order.objects.create(
+                                user=request.user,
+                                transaction='Withdrawal request',
+                                amount=amount,
+                                recipient=account_number,
+                                description=f'{account_name}/ {bank}'
+                            )
+                            if create_order:
+                                user_wallet.save()
+                                create_order.save()
+
+                                messages.warning(request, f'''Your order has been placed, keep checking your notifications to track your order(s)''')
+
+                                return redirect('Home:account_user_withdrawal')
+                            else:
+                                messages.warning(request, 'Sorry, your requets could not be processed at the moment')
+
+                                return redirect('Home:account_user_withdrawal')
+                        else:
+                            messages.warning(request, 'Not sufficient funds')
 
                             return redirect('Home:account_user_withdrawal')
-                        else:
-                            request.session['withdrawal_request_status'] = False
-
                     else:
-                        request.session['amount_error'] = True
+                        messages.warning(request, f'Least amount for Withdrawal is {minimum_amount}')
+
+                        return redirect('Home:account_user_withdrawal')
             except Exception as e:
                 print('User Withdrawal', e)
-            finally:
-                del request.session['amount_error']
 
         context = utils.dict_merge(external_context(), context)
         context = utils.dict_merge(context, user_features(request.user.id))
@@ -951,31 +973,41 @@ def account_user_data(request):
                 user_phone = data_form.cleaned_data.get('phone_number')
                 amount = data_form.cleaned_data.get('amount')
 
-                minimum_amount = 5
+                # 1GB minimum_amount
+                minimum_amount = 1
+                if amount >= minimum_amount:
+                    if request.user.wallet.wallet_balance >= amount:
+                        user_wallet = models.Wallet.objects.get(user=request.user)
+                        user_wallet.wallet_balance -= amount
 
-                if request.user.wallet.wallet_balance >= amount:
-                    user_wallet = models.Wallet.objects.get(user=request.user)
-                    user_wallet.wallet_balance -= amount
+                        create_order = models.Order.objects.create(
+                            user=request.user,
+                            transaction='Data purchase request',
+                            amount=amount,
+                            recipient=user_phone,
+                            description=f'Data/{network}'
+                        )
 
-                    create_order = models.Order.objects.create(
-                        user=request.user,
-                        transaction='Data purchase request',
-                        amount=amount,
-                        recipient=user_phone,
-                        description=f'Data/{network}'
-                    )
+                        request.session['amount_error'] = False
+                        if create_order:
+                            user_wallet.save()
+                            create_order.save()
 
-                    request.session['amount_error'] = False
-                    if create_order:
-                        user_wallet.save()
-                        create_order.save()
-                        request.session['data_request_status'] = True
+                            messages.warning(request, f'''Your order has been placed, keep checking your notifications to track your order(s)''')
+
+                            return redirect('Home:account_user_data')
+                        else:
+                            messages.warning(request, 'Sorry, your requets could not be processed at the moment')
+
+                            return redirect('Home:account_user_data')
+                    else:
+                        messages.warning(request, 'Not sufficient funds')
 
                         return redirect('Home:account_user_data')
-                    else:
-                        request.session['data_request_status'] = False
                 else:
-                    request.session['amount_error'] = True
+                    messages.warning(request, f'Least amount for Data is {minimum_amount}')
+
+                    return redirect('Home:account_user_data')
 
         context = utils.dict_merge(external_context(), context)
         context = utils.dict_merge(context, user_features(request.user.id))
@@ -1007,7 +1039,7 @@ def account_user_airtime(request):
                 user_phone = data_form.cleaned_data.get('phone_number')
                 amount = data_form.cleaned_data.get('amount')
 
-                minimum_amount = 5
+                minimum_amount = 100
 
                 if amount >= minimum_amount:
                     if request.user.wallet.wallet_balance >= amount:
@@ -1030,14 +1062,14 @@ def account_user_airtime(request):
                             return redirect('Home:account_user_airtime')
                         else:
                             messages.warning(request, 'Sorry, your requets could not be processed at the moment')
-                            
+
                             return redirect('Home:account_user_airtime')
                     else:
                         messages.warning(request, 'Not sufficient funds')
 
                         return redirect('Home:account_user_airtime')
                 else:
-                    messages.warning(request, f'Least amount is {minimum_amount}')
+                    messages.warning(request, f'Least amount for Airtime is {minimum_amount}')
 
                     return redirect('Home:account_user_airtime')
 

@@ -150,6 +150,7 @@ class Order(models.Model):
 	description = models.CharField(max_length=100, blank=False, default='Order')
 	status = models.CharField(max_length=100, default='Pending')
 	date = models.DateTimeField(default=timezone.now)
+	time = models.TimeField(default=utils.default_time())
 
 	class Meta:
 		verbose_name = 'Order'
