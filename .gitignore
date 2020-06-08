@@ -1,6 +1,7 @@
 # Files
 db.sqlite3
 *.sqlite3
+Home/migrations
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

@@ -20,7 +20,7 @@ from . import utils
 # ENV
 
 
-message_dir = '/home/mohammed/Desktop/Project/s/Amisa/Amisacb/Home/'
+message_dir = '/home/mohammed/Desktop/Projects/Amisa/Amisacb/Home/'
 # message_dir = '/home/Amisacb/Amisacb/Home/'
 
 
