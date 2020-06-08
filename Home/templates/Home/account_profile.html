@@ -32,6 +32,12 @@
 
 
 {% block content %}
+	{% for message in messages %}
+	<div class="alert alert-info">
+			<a class="close" href="#" data-dismiss="alert">×</a>
+			{{ message }}
+	</div>
+	{% endfor %}
 
 	<div class="row">
         <div class="col-md-8 connectedSortable">

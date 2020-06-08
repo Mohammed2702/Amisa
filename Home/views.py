@@ -146,8 +146,7 @@ def account_signup(request):
                 user = authenticate(username=username, password=password)
                 login(request, user)
 
-                existing_ids = list(
-                    models.Profile.objects.values_list('reference_id'))
+                existing_ids = list(models.Profile.objects.values_list('reference_id'))
 
                 new_reference_id = utils.generate_referrence_id(existing_ids)
 
@@ -190,6 +189,8 @@ def account_signup(request):
                 print(f'E-Mail for {request.user.profile.reference_id} returned {email_success}')
                 context = utils.dict_merge(external_context(), context)
 
+                messages.info(request, 'Update your Profile to complete your registration')
+                
                 return redirect('Home:account_profile')
         else:
             form = forms.RegistrationForm()
