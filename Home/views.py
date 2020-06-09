@@ -515,7 +515,9 @@ def account_code(request):
 
                                 return redirect('Home:account_code')
                         else:
-                            return render(request, 'Home/404Error.html')
+                            messages.info(request, f'{code_redeem} has been disabled')
+
+                            return redirect('Home:account_code')
                     except Exception as e:
                         messages.info(request, f'{code_redeem} does not exist')
 
