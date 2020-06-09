@@ -480,38 +480,46 @@ def account_code(request):
                     code_redeem = code_redeem_form.cleaned_data.get('code')
                     context = {'code_redeem': code_redeem}
 
-                    user_code = models.Code.objects.get(code=code_redeem)
-                    if user_code.code_group.status:
-                        code_amount = user_code.amount
-                        description = 'Code Redemption'
-                        if user_code.status:
-                            user_wallet = models.Wallet.objects.get(
-                                user=request.user)
-                            user_balance = user_wallet.wallet_balance
-                            code_recharge = code_amount - (rate * code_amount)
-                            user_wallet.wallet_balance += code_recharge
-                            user_wallet.save()
+                    try:
+                        user_code = models.Code.objects.get(code=code_redeem)
 
-                            log_history = models.History.objects.create(
-                                user=request.user,
-                                description=description,
-                                amount=code_amount,
-                                charges=rate,
-                                status=True
-                            )
+                        if user_code.code_group.status:
+                            code_amount = user_code.amount
+                            description = 'Code Redemption'
+                            if user_code.status:
+                                user_wallet = models.Wallet.objects.get(
+                                    user=request.user)
+                                user_balance = user_wallet.wallet_balance
+                                code_recharge = code_amount - (rate * code_amount)
+                                user_wallet.wallet_balance += code_recharge
+                                user_wallet.save()
 
-                            # No Error from here
-                            log_history.save()
+                                log_history = models.History.objects.create(
+                                    user=request.user,
+                                    description=description,
+                                    amount=code_amount,
+                                    charges=rate,
+                                    status=True
+                                )
 
-                            user_code.delete()
+                                # No Error from here
+                                log_history.save()
 
-                            request.session['code_status'] = True
+                                user_code.delete()
 
-                            return redirect('Home:home')
+                                messages.info(request, f'{code_redeem} has been redeemed successfully, your new Wallet Balance is {request.user.wallet.wallet_balance}')
+
+                                return redirect('Home:account_code')
+                            else:
+                                messages.info(request, f'{code_redeem} has expired')
+
+                                return redirect('Home:account_code')
                         else:
-                            request.session['code_status'] = False
-                    else:
-                        return render(request, 'Home/404Error.html')
+                            return render(request, 'Home/404Error.html')
+                    except Exception as e:
+                        messages.info(request, f'{code_redeem} does not exist')
+
+                        return redirect('Home:account_code')
             else:
                 code_redeem_form = forms.CodeRedeemForm()
 
