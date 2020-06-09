@@ -67,7 +67,6 @@ class PostForm(forms.Form):
 
 
 class SiteSettingForm(forms.Form):
-	site_setting = forms.CharField(max_length=100, required=False)
 	customer_rate = forms.FloatField(required=False)
 	agent_rate = forms.FloatField(required=False)
 	servies_note = forms.CharField(max_length=1000, required=False)

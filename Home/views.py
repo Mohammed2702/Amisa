@@ -1108,6 +1108,23 @@ def site_settings(request):
             template_name = 'Home/site_settings.html'
             context = utils.dict_merge(external_context(), user_features(request.user.id))
 
+            if request.method == 'POST':
+                settings_form = forms.SiteSettingForm(request.POST)
+                if settings_form.is_valid():
+                    customer_rate = settings_form.cleaned_data.get('customer_rate')
+                    agent_rate = settings_form.cleaned_data.get('agent_rate')
+                    servies_note = settings_form.cleaned_data.get('servies_note')
+                    minimum_withdrawal = settings_form.cleaned_data.get('minimum_withdrawal')
+                    minimum_airtime = settings_form.cleaned_data.get('minimum_airtime')
+                    minimum_data = settings_form.cleaned_data.get('minimum_data')
+                    call_contact = settings_form.cleaned_data.get('call_contact')
+                    whatsapp_contact = settings_form.cleaned_data.get('whatsapp_contact')
+                    email_contact = settings_form.cleaned_data.get('email_contact')
+
+                    # get_setting = list(models.SiteSetting.objects.all())[-1]
+            else:
+                settings_form = forms.SiteSettingForm(request.POST)
+
             return render(request, template_name, context)
         else:
             return render(request, 'Home/404Error.html')
