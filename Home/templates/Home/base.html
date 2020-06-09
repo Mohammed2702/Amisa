@@ -166,7 +166,7 @@
                   </li>
                 </ul>
               </li>
-              
+
               <li class="nav-item">
                 <a href="{% url 'Home:charges_and_pricing' %}" class="nav-link">
                   <i class="nav-icon fas fa-receipt"></i>
@@ -175,7 +175,7 @@
                   </p>
                 </a>
               </li>
-              
+
               <li class="nav-item">
                 <a href="{% url 'Home:terms_of_use' %}" class="nav-link">
                   <i class="nav-icon fas fa-tasks"></i>
@@ -184,7 +184,7 @@
                   </p>
                 </a>
               </li>
-              
+
               <li class="nav-item">
                 <a href="{% url 'Home:card_issuance' %}" class="nav-link">
                   <i class="nav-icon fas fa-money-check"></i>
@@ -193,7 +193,7 @@
                   </p>
                 </a>
               </li>
-              
+
               <li class="nav-item">
                 <a href="{% url 'Home:how_to' %}" class="nav-link">
                   <i class="nav-icon fas fa-question"></i>
@@ -211,6 +211,17 @@
                   </p>
                 </a>
               </li>
+
+              {% if user.is_superuser %}
+                <li class="nav-item">
+                  <a href="{% url 'Home:site_settings' %}" class="nav-link">
+                    <i class="nav-icon fas fa-cog"></i>
+                    <p>
+                      Settings
+                    </p>
+                  </a>
+                </li>
+              {% endif %}
             </ul>
             </ul>
           </li>

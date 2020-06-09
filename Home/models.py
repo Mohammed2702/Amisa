@@ -64,6 +64,8 @@ networks = [
 banks = [(i, i) for i in utils.get_all_banks()]
 
 
+default_note = 'Note is here'
+
 class Profile(models.Model):
 	user = models.OneToOneField(User, on_delete=models.CASCADE)
 	reference_id = models.CharField(max_length=100, blank=False, unique=True)
@@ -150,7 +152,6 @@ class Order(models.Model):
 	description = models.CharField(max_length=100, blank=False, default='Order')
 	status = models.CharField(max_length=100, default='Pending')
 	date = models.DateTimeField(default=timezone.now)
-	time = models.TimeField(default=utils.default_time())
 
 	class Meta:
 		verbose_name = 'Order'
@@ -172,3 +173,34 @@ class Post(models.Model):
 
 	def __str__(self):
 		return self.title
+
+
+class SiteSetting(models.Model):
+	site_setting = models.CharField(max_length=100, default='Setting_1', blank=False)
+	customer_rate = models.FloatField(default=0.15, blank=False)
+	agent_rate = models.FloatField(default=0.2, blank=False)
+	servies_notice = models.TextField(default=default_note, blank=False)
+	minimum_withdrawal = models.IntegerField(default=100, blank=False)
+	minimum_airtime = models.IntegerField(default=100, blank=False)
+	minimum_data = models.IntegerField(default=1, blank=False)
+	call_contact = models.CharField(max_length=13, default='08012345678', blank=False)
+	whatsapp_contact = models.CharField(max_length=13, default='08012345678', blank=False)
+	email_contact = models.EmailField(default='amisatechnologies@gmail.com', blank=False)
+
+	def __str__(self):
+		return self.site_setting
+
+	class Meta:
+		verbose_name = 'Site Setting'
+		verbose_name_plural = 'Site Settings'
+
+class Network(models.Model):
+	network = models.CharField(max_length=100, blank=False)
+	data_rate = models.FloatField(blank=False)
+
+	def __str__(self):
+		return self.network
+
+	class Meta:
+		verbose_name = 'Network'
+		verbose_name_plural = 'Networks'

@@ -1101,6 +1101,19 @@ def account_user_airtime(request):
 
 # Tools
 
+@login_required(login_url='Home:account_signin')
+def site_settings(request):
+    try:
+        if request.user.is_superuser:
+            template_name = 'Home/site_settings.html'
+            context = utils.dict_merge(external_context(), user_features(request.user.id))
+
+            return render(request, template_name, context)
+        else:
+            return render(request, 'Home/404Error.html')
+    except Exception as e:
+        print('site_settings', e)
+
 
 @login_required(login_url='Home:account_signin')
 def show_all_orders(request):

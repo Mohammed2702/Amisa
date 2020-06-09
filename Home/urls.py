@@ -43,6 +43,7 @@ urlpatterns = [
 	path('faq/', views.faq, name='faq'),
 
 	# Tools
+	path('settings/', views.site_settings, name='site_settings'),
 	path('orders/', views.show_all_orders, name='show_all_orders'),
 	path('orders/<int:order_id>/toggle', views.toggle_order, name='toggle_order'),
 	path('post/', views.all_posts, name='posts'),

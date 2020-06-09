@@ -1,0 +1,99 @@
+{% extends 'Home/base.html' %}
+
+{% load static %}
+
+
+{% block title %}
+	<title>Settings</title>
+{% endblock %}
+
+{% block page_header %}
+  <div class="content-wrapper">
+    <div class="content-header">
+      <div class="container-fluid">
+        <div class="row mb-2">
+          <div class="col-sm-6">
+            <h1 class="m-0 text-dark">Settings</h1>
+          </div><!-- /.col -->
+          <div class="col-sm-6">
+            <ol class="breadcrumb float-sm-right">
+              <li class="breadcrumb-item"><a href="{% url 'Home:site_settings' %}">Settings</a></li>
+              <li class="breadcrumb-item active">Settings</li>
+            </ol>
+          </div><!-- /.col -->
+        </div><!-- /.row -->
+      </div><!-- /.container-fluid -->
+    </div>
+{% endblock %}
+
+{% block main_content %}
+	<div class="row">
+            <div class="col-lg-3 col-6">
+              <!-- small box -->
+              <div class="small-box bg-info">
+                  <div class="inner">
+                      <h3>{{all_codes_count}}</h3>
+                      <p>Codes</p>
+                  </div>
+                <div class="icon">
+                  <i class="ion fas fa-gifts"></i>
+                </div>
+                <a href="{% url 'Home:account_code' %}" class="small-box-footer">More info<i class="fas fa-arrow-circle-right"></i></a>
+              </div>
+            </div>
+            <!-- ./col -->
+            <div class="col-lg-3 col-6">
+              <!-- small box -->
+              <div class="small-box bg-success">
+                <div class="inner">
+                  <h3>&#8358; {{total_amount}}</h3>
+                  <p>Total Balance</p>
+                </div>
+                <div class="icon">
+                  <i class="ion fas fa-wallet"></i>
+                </div>
+                <a href="{% url 'Home:account_users_wallet' %}" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+              </div>
+            </div>
+            <!-- ./col -->
+            <div class="col-lg-3 col-6">
+              <!-- small box -->
+              <div class="small-box bg-warning">
+                <div class="inner">
+                  <h3>{{all_customers}}</h3>
+                  <p>Customers</p>
+                </div>
+                <div class="icon">
+                  <i class="ion fas fa-user"></i>
+                </div>
+                <a href="{% url 'Home:account_users_list' 'customers' %}" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+              </div>
+            </div>
+            <!-- ./col -->
+            <div class="col-lg-3 col-6">
+              <!-- small box -->
+              <div class="small-box bg-danger">
+                <div class="inner">
+                  <h3>{{all_agents}}</h3>
+                  <p>Agents</p>
+                </div>
+                <div class="icon">
+                  <i class="ion fas fa-user-tie"></i>
+                </div>
+                <a href="{% url 'Home:account_users_list' 'agents' %}" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+              </div>
+            </div>
+            <!-- ./col -->
+          </div>
+
+{% endblock %}
+
+
+{% block content %}
+	<div class="row">
+		<div class="col-12">
+
+		</div>
+	</div>
+
+{% endblock %}
