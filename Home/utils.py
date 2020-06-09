@@ -118,23 +118,26 @@ def check_date(date):
 	date = str(date).split('-')
 	current_date = str(datetime.datetime.now()).split(' ')[0].split('-')
 
-	year = date[0]
-	month = date[1]
-	day = date[2]
+	year = int(date[0])
+	month = int(date[1])
+	day = int(date[2])
 
-	current_year = current_date[0]
-	current_month = current_date[1]
-	current_day = current_date[2]
+	current_year = int(current_date[0])
+	current_month = int(current_date[1])
+	current_day = int(current_date[2])
 
-	if year <= current_year:
-		if month <= current_month:
-			if day <= current_day:
+	if current_year <= year:
+		if current_month <= month:
+			if current_day <= day:
 				return True
 			else:
+				# print(f'Day, {day} {current_day}')
 				return False
 		else:
+			# print(f'Month, {month} {current_month}')
 			return False
 	else:
+		# print(f'Year, {year} {current_year}')
 		return False
 
 

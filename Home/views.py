@@ -29,36 +29,44 @@ message_dir = '/home/mohammed/Desktop/Projects/Amisa/Amisacb/Home/'
 
 
 def checker():
-    current_hour = int(str(datetime.datetime.now()).split(' ')[1].split(':')[0])
+    current_hour = int(str(datetime.datetime.now()).split(' ')[1].split(':')[0]) + 1
     all_orders = models.Order.objects.all()
     for i in all_orders:
         order = models.Order.objects.get(pk=i.id)
-        print((int(str(order.time).split(':')[0]) + 3), current_hour)
-        if (int(str(order.time).split(':')[0]) + 3) >= current_hour:
-            description = 'Order was Declined by admin.'
-            order.description = description
-            order.status = False
-        else:
-            description = 'Order was Accepted by admin.'
-            order.description = description
-            order.status = True
-    order.save()
+        date = str(order.date).split(' ')[0]
+        time = str(order.date).split(' ')[1]
+        if utils.check_date(date) != True:
+            if (int(time.split(':')[0]) + 3) >= current_hour:
+                description = ' - Order was Declined.'
+                if description not in order.description:
+                    order.description += description
+                    order.status = False
+                    order.user.wallet.wallet_balance += order.amount
+                    order.amount = 0
+                else:
+                    order.status = False
+                    order.user.wallet.wallet_balance += order.amount
+                    order.amount = 0
+
+        order.save()
 
     all_codes = models.Code.objects.all()
     for i in all_codes:
-        if utils.check_date(i.expiry_date) == True:
-            code = models.Code.objects.get(pk=i.id)
+        code = models.Code.objects.get(pk=i.id)
+        if code.code_group.status:
+            code.status = True
+        else:
+            code.status = False
+
+        if utils.check_date(i.expiry_date) != True:
             if code.code_group.status == True:
-                code.status = True
-            else:
-                code.status = False
-                if 'Expired' in str(code.code).split('/'):
+                if 'Expired' not in str(code.code).split('/'):
                     code.code = f'{code.code}/Expired'
-                    code.status = False
-                else:
-                    code.code = str(code.code).replace('/Expired', '')
-                    code.status = True
-            code.save()
+            else:
+                if 'Expired' not in str(code.code).split('/'):
+                    code.code = f'{code.code}/Expired'
+            code.status = False
+        code.save()
 
 
 def external_context():
