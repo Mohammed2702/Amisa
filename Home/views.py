@@ -1105,25 +1105,42 @@ def account_user_airtime(request):
 def site_settings(request):
     try:
         if request.user.is_superuser:
-            template_name = 'Home/site_settings.html'
-            context = utils.dict_merge(external_context(), user_features(request.user.id))
-
             if request.method == 'POST':
                 settings_form = forms.SiteSettingForm(request.POST)
                 if settings_form.is_valid():
                     customer_rate = settings_form.cleaned_data.get('customer_rate')
                     agent_rate = settings_form.cleaned_data.get('agent_rate')
-                    servies_note = settings_form.cleaned_data.get('servies_note')
-                    minimum_withdrawal = settings_form.cleaned_data.get('minimum_withdrawal')
-                    minimum_airtime = settings_form.cleaned_data.get('minimum_airtime')
-                    minimum_data = settings_form.cleaned_data.get('minimum_data')
-                    call_contact = settings_form.cleaned_data.get('call_contact')
-                    whatsapp_contact = settings_form.cleaned_data.get('whatsapp_contact')
-                    email_contact = settings_form.cleaned_data.get('email_contact')
+                    # services_note = settings_form.cleaned_data.get('services_note')
+                    # minimum_withdrawal = settings_form.cleaned_data.get('minimum_withdrawal')
+                    # minimum_airtime = settings_form.cleaned_data.get('minimum_airtime')
+                    # minimum_data = settings_form.cleaned_data.get('minimum_data')
+                    # call_contact = settings_form.cleaned_data.get('call_contact')
+                    # whatsapp_contact = settings_form.cleaned_data.get('whatsapp_contact')
+                    # email_contact = settings_form.cleaned_data.get('email_contact')
 
-                    # get_setting = list(models.SiteSetting.objects.all())[-1]
+                    get_setting = models.SiteSetting.objects.get(pk=1)
+
+                    get_setting.custom_rate = custom_rate
+                    get_setting.agent_rate = agent_rate
+                    # get_setting.services_note = services_note
+                    # get_setting.minimum_withdrawal = minimum_withdrawal
+                    # get_setting.minimum_airtime = minimum_airtime
+                    # get_setting.minimum_data = minimum_data
+                    # get_setting.call_contact = call_contact
+                    # get_setting.whatsapp_contact = whatsapp_contact
+                    # get_setting.email_contact = email_contact
+
+                    get_setting.save()
+
+                    messages.warning(request, 'Settings Update Successful !!!')
+
+                    return redirect('Home:site_settings')
             else:
                 settings_form = forms.SiteSettingForm(request.POST)
+
+            template_name = 'Home/site_settings.html'
+            context = utils.dict_merge(external_context(), user_features(request.user.id))
+            context = utils.dict_merge(context, {'settings_form': settings_form})
 
             return render(request, template_name, context)
         else:

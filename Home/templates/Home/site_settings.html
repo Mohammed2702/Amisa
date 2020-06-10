@@ -91,12 +91,21 @@
 {% block content %}
 	<div class="row">
 		<div class="col-sm-8 connectedSortable">
+			{% for message in messages %}
+        <div class="alert alert-warning">
+            <a class="close" href="#" data-dismiss="alert">×</a>
+            {{ message }}
+        </div>
+      {% endfor %}
+
 			<div class="card card-info">
 				<div class="card-header">
 					<h3 class="card-title">Settings</h3>
 				</div>
-				
+
 				<form method="post">
+					{% csrf_token %}
+
 					<div class="card-body">
 							<div class="input-group mb-3">
 								<div class="input-group-prepend">
@@ -142,7 +151,7 @@
 
 							<div class="input-group mb-3">
 								<div class="input-group-prepend">
-									<span class="input-group-text"><span><i class="fas fa-whatsapp"></i></span>
+									<span class="input-group-text"><span><i class="fab fa-whatsapp"></i></span>
 								</div>
 								<input type="text" name="whatsapp_contact" class="form-control" placeholder="WhatsApp Contact">
 							</div>
@@ -158,7 +167,7 @@
 								<div class="input-group-prepend">
 									<span class="input-group-text"><i class="fas fa-book"></i></span>
 								</div>
-								<textarea type="text" name="servies_notice" class="form-control" placeholder="Services Notice"></textarea>
+								<textarea type="text" name="services_note" class="form-control" placeholder="Services Notice"></textarea>
 							</div>
 					</div>
 
@@ -181,7 +190,7 @@
 
 								<div class="input-group mb-3">
 									<div class="input-group-prepend">
-										<span class="input-group-text"><i class="fas fa-book"></i></span>
+										<span class="input-group-text"><span><i class="fab fa-intercom"></i></span>
 									</div>
 									<input type="text" name="network" class="form-control" placeholder="Network">
 								</div>
