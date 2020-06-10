@@ -11,6 +11,7 @@ from django.utils import timezone
 import random
 import datetime
 import time
+import os
 
 
 from . import forms
@@ -21,8 +22,10 @@ from . import utils
 # ENV
 
 
-message_dir = '/home/mohammed/Desktop/Projects/Amisa/Amisacb/Home/'
-# message_dir = '/home/Amisacb/GitProject/Home/'
+if os.path.isdir('/home/mohammed/Desktop/Projects/Amisa/Amisacb/Home/'):
+	message_dir = '/home/mohammed/Desktop/Projects/Amisa/Amisacb/Home/'
+else:
+	message_dir = '/home/Amisacb/GitProject/Home/'
 
 
 # External contexts
@@ -973,8 +976,7 @@ def account_user_withdrawal(request):
 def account_user_data(request):
     try:
         user_orders = [i for i in reversed(list(models.Order.objects.all()))]
-        user_orders_truncate = [i for i in reversed(
-            list(models.Order.objects.all()))][:5]
+        user_orders_truncate = [i for i in reversed(list(models.Order.objects.all()))][:5]
 
         template_name = 'Home/account_user_data.html'
         context = {
@@ -1005,8 +1007,6 @@ def account_user_data(request):
                             recipient=user_phone,
                             description=f'Data/{network}'
                         )
-
-                        request.session['amount_error'] = False
                         if create_order:
                             user_wallet.save()
                             create_order.save()
@@ -1105,6 +1105,7 @@ def account_user_airtime(request):
 def site_settings(request):
     try:
         if request.user.is_superuser:
+            get_setting = models.SiteSetting.objects.get(pk=1)
             if request.method == 'POST':
                 settings_form = forms.SiteSettingForm(request.POST)
                 if settings_form.is_valid():
@@ -1118,7 +1119,6 @@ def site_settings(request):
                     # whatsapp_contact = settings_form.cleaned_data.get('whatsapp_contact')
                     # email_contact = settings_form.cleaned_data.get('email_contact')
 
-                    get_setting = models.SiteSetting.objects.get(pk=1)
 
                     get_setting.custom_rate = custom_rate
                     get_setting.agent_rate = agent_rate
@@ -1130,7 +1130,7 @@ def site_settings(request):
                     # get_setting.whatsapp_contact = whatsapp_contact
                     # get_setting.email_contact = email_contact
 
-                    get_setting.save()
+                    # get_setting.save()
 
                     messages.warning(request, 'Settings Update Successful !!!')
 
