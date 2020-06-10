@@ -1111,26 +1111,25 @@ def site_settings(request):
                 if settings_form.is_valid():
                     customer_rate = settings_form.cleaned_data.get('customer_rate')
                     agent_rate = settings_form.cleaned_data.get('agent_rate')
-                    # services_note = settings_form.cleaned_data.get('services_note')
-                    # minimum_withdrawal = settings_form.cleaned_data.get('minimum_withdrawal')
-                    # minimum_airtime = settings_form.cleaned_data.get('minimum_airtime')
-                    # minimum_data = settings_form.cleaned_data.get('minimum_data')
-                    # call_contact = settings_form.cleaned_data.get('call_contact')
-                    # whatsapp_contact = settings_form.cleaned_data.get('whatsapp_contact')
-                    # email_contact = settings_form.cleaned_data.get('email_contact')
+                    services_note = settings_form.cleaned_data.get('services_note')
+                    minimum_withdrawal = settings_form.cleaned_data.get('minimum_withdrawal')
+                    minimum_airtime = settings_form.cleaned_data.get('minimum_airtime')
+                    minimum_data = settings_form.cleaned_data.get('minimum_data')
+                    call_contact = settings_form.cleaned_data.get('call_contact')
+                    whatsapp_contact = settings_form.cleaned_data.get('whatsapp_contact')
+                    email_contact = settings_form.cleaned_data.get('email_contact')
 
-
-                    get_setting.custom_rate = custom_rate
+                    get_setting.customer_rate = customer_rate
                     get_setting.agent_rate = agent_rate
-                    # get_setting.services_note = services_note
-                    # get_setting.minimum_withdrawal = minimum_withdrawal
-                    # get_setting.minimum_airtime = minimum_airtime
-                    # get_setting.minimum_data = minimum_data
-                    # get_setting.call_contact = call_contact
-                    # get_setting.whatsapp_contact = whatsapp_contact
-                    # get_setting.email_contact = email_contact
+                    get_setting.services_note = services_note
+                    get_setting.minimum_withdrawal = minimum_withdrawal
+                    get_setting.minimum_airtime = minimum_airtime
+                    get_setting.minimum_data = minimum_data
+                    get_setting.call_contact = call_contact
+                    get_setting.whatsapp_contact = whatsapp_contact
+                    get_setting.email_contact = email_contact
 
-                    # get_setting.save()
+                    get_setting.save()
 
                     messages.warning(request, 'Settings Update Successful !!!')
 

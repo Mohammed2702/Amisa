@@ -176,16 +176,16 @@ class Post(models.Model):
 
 
 class SiteSetting(models.Model):
-	site_setting = models.CharField(max_length=100, default='Setting_1', blank=False)
-	customer_rate = models.FloatField(default=0.15, blank=False)
-	agent_rate = models.FloatField(default=0.2, blank=False)
-	servies_notice = models.TextField(default=default_note, blank=False)
-	minimum_withdrawal = models.IntegerField(default=100, blank=False)
-	minimum_airtime = models.IntegerField(default=100, blank=False)
-	minimum_data = models.IntegerField(default=1, blank=False)
-	call_contact = models.CharField(max_length=13, default='08012345678', blank=False)
-	whatsapp_contact = models.CharField(max_length=13, default='08012345678', blank=False)
-	email_contact = models.EmailField(default='amisatechnologies@gmail.com', blank=False)
+	site_setting = models.CharField(max_length=100, default='Setting_1', blank=True)
+	customer_rate = models.FloatField(blank=True)
+	agent_rate = models.FloatField(blank=True)
+	servies_notice = models.TextField(blank=True)
+	minimum_withdrawal = models.IntegerField(blank=True)
+	minimum_airtime = models.IntegerField(blank=True)
+	minimum_data = models.IntegerField(blank=True)
+	call_contact = models.CharField(max_length=13, blank=True)
+	whatsapp_contact = models.CharField(max_length=13, blank=True)
+	email_contact = models.EmailField(blank=True)
 
 	def __str__(self):
 		return self.site_setting
