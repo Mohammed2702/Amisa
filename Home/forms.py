@@ -69,13 +69,13 @@ class PostForm(forms.Form):
 class SiteSettingForm(forms.Form):
 	customer_rate = forms.FloatField(required=False)
 	agent_rate = forms.FloatField(required=False)
-	services_note = forms.CharField(max_length=1000, required=False)
 	minimum_withdrawal = forms.IntegerField(required=False)
 	minimum_airtime = forms.IntegerField(required=False)
 	minimum_data = forms.IntegerField(required=False)
 	call_contact = forms.CharField(required=False)
 	whatsapp_contact = forms.CharField(required=False)
 	email_contact = forms.CharField(required=False)
+	services_note = forms.CharField(required=False)
 
 
 class Network(forms.Form):

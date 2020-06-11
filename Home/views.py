@@ -1139,7 +1139,7 @@ def site_settings(request):
 
             template_name = 'Home/site_settings.html'
             context = utils.dict_merge(external_context(), user_features(request.user.id))
-            context = utils.dict_merge(context, {'settings_form': settings_form})
+            context = utils.dict_merge(context, {'settings_form': settings_form, 'get_setting': get_setting})
 
             return render(request, template_name, context)
         else:

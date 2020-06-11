@@ -179,7 +179,7 @@ class SiteSetting(models.Model):
 	site_setting = models.CharField(max_length=100, default='Setting_1', blank=True)
 	customer_rate = models.FloatField(blank=True)
 	agent_rate = models.FloatField(blank=True)
-	servies_notice = models.TextField(blank=True)
+	services_note = models.TextField(blank=True)
 	minimum_withdrawal = models.IntegerField(blank=True)
 	minimum_airtime = models.IntegerField(blank=True)
 	minimum_data = models.IntegerField(blank=True)
