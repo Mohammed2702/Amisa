@@ -53,18 +53,8 @@ user_location = [
 ]
 
 
-networks = [
-    ('Airtel', 'Airtel'),
-    ('Glo', 'Glo'),
-    ('MTN', 'MTN'),
-    ('9Mobile', '9Mobile'),
-]
-
-
 banks = [(i, i) for i in utils.get_all_banks()]
 
-
-default_note = 'Note is here'
 
 class Profile(models.Model):
 	user = models.OneToOneField(User, on_delete=models.CASCADE)
@@ -194,9 +184,11 @@ class SiteSetting(models.Model):
 		verbose_name = 'Site Setting'
 		verbose_name_plural = 'Site Settings'
 
+
 class Network(models.Model):
-	network = models.CharField(max_length=100, blank=False)
+	network = models.CharField(max_length=100, blank=False, unique=True)
 	data_rate = models.FloatField(blank=False)
+	date = models.DateTimeField(default=timezone.now)
 
 	def __str__(self):
 		return self.network
@@ -204,3 +196,13 @@ class Network(models.Model):
 	class Meta:
 		verbose_name = 'Network'
 		verbose_name_plural = 'Networks'
+
+
+class PassWordReset(models.Model):
+	user = models.ForeignKey(User, on_delete=models.CASCADE)
+	link_slug = models.CharField(max_length=100, unique=True)
+	verification_code = models.CharField(max_length=6, unique=True)
+	date = models.DateTimeField(default=timezone.now)
+	
+	def __str__(self):
+		return self.user.username

@@ -106,7 +106,7 @@
 				            		{% for code in code_groups %}
 							            <tr>
 							            	<td>{{forloop.counter}}</td>
-							            	<td><a href="#">{{code.code_group_name}}</a></td>
+							            	<td><a href="{% url 'Home:code_group_codes' code.id %}">{{code.code_group_name}}</a></td>
 							            	{% if code.status %}
 								            	<td>
 								            		<span class="badge badge-success">

@@ -78,6 +78,10 @@ class SiteSettingForm(forms.Form):
 	services_note = forms.CharField(required=False)
 
 
-class Network(forms.Form):
+class NetworkForm(forms.Form):
 	network = forms.CharField(max_length=500, required=True)
 	data_rate = forms.FloatField()
+
+
+class ForgotPasswordForm(forms.Form):
+	username = forms.CharField(required=True)

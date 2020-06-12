@@ -83,6 +83,7 @@ def external_context():
         'all_customers': len(list(models.Profile.objects.filter(account_type='User'))),
         'all_codes': [i for i in reversed(models.Code.objects.all())],
         'code_groups': [i for i in reversed(list(models.CodeGroup.objects.all()))],
+        'notice_notes': models.SiteSetting.objects.get(pk=1).services_note,
     }
 
     return external_context
@@ -274,6 +275,57 @@ def account_signout(request):
         return redirect('Home:account_signin')
     except Exception as e:
         print('account_signout', e)
+
+
+def account_forgot_password(request):
+    try:
+        template_name = 'Home/account_forgot_password.html'
+        context = {}
+
+        if request.method == 'POST':
+            form = forms.ForgotPasswordForm(request.POST)
+            if form.is_valid():
+                username = form.cleaned_data.get('username')
+
+                try:
+                    get_user = User.objects.get(username=username)
+                    get_user_email = get_user.email
+                    
+                    reset_link = ''
+
+                    title = 'Password Reset'
+                    body = open(f'{message_dir}password_retrieved.txt', 'r').read().format(
+                        get_user.get_full_name,
+                        get_user.username,
+                        get_user.email,
+                        get_user.profile.account_type,
+                        reset_link
+                    )
+                    recipient = get_user_email
+
+                    send_email = utils.deliver_mail(
+                        title=title,
+                        body=body,
+                        recipient=recipient
+                    )
+
+                    if send_email:
+                        messages.info(request, f'Password reset link has been sent to your mail box.')
+
+                        return redirect('Home:account_forgot_password')
+                    else:
+                        messages.info(request, f'Password reset link could not be sent please try again.')
+
+                        return redirect('Home:account_forgot_password')
+                except Exception as e:
+                    messages.info(request, 'Username does not exist.')
+
+                    return redirect('Home:account_forgot_password')
+        else:
+            form = forms.ForgotPasswordForm(request.POST)
+        return render(request, template_name, context)
+    except Exception as e:
+        print('account_password_reset', e)
 
 
 # Dashboard
@@ -473,9 +525,11 @@ def account_code(request):
         else:
             context = {}
             if request.user.profile.account_type == 'User':
-                rate = 0.15
+                rate = models.SiteSetting.objects.get(pk=1).agent_rate
             else:
-                rate = 0.2
+                rate = models.SiteSetting.objects.get(pk=1).customer_rate
+
+            rate /= 100
 
             template_name = 'Home/account_user_code.html'
             if request.method == 'POST':
@@ -630,7 +684,7 @@ def account_code_toggle(request, code_id):
         if request.user.is_superuser:
             code = models.Code.objects.get(pk=code_id)
             if code.status:
-                c
+                description = 'Order was Declined by Admin.'
                 code.status = False
 
                 log_history = models.History.objects.create(
@@ -640,7 +694,7 @@ def account_code_toggle(request, code_id):
                     charges=str(code.status),
                 )
             else:
-                description = 'Order was Approved by admin.'
+                description = 'Order was Approved by Admin.'
                 code.status = True
 
                 log_history = models.History.objects.create(
@@ -761,8 +815,13 @@ def account_code_request(request):
 @login_required(login_url='Home:account_signin')
 def account_code_redeem(request, code_id):
     try:
-        user_rate = 15
-        agent_rate = 20
+        if request.user.profile.account_type == 'User':
+            rate = models.SiteSetting.objects.get(pk=1).agent_rate
+        else:
+            rate = models.SiteSetting.objects.get(pk=1).customer_rate
+
+        rate /= 100
+
         description = 'Code Redemption'
         if request.user.is_active:
             if request.user.is_superuser:
@@ -773,37 +832,16 @@ def account_code_redeem(request, code_id):
                 user_wallet = models.Wallet.objects.get(user=request.user)
 
                 if request.user.id == code_slip.user.id:
-                    if models.Profile.objects.get(pk=request.user.id).account_type == 'Agent':
-                        if code.status:
-                            code_amount = code.amount * (agent_rate / 100)
-                            user_wallet.wallet_balance += code_amount
-                            user_wallet.save()
-
-                            log_history = models.History.objects.create(
-                                user=user,
-                                description=description,
-                                amount=code.amount,
-                                charges=agent_rate,
-                                status=True
-                            )
-
-                            log_history.save()
-
-                            code.delete()
-
-                            return redirect('Home:home')
-                        else:
-                            return redirect('Home:account_code')
-                    elif models.Profile.objects.get(pk=request.user.id).account_type == 'User':
-                        code_amount = code.amount * (user_rate / 100)
+                    if code.status:
+                        code_amount = code.amount * rate
                         user_wallet.wallet_balance += code_amount
                         user_wallet.save()
 
                         log_history = models.History.objects.create(
-                            user=request.user,
+                            user=user,
                             description=description,
                             amount=code.amount,
-                            charges=user_rate,
+                            charges=rate,
                             status=True
                         )
 
@@ -812,6 +850,14 @@ def account_code_redeem(request, code_id):
                         code.delete()
 
                         return redirect('Home:home')
+                    else:
+                        return redirect('Home:account_code')
+
+                    log_history.save()
+
+                    code.delete()
+
+                    return redirect('Home:home')
                 else:
                     logout(request)
 
@@ -925,7 +971,7 @@ def account_user_withdrawal(request):
                     bank = withdrawal_form.cleaned_data.get('bank')
                     amount = withdrawal_form.cleaned_data.get('amount')
 
-                    minimum_amount = 250
+                    minimum_amount = models.SiteSetting.objects.get(pk=1).minimum_withdrawal
 
                     if amount >= minimum_amount:
                         if amount <= request.user.wallet.wallet_balance:
@@ -980,7 +1026,7 @@ def account_user_data(request):
 
         template_name = 'Home/account_user_data.html'
         context = {
-            'networks': [i[0] for i in models.networks],
+            'networks': [i.network for i in list(models.Network.objects.all())],
             'user_orders': user_orders,
             'user_orders_truncate': user_orders_truncate,
 
@@ -993,8 +1039,8 @@ def account_user_data(request):
                 user_phone = data_form.cleaned_data.get('phone_number')
                 amount = data_form.cleaned_data.get('amount')
 
-                # 1GB minimum_amount
-                minimum_amount = 1
+                minimum_amount = models.SiteSetting.objects.get(pk=1).minimum_data
+
                 if amount >= minimum_amount:
                     if request.user.wallet.wallet_balance >= amount:
                         user_wallet = models.Wallet.objects.get(user=request.user)
@@ -1044,7 +1090,7 @@ def account_user_airtime(request):
 
         template_name = 'Home/account_user_airtime.html'
         context = {
-            'networks': [i[0] for i in models.networks],
+            'networks': [i.network for i in list(models.Network.objects.all())],
             'user_orders': user_orders,
             'user_orders_truncate': user_orders_truncate,
 
@@ -1057,7 +1103,7 @@ def account_user_airtime(request):
                 user_phone = data_form.cleaned_data.get('phone_number')
                 amount = data_form.cleaned_data.get('amount')
 
-                minimum_amount = 100
+                minimum_amount = models.SiteSetting.objects.get(pk=1).minimum_airtime
 
                 if amount >= minimum_amount:
                     if request.user.wallet.wallet_balance >= amount:
@@ -1101,6 +1147,26 @@ def account_user_airtime(request):
 
 # Tools
 
+
+@login_required(login_url='Home:account_signin')
+def code_group_codes(request, group_id):
+    try:
+        if request.user.is_superuser:
+            template_name = 'Home/code_group_codes.html'
+            init_context = {
+                'group': models.CodeGroup.objects.get(pk=group_id),
+                'code_group_children': models.Code.objects.all().get(code_group=models.CodeGroup.objects.get(pk=group_id)),
+            }
+            context = utils.dict_merge(external_context(), user_features(request.user.id))
+            context = utils.dict_merge(init_context, context)
+
+            return render(request, template_name, context)
+        else:
+            return render(request, 'Home/404Error.html')
+    except Exception as e:
+        print('code_group_codes', e)
+
+
 @login_required(login_url='Home:account_signin')
 def site_settings(request):
     try:
@@ -1108,7 +1174,29 @@ def site_settings(request):
             get_setting = models.SiteSetting.objects.get(pk=1)
             if request.method == 'POST':
                 settings_form = forms.SiteSettingForm(request.POST)
-                if settings_form.is_valid():
+                network_form = forms.NetworkForm(request.POST)
+        
+                if network_form.is_valid():
+                    network = network_form.cleaned_data.get('network')
+                    data_rate = network_form.cleaned_data.get('data_rate')
+                    print(network, data_rate)
+                    create_network = models.Network.objects.create(
+                        network=network,
+                        data_rate=data_rate,
+                    )
+
+                    if create_network:
+                        create_network.save()
+
+                        messages.warning(request, f'{network} has been added to networks')
+
+                        return redirect('Home:site_settings')
+                    else:
+                        messages.warning(request, f'{network} could not be added')
+
+                        return redirect('Home:site_settings')
+
+                elif settings_form.is_valid():
                     customer_rate = settings_form.cleaned_data.get('customer_rate')
                     agent_rate = settings_form.cleaned_data.get('agent_rate')
                     services_note = settings_form.cleaned_data.get('services_note')
@@ -1136,6 +1224,7 @@ def site_settings(request):
                     return redirect('Home:site_settings')
             else:
                 settings_form = forms.SiteSettingForm(request.POST)
+                network_form = forms.NetworkForm(request.POST)
 
             template_name = 'Home/site_settings.html'
             context = utils.dict_merge(external_context(), user_features(request.user.id))
@@ -1152,19 +1241,15 @@ def site_settings(request):
 def show_all_orders(request):
     try:
         template_name = 'Home/show_all_orders.html'
-        context = utils.dict_merge(
-            external_context(), user_features(request.user.id))
+        context = utils.dict_merge(external_context(), user_features(request.user.id))
 
-        user_orders = [i for i in reversed(
-            list(models.Order.objects.all().filter(user=request.user)))]
-        user_orders_truncate = [i for i in reversed(
-            list(models.Order.objects.all().filter(user=request.user))[:5])]
+        user_orders = [i for i in reversed(list(models.Order.objects.all().filter(user=request.user)))]
+        user_orders_truncate = [i for i in reversed(list(models.Order.objects.all().filter(user=request.user))[:5])]
         admin_orders = [i for i in reversed(list(models.Order.objects.all()))]
-        admin_orders_truncate = [i for i in reversed(
-            list(models.Order.objects.all()))][:5]
+        admin_orders_truncate = [i for i in reversed(list(models.Order.objects.all()))][:5]
 
         user_context = {
-            'networks': [i[0] for i in models.networks],
+            'networks': [i.network for i in list(models.Network.objects.all())],
             'user_orders': user_orders,
             'user_orders_truncate': user_orders_truncate,
             'admin_orders': admin_orders,
@@ -1204,6 +1289,11 @@ def toggle_order(request, order_id):
                 print(f'E-Mail send returns {email_success} for {request.user.email}')
             else:
                 order.status = 'Declined'
+                order_user_wallet = models.Wallet.objects.get(user=order.user)
+
+                order_user_wallet.wallet_balance += order.amount
+                order_user_wallet.save()
+
                 order_message = open(f'{message_dir}/decline_order.txt', 'r').read().format(
                     request.user.get_full_name,
                     request.user.profile.reference_id,

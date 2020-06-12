@@ -11,6 +11,7 @@ urlpatterns = [
 	path('register/', views.account_signup, name='account_signup'),
 	path('login/', views.account_signin, name='account_signin'),
 	path('logout/', views.account_signout, name='account_signout'),
+	path('forgot_password/', views.account_forgot_password, name='account_forgot_password'),
 
 	# Dashboard
 	path('', views.account_dashboard, name='home'),
@@ -43,6 +44,7 @@ urlpatterns = [
 	path('faq/', views.faq, name='faq'),
 
 	# Tools
+	path('code_group/<int:group_id>/', views.code_group_codes, name='code_group_codes'),
 	path('settings/', views.site_settings, name='site_settings'),
 	path('orders/', views.show_all_orders, name='show_all_orders'),
 	path('orders/<int:order_id>/toggle', views.toggle_order, name='toggle_order'),
