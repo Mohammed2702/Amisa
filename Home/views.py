@@ -86,7 +86,7 @@ def checker():
 
 
 def external_context():
-    checkerer()
+    checker()
 
     external_context = {
         'year': time.gmtime().tm_year,
@@ -106,7 +106,7 @@ def external_context():
 
 
 def user_features(user_id):
-    checkerer()
+    checker()
 
     user = get_object_or_404(User, pk=user_id)
     user_profile = models.Profile.objects.get(user=user)
