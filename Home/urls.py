@@ -12,6 +12,7 @@ urlpatterns = [
 	path('login/', views.account_signin, name='account_signin'),
 	path('logout/', views.account_signout, name='account_signout'),
 	path('forgot_password/', views.account_forgot_password, name='account_forgot_password'),
+	path('forgot_password/<str:link>/', views.account_forgot_password_link, name='account_forgot_password_link'),
 
 	# Dashboard
 	path('', views.account_dashboard, name='home'),

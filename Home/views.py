@@ -21,6 +21,7 @@ from . import utils
 
 # ENV
 
+password_reset_main = 'amisacb.pythonanywhere.com/forgot_password'
 
 if os.path.isdir('/home/mohammed/Desktop/Projects/Amisa/Amisacb/Home/'):
 	message_dir = '/home/mohammed/Desktop/Projects/Amisa/Amisacb/Home/'
@@ -33,6 +34,8 @@ else:
 
 def checker():
     current_hour = int(str(datetime.datetime.now()).split(' ')[1].split(':')[0]) + 1
+    current_minute = int(str(datetime.datetime.now()).split(' ')[1].split(':')[1])
+
     all_orders = models.Order.objects.all()
     for i in all_orders:
         order = models.Order.objects.get(pk=i.id)
@@ -71,9 +74,19 @@ def checker():
             code.status = False
         code.save()
 
+    all_resets = models.PasswordReset.objects.all()
+    expiry_time = 10
+    for i in all_resets:
+        hour = int(str(i.date).split(' ')[1].split(':')[0])
+        minute = int(str(i.date).split(' ')[1].split(':')[1])
+
+        if (minute + expiry_time) >= minute:
+            reset = models.PasswordReset.objects.get(pk=i.id)
+            reset.delete()
+
 
 def external_context():
-    checker()
+    checkerer()
 
     external_context = {
         'year': time.gmtime().tm_year,
@@ -93,7 +106,7 @@ def external_context():
 
 
 def user_features(user_id):
-    checker()
+    checkerer()
 
     user = get_object_or_404(User, pk=user_id)
     user_profile = models.Profile.objects.get(user=user)
@@ -102,10 +115,8 @@ def user_features(user_id):
     all_states = [i[1] for i in all_states]
     all_account_types = models.account_types
     all_account_types = [i[1] for i in all_account_types]
-    user_history = [i for i in reversed(
-        list(models.History.objects.all().filter(user=user)))]
-    user_history_truncate = [i for i in reversed(
-        list(models.History.objects.all().filter(user=user)))][:10]
+    user_history = [i for i in reversed(list(models.History.objects.all().filter(user=user)))]
+    user_history_truncate = [i for i in reversed(list(models.History.objects.all().filter(user=user)))][:10]
     posts = [i for i in reversed(list(models.Post.objects.all()))][:5]
 
     # Orders
@@ -115,8 +126,7 @@ def user_features(user_id):
 
         notifications = orders + posts
     else:
-        orders = [i for i in reversed(
-            list(models.Order.objects.all().filter(user=user)))][:5]
+        orders = [i for i in reversed(list(models.Order.objects.all().filter(user=user)))][:5]
 
         notifications = orders + posts
 
@@ -161,6 +171,8 @@ def custom_400(request, exception=None):
 
 def account_signup(request):
     try:
+        checker()
+
         date = datetime.datetime.now()
         if request.method == 'POST':
             form = forms.RegistrationForm(request.POST)
@@ -237,6 +249,8 @@ def account_signup(request):
 
 def account_signin(request):
     try:
+        checker()
+
         form = AuthenticationForm(request)
         if request.method == 'POST':
             if True:
@@ -270,6 +284,8 @@ def account_signin(request):
 
 def account_signout(request):
     try:
+        checker()
+
         logout(request)
 
         return redirect('Home:account_signin')
@@ -279,6 +295,8 @@ def account_signout(request):
 
 def account_forgot_password(request):
     try:
+        checker()
+
         template_name = 'Home/account_forgot_password.html'
         context = {}
 
@@ -291,11 +309,21 @@ def account_forgot_password(request):
                     get_user = User.objects.get(username=username)
                     get_user_email = get_user.email
                     
-                    reset_link = ''
+                    reset_link_navigator = utils.generate_url_scrambled(list(models.PasswordReset.objects.all()))
+                    reset_link = f'{password_reset_main}/{reset_link_navigator}'
+                    verification_code = utils.generate_ver_code()
+
+                    create_password_reset = models.PasswordReset.objects.create(
+                        user=get_user,
+                        link_slug=reset_link_navigator,
+                        verification_code=verification_code
+                    )
+                    create_password_reset.save()
 
                     title = 'Password Reset'
                     body = open(f'{message_dir}password_retrieved.txt', 'r').read().format(
-                        get_user.get_full_name,
+                        get_user.username,
+                        get_user.get_full_name(),
                         get_user.username,
                         get_user.email,
                         get_user.profile.account_type,
@@ -318,6 +346,8 @@ def account_forgot_password(request):
 
                         return redirect('Home:account_forgot_password')
                 except Exception as e:
+                    print('account_password_reset', e)
+
                     messages.info(request, 'Username does not exist.')
 
                     return redirect('Home:account_forgot_password')
@@ -326,6 +356,58 @@ def account_forgot_password(request):
         return render(request, template_name, context)
     except Exception as e:
         print('account_password_reset', e)
+
+
+def account_forgot_password_link(request, link):
+    try:
+        checker()
+
+        get_reset = models.PasswordReset.objects.get(link_slug=link)
+
+        if request.method == 'POST':
+            verification_form = forms.VerificationForm(request.POST)
+            if verification_form.is_valid():
+                username = verification_form.cleaned_data.get('username')
+                email = verification_form.cleaned_data.get('email')
+                new_password = verification_form.cleaned_data.get('new_password')
+                confirm_password = verification_form.cleaned_data.get('confirm_password')
+
+                if get_reset.user.username == username:
+                    if get_reset.user.email == email:
+                        if new_password == confirm_password:
+                            user = User.objects.get(username=get_reset.user.username)
+                            user.set_password(new_password)
+                            user.save()
+
+                            messages.info(request, 'Password has been reset Successfully')
+
+                            user = authenticate(username=get_reset.user.username, password=new_password)
+
+                            if user:
+                                login(request, user)
+
+                                return redirect('Home:home')
+                        else:
+                            messages.info(request, 'Password has reset Successfully')
+
+                            return redirect('Home:account_forgot_password_link', link=link)
+                    else:
+                        messages.info(request, 'E-Mail or username is not valid.')
+
+                        return redirect('Home:account_forgot_password_link', link=link)
+                else:
+                    messages.info(request, 'E-Mail or username is not valid.')
+
+                    return redirect('Home:account_forgot_password_link', link=link)
+        else:
+            verification_form = forms.VerificationForm(request.POST)
+
+        template_name = 'Home/account_reset_password.html'
+        context = {}
+
+        return render(request, template_name, context)
+    except Exception as e:
+        print('account_forgot_password_link', e)
 
 
 # Dashboard
@@ -992,7 +1074,7 @@ def account_user_withdrawal(request):
                                 user_wallet.save()
                                 create_order.save()
 
-                                messages.warning(request, f'''Your order has been placed, keep checking your notifications to track your order(s)''')
+                                messages.warning(request, f'''Your order has been placed, keep checkering your notifications to track your order(s)''')
 
                                 return redirect('Home:account_user_withdrawal')
                             else:
@@ -1057,7 +1139,7 @@ def account_user_data(request):
                             user_wallet.save()
                             create_order.save()
 
-                            messages.warning(request, f'''Your order has been placed, keep checking your notifications to track your order(s)''')
+                            messages.warning(request, f'''Your order has been placed, keep checkering your notifications to track your order(s)''')
 
                             return redirect('Home:account_user_data')
                         else:
@@ -1121,7 +1203,7 @@ def account_user_airtime(request):
                             user_wallet.save()
                             create_order.save()
 
-                            messages.warning(request, f'''Your order has been placed, keep checking your notifications to track your order(s)''')
+                            messages.warning(request, f'''Your order has been placed, keep checkering your notifications to track your order(s)''')
 
                             return redirect('Home:account_user_airtime')
                         else:

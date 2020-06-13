@@ -85,3 +85,10 @@ class NetworkForm(forms.Form):
 
 class ForgotPasswordForm(forms.Form):
 	username = forms.CharField(required=True)
+
+
+class VerificationForm(forms.Form):
+	username = forms.CharField(required=True)
+	email = forms.CharField(required=True)
+	new_password = forms.CharField(required=True)
+	confirm_password = forms.CharField(required=True)

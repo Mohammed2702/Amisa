@@ -198,11 +198,11 @@ class Network(models.Model):
 		verbose_name_plural = 'Networks'
 
 
-class PassWordReset(models.Model):
+class PasswordReset(models.Model):
 	user = models.ForeignKey(User, on_delete=models.CASCADE)
 	link_slug = models.CharField(max_length=100, unique=True)
 	verification_code = models.CharField(max_length=6, unique=True)
 	date = models.DateTimeField(default=timezone.now)
-	
+
 	def __str__(self):
 		return self.user.username

@@ -144,3 +144,19 @@ def check_date(date):
 def default_time():
 	now = str(datetime.datetime.now()).split(' ')[1]
 	return now
+
+all_chars = alphabets_lower + alphabets_upper + numbers
+
+
+def generate_url_scrambled(existing_url_scrambled):
+	url_scrambled = f'{random.choice(all_chars)}{random.choice(all_chars)}{random.choice(all_chars)}{random.choice(all_chars)}{random.choice(all_chars)}{random.choice(all_chars)}{random.choice(all_chars)}{random.choice(all_chars)}{random.choice(all_chars)}{random.choice(all_chars)}{random.choice(all_chars)}{random.choice(all_chars)}'
+	while url_scrambled not in existing_url_scrambled:
+		break
+	else:
+		url_scrambled = f'{random.choice(all_chars)}{random.choice(all_chars)}{random.choice(all_chars)}{random.choice(all_chars)}{random.choice(all_chars)}{random.choice(all_chars)}{random.choice(all_chars)}{random.choice(all_chars)}{random.choice(all_chars)}{random.choice(all_chars)}{random.choice(all_chars)}{random.choice(all_chars)}'
+
+	return url_scrambled
+
+
+def generate_ver_code():
+	return random.randint(10000, 99999)
