@@ -1,0 +1,283 @@
+{% extends 'Home/base.html' %}
+
+{% load static %}
+
+
+{% block title %}
+	<title>Settings</title>
+{% endblock %}
+
+{% block page_header %}
+  <div class="content-wrapper">
+    <div class="content-header">
+      <div class="container-fluid">
+        <div class="row mb-2">
+          <div class="col-sm-6">
+            <h1 class="m-0 text-dark">Settings</h1>
+          </div><!-- /.col -->
+          <div class="col-sm-6">
+            <ol class="breadcrumb float-sm-right">
+              <li class="breadcrumb-item"><a href="{% url 'Home:site_settings' %}">Settings</a></li>
+              <li class="breadcrumb-item active">Settings</li>
+            </ol>
+          </div><!-- /.col -->
+        </div><!-- /.row -->
+      </div><!-- /.container-fluid -->
+    </div>
+{% endblock %}
+
+{% block main_content %}
+	<div class="row">
+            <div class="col-lg-3 col-6">
+              <!-- small box -->
+              <div class="small-box bg-info">
+                  <div class="inner">
+                      <h3>{{all_codes_count}}</h3>
+                      <p>Codes</p>
+                  </div>
+                <div class="icon">
+                  <i class="ion fas fa-gifts"></i>
+                </div>
+                <a href="{% url 'Home:account_code' %}" class="small-box-footer">More info<i class="fas fa-arrow-circle-right"></i></a>
+              </div>
+            </div>
+            <!-- ./col -->
+            <div class="col-lg-3 col-6">
+              <!-- small box -->
+              <div class="small-box bg-success">
+                <div class="inner">
+                  <h3>&#8358; {{total_amount}}</h3>
+                  <p>Total Balance</p>
+                </div>
+                <div class="icon">
+                  <i class="ion fas fa-wallet"></i>
+                </div>
+                <a href="{% url 'Home:account_users_wallet' %}" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+              </div>
+            </div>
+            <!-- ./col -->
+            <div class="col-lg-3 col-6">
+              <!-- small box -->
+              <div class="small-box bg-warning">
+                <div class="inner">
+                  <h3>{{all_customers}}</h3>
+                  <p>Customers</p>
+                </div>
+                <div class="icon">
+                  <i class="ion fas fa-user"></i>
+                </div>
+                <a href="{% url 'Home:account_users_list' 'customers' %}" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+              </div>
+            </div>
+            <!-- ./col -->
+            <div class="col-lg-3 col-6">
+              <!-- small box -->
+              <div class="small-box bg-danger">
+                <div class="inner">
+                  <h3>{{all_agents}}</h3>
+                  <p>Agents</p>
+                </div>
+                <div class="icon">
+                  <i class="ion fas fa-user-tie"></i>
+                </div>
+                <a href="{% url 'Home:account_users_list' 'agents' %}" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+              </div>
+            </div>
+            <!-- ./col -->
+          </div>
+
+{% endblock %}
+
+{% block content %}
+	<div class="row">
+		<div class="col-sm-8 connectedSortable">
+			{% for message in messages %}
+		        <div class="alert alert-warning">
+		            <a class="close" href="#" data-dismiss="alert">×</a>
+		            {{ message }}
+		        </div>
+		    {% endfor %}
+			<div class="card card-info">
+				<div class="card-header">
+					<h3 class="card-title">Settings</h3>
+				</div>
+
+				<form method="post">
+					{% csrf_token %}
+
+					<div class="card-body">
+						<div class="row border-bottom" style="padding-top: 1rem;">
+							<div class="col-sm-6">
+								<label>Customer rate</label>
+								<div class="input-group mb-3">
+									<div class="input-group-prepend">
+										<span class="input-group-text"><i class="fas fa-receipt"></i></span>
+									</div>
+									<input type="number" name="customer_rate" class="form-control" placeholder="Customer rate" value="{{get_setting.customer_rate}}" required>
+								</div>
+							</div>
+
+							<div class="col-sm-6">
+								<label>Agent rate</label>
+								<div class="input-group mb-3">
+									<div class="input-group-prepend">
+										<span class="input-group-text"><i class="fas fa-receipt"></i></span>
+									</div>
+									<input type="number" name="agent_rate" class="form-control" placeholder="Agent rate" value="{{get_setting.agent_rate}}" required>
+								</div>
+							</div>
+						</div>
+						
+						<div class="row border-bottom" style="padding-top: 1rem;">
+							<div class="col-sm-4">
+								<label>Minimum Withdrawal</label>
+								<div class="input-group mb-3">
+									<div class="input-group-prepend">
+										<span class="input-group-text"><i class="fas fa-wallet"></i></span>
+									</div>
+									<input type="number" name="minimum_withdrawal" class="form-control" placeholder="Minimum Withdrawal"
+									value="{{get_setting.minimum_withdrawal}}" required>
+								</div>
+							</div>
+
+							<div class="col-sm-4">
+								<label>Minimum Airtime</label>
+								<div class="input-group mb-3">
+									<div class="input-group-prepend">
+										<span class="input-group-text"><i class="fas fa-wallet"></i></span>
+									</div>
+									<input type="number" name="minimum_airtime" class="form-control" placeholder="Minimum Airtime"
+									value="{{get_setting.minimum_airtime}}" required>
+								</div>
+							</div>
+							
+							<div class="col-sm-4">
+								<label>Minimum Data</label>
+								<div class="input-group mb-3">
+									<div class="input-group-prepend">
+										<span class="input-group-text"><i class="fas fa-wallet"></i></span>
+									</div>
+									<input type="number" name="minimum_data" class="form-control" placeholder="Minimum Data"
+									value="{{get_setting.minimum_data}}" required>
+								</div>
+							</div>
+						</div>
+						
+						<div class="row border-bottom" style="padding-top: 1rem;">
+							<div class="col-6">
+								<label>Call Contact</label>
+								<div class="input-group mb-3">
+									<div class="input-group-prepend">
+										<span class="input-group-text"><i class="fas fa-phone"></i></span>
+									</div>
+									<input type="text" maxlength="13" name="call_contact" class="form-control" placeholder="Call Contact"
+									value="{{get_setting.call_contact}}" required>
+								</div>
+							</div>
+
+							<div class="col-6">
+								<label>WhatsApp Contact</label>
+								<div class="input-group mb-3">
+									<div class="input-group-prepend">
+										<span class="input-group-text"><span><i class="fab fa-whatsapp"></i></span>
+									</div>
+									<input type="text" maxlength="13" name="whatsapp_contact" class="form-control" placeholder="WhatsApp Contact"
+									value="{{get_setting.whatsapp_contact}}" required>
+								</div>
+							</div>
+						</div>
+						
+						<div class="row border-bottom" style="padding-top: 1rem;">
+							<div class="col-sm">
+								<label>E-Mail Contact</label>
+								<div class="input-group mb-3">
+									<div class="input-group-prepend">
+										<span class="input-group-text"><i class="fas fa-envelope"></i></span>
+									</div>
+									<input type="email" name="email_contact" class="form-control" placeholder="E-Mail Contact"
+									value="{{get_setting.email_contact}}" required>
+								</div>
+							</div>
+						</div>
+						
+						<div class="row border-bottom" style="padding-top: 1rem;">
+							<div class="col-sm">
+								<label>Services Note</label>
+								<div class="input-group mb-3">
+									<div class="input-group-prepend">
+										<span class="input-group-text"><i class="fas fa-book"></i></span>
+									</div>
+									<textarea name="services_note" class="form-control" placeholder="Services Note" required>{{get_setting.services_note}}</textarea>
+								</div>
+							</div>
+						</div>
+					</div>
+
+					<div class="card-footer" style="text-align: center">
+						<button type="submit" class="btn btn-primary">Save Settings</button>
+					</div>
+				</form>
+			</div>
+		</div>
+
+		<div class="col-sm-4">
+			<div class="row connectedSortable">
+				<div class="col-sm-12">
+					<div class="card card-success">
+						<div class="card-header">
+							<h3 class="card-title">New Network</h3>
+						</div>
+						<form method="post">
+							{% csrf_token %}
+	
+							<div class="card-body">
+								<div class="input-group mb-3">
+									<div class="input-group-prepend">
+										<span class="input-group-text"><span><i class="fab fa-intercom"></i></span>
+									</div>
+									<input type="text" name="network" class="form-control" placeholder="Network" required>
+								</div>
+
+								<div class="input-group mb-3">
+									<div class="input-group-prepend">
+										<span class="input-group-text"><i class="fas fa-receipt"></i></span>
+									</div>
+									<input type="number" name="data_rate" class="form-control" placeholder="Data Rate" required>
+								</div>
+							</div>
+							<div class="card-footer" style="text-align: center;">
+								<button type="submit" class="btn btn-primary">Save</button>
+							</div>
+						</form>
+					</div>
+				</div>
+			</div>
+
+			<div class="row connectedSortable">
+				<div class="col-sm-12">
+					<div class="card card-success">
+						<div class="card-header">
+							<h3 class="card-title">Networks</h3>
+						</div>
+						<div class="card-body">
+							<div class="input-group mb-3">
+								<div class="input-group-prepend">
+									<span class="input-group-text"><i class="fas fa-book"></i></span>
+								</div>
+								<input type="text" name="network" class="form-control" placeholder="Network">
+							</div>
+
+							<div class="input-group mb-3">
+								<div class="input-group-prepend">
+									<span class="input-group-text"><i class="fas fa-book"></i></span>
+								</div>
+								<input type="number" name="data_rate" class="form-control" placeholder="Data Rate">
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+{% endblock %}

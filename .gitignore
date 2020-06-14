@@ -1,3 +1,10 @@
+# Files
+db.sqlite3
+Amisacb/__pycache__/
+./Home/migrations/__pycache__/
+./Home/__pycache__/
+*.pyc
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]

@@ -1,0 +1,116 @@
+{% extends 'Home/base.html' %}
+
+{% load static %}
+
+
+{% block title %}
+	<title>Card Issuance</title>
+{% endblock %}
+
+
+{% block page_header %}
+
+  <div class="content-wrapper">
+    <div class="content-header">
+      <div class="container-fluid">
+        <div class="row mb-2">
+          <div class="col-sm-6">
+            <h1 class="m-0 text-dark">Card Issuance</h1>
+          </div>
+          <div class="col-sm-6">
+            <ol class="breadcrumb float-sm-right">
+              <li class="breadcrumb-item"><a href="{% url 'Home:card_issuance' %}">Card Issuance</a></li>
+              <li class="breadcrumb-item active">Card Issuance</li>
+            </ol>
+          </div>
+        </div>
+      </div>
+    </div>
+{% endblock %}
+
+
+{% block main_content %}
+
+{% endblock %}
+
+
+{% block content %}
+
+  <section class="content">
+      <div class="container-fluid">
+
+        <div class="row">
+          <div class="col-md-6 connectedSortable">
+            <div class="card callout callout-info">
+              <div class="card-header">
+                    <h2 class="card-title">Requirements and Services</h2>
+                </div>
+
+                <div class="card-body p-0">
+                  <ul>
+                    <li>N30 AMISACARD   - Minimum of N100 to N250 of payment.</li>
+                    <li>N50 AMISACARD   - Minimum of N250 to N800 of payment.</li>
+                    <li>N70 AMISACARD   - Minimum of N800 to N1,500 of payment.</li>
+                    <li>N100 AMISACARD  - Minimum of N1500 to N2,600 of payment.</li>
+                    <li>N250 AMISACARD  - Minimum of N2,600 and above  of payment.</li>
+                  </ul>
+                </div>
+              </div>
+          </div>
+          <div class="col-md-6 connectedSortable">
+            <div class="card callout callout-info">
+              <div class="card-header">
+                    <h2 class="card-title">Filling station</h2>
+                </div>
+
+                <div class="card-body p-0">
+                  <ul>
+                    <li>N30 AMISACARD   - 2 to 3 litres of purchases.</li>
+                    <li>N50 AMISACARD   - 4 to 10 litres of purchases.</li>
+                    <li>N70 AMISACARD   - 11 to 15 litres of purchases.</li>
+                    <li>N100 AMISACARD  - 16 to 20 litres of purchases.</li>
+                    <li>N250 AMISACARD  - 21 litres and above of purchases.</li>
+                  </ul>
+                </div>
+              </div>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col-md-8 connectedSortable">
+            <div class="card callout callout-info">
+              <div class="card-header">
+                    <h2 class="card-title">Requirements and Services</h2>
+                </div>
+
+                <div class="card-body p-0">
+                  <ul>
+                    <li>N15 AMISACARD   - Minimum of N150 to N250 of purchases and minimum of 2 varieties of goods.</li>
+                    <li>N30 AMISACARD   - Minimum of N250 to N500 of purchases and minimum of 3 varieties of goods.</li>
+                    <li>N50 AMISACARD   - Minimum of N500 to N800 of purchases and minimum of 3 varieties of goods.</li>
+                    <li>N70 AMISACARD   - Minimum of N800 to N1,100 of purchases and minimum of 3 varieties of goods.</li>
+                    <li>N100 AMISACARD  - Minimum of N1,100 to N1,800 of purchases and minimum of 3 varieties of goods.</li>
+                    <li>N250 AMISACARD  - Minimum of N1,800 and above of purchases and minimum of 3 varieties of goods.</li>
+                  </ul>
+                </div>
+              </div>
+          </div>
+          <div class="col-md-4 connectedSortable">
+            <div class="card callout callout-info">
+              <div class="card-header">
+                    <h5 class="card-title">Notice</h5>
+                </div>
+
+                <div class="card-body p-0">
+                  <ul>
+                    <li>Business outlets should concentrate on the number varieties of the goods after reaching the price before issuance of the appropriate card.</li>
+                    <li>Manufacturers and wholesalers are to give retailers cards based on their capability, will and level of the retailers purchases for the benefit of them giving to their customers.</li>
+                  </ul>
+                </div>
+              </div>
+          </div>
+        </div>
+      </div>
+  </section>
+
+{% endblock %}
