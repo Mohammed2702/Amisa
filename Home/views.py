@@ -64,7 +64,7 @@ def checker():
         else:
             code.status = False
 
-        if utils.check_date(i.expiry_date) != True:
+        if utils.check_date(i.expiry_date):
             if code.code_group.status == True:
                 if 'Expired' not in str(code.code).split('/'):
                     code.code = f'{code.code}/Expired'
@@ -308,7 +308,7 @@ def account_forgot_password(request):
                 try:
                     get_user = User.objects.get(username=username)
                     get_user_email = get_user.email
-                    
+
                     reset_link_navigator = utils.generate_url_scrambled(list(models.PasswordReset.objects.all()))
                     reset_link = f'{password_reset_main}/{reset_link_navigator}'
                     verification_code = utils.generate_ver_code()
@@ -1257,7 +1257,7 @@ def site_settings(request):
             if request.method == 'POST':
                 settings_form = forms.SiteSettingForm(request.POST)
                 network_form = forms.NetworkForm(request.POST)
-        
+
                 if network_form.is_valid():
                     network = network_form.cleaned_data.get('network')
                     data_rate = network_form.cleaned_data.get('data_rate')
