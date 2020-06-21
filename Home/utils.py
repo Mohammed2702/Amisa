@@ -126,9 +126,9 @@ def check_date(date):
 	current_month = int(current_date[1])
 	current_day = int(current_date[2])
 
-	if current_year <= year:
-		if current_month <= month:
-			if current_day <= day:
+	if year <= current_year:
+		if month <= current_month:
+			if day <= current_day:
 				return True
 			else:
 				# print(f'Day, {day} {current_day}')
