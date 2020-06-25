@@ -19,6 +19,8 @@ from django.conf import settings
 from django.conf.urls.static import *
 from django.views.static import serve
 from django.conf.urls import url
+from django.contrib.sitemaps.views import *
+from django.contrib import *
 
 
 handler400 = 'Home.views.custom_400'
@@ -30,6 +32,7 @@ handler500 = 'Home.views.custom_500'
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('Home.urls')),
+    path('sitemap.xml', sitemap, {'sitemaps': sitemaps}, name='django.contrib.sitemaps.views.sitemap'),
 ]
 
 if settings.DEBUG:

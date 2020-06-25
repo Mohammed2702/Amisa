@@ -33,23 +33,26 @@ else:
 
 
 def checker():
-    current_hour = int(str(datetime.datetime.now()).split(' ')[1].split(':')[0]) + 1
-    current_minute = int(str(datetime.datetime.now()).split(' ')[1].split(':')[1])
+    curr_date = str(datetime.datetime.now()).split(' ')[0].split('-')
+    curr_time = str(datetime.datetime.now()).split(' ')[1].split(':')
+    curr_exp_time = datetime.time(int(curr_time[0]), int(curr_time[1]), int(curr_time[2].split('.')[0]))
+    curr_exp_date = datetime.date(int(curr_date[0]), int(curr_date[1]), int(curr_date[2]))
+    # current_hour = int(str(datetime.datetime.now()).split(' ')[1].split(':')[0]) + 1
+    # current_minute = int(str(datetime.datetime.now()).split(' ')[1].split(':')[1])
 
     all_orders = models.Order.objects.all()
     for i in all_orders:
         order = models.Order.objects.get(pk=i.id)
-        date = str(order.date).split(' ')[0]
-        time = str(order.date).split(' ')[1]
-        if utils.check_date(date) != True:
-            if (int(time.split(':')[0]) + 3) >= current_hour:
+        date = str(order.date).split(' ')[0].split('-')
+        time = str(order.date).split(' ')[1].split(':')
+        order_date = datetime.date(int(date[0]), int(date[1]), int(date[2]))
+        order_time = datetime.time(int(time[0]), int(time[1]), int(time[2].split('+')[0]))
+        order_exp_time = datetime.time(int(curr_time[0]) + 3, int(curr_time[1]), int(curr_time[2].split('.')[0]))
+        if order_date < curr_exp_date:
+            if order_time < order_exp_time:
                 description = ' - Order was Declined.'
                 if description not in order.description:
                     order.description += description
-                    order.status = False
-                    order.user.wallet.wallet_balance += order.amount
-                    order.amount = 0
-                else:
                     order.status = False
                     order.user.wallet.wallet_balance += order.amount
                     order.amount = 0
@@ -64,18 +67,20 @@ def checker():
         else:
             code.status = False
 
-        if utils.check_date(i.expiry_date):
-            if code.code_group.status == True:
-                if 'Expired' not in str(code.code).split('/'):
-                    code.code = f'{code.code}/Expired'
-            else:
-                if 'Expired' not in str(code.code).split('/'):
-                    code.code = f'{code.code}/Expired'
+        code_date_ = str(code.expiry_date).split(' ')[0].split('-')
+        code_exp_date = datetime.date(int(code_date_[0]), int(code_date_[1]), int(code_date_[2]))
+        if code_exp_date < curr_exp_date:
+            if 'Expired' not in str(code.code).split('/'):
+                code.code = f'{code.code}/Expired'
             code.status = False
+        else:
+            if 'Expired' in str(code.code).split('/'):
+                code.code = f'{code.code}'.replace('/Expired', '')
+            code.status = True
         code.save()
 
     all_resets = models.PasswordReset.objects.all()
-    expiry_time = 10
+    expiry_time = 5
     for i in all_resets:
         hour = int(str(i.date).split(' ')[1].split(':')[0])
         minute = int(str(i.date).split(' ')[1].split(':')[1])
@@ -1261,7 +1266,6 @@ def site_settings(request):
                 if network_form.is_valid():
                     network = network_form.cleaned_data.get('network')
                     data_rate = network_form.cleaned_data.get('data_rate')
-                    print(network, data_rate)
                     create_network = models.Network.objects.create(
                         network=network,
                         data_rate=data_rate,
@@ -1288,6 +1292,7 @@ def site_settings(request):
                     call_contact = settings_form.cleaned_data.get('call_contact')
                     whatsapp_contact = settings_form.cleaned_data.get('whatsapp_contact')
                     email_contact = settings_form.cleaned_data.get('email_contact')
+                    how_to = settings_form.cleaned_data.get('how_to')
 
                     get_setting.customer_rate = customer_rate
                     get_setting.agent_rate = agent_rate
@@ -1298,6 +1303,7 @@ def site_settings(request):
                     get_setting.call_contact = call_contact
                     get_setting.whatsapp_contact = whatsapp_contact
                     get_setting.email_contact = email_contact
+                    get_setting.how_to = how_to
 
                     get_setting.save()
 
@@ -1614,6 +1620,7 @@ def how_to(request):
                 'user_orders_truncate': user_orders_truncate,
                 'admin_orders': admin_orders,
                 'admin_orders_truncate': admin_orders_truncate,
+                'get_setting': models.SiteSetting.objects.get(pk=1),
 
             }
             context = user_context
@@ -1628,6 +1635,7 @@ def how_to(request):
             return render(request, template_name, context)
         else:
             user_context = {
+                'get_setting': models.SiteSetting.objects.get(pk=1),
             }
             context = user_context
 

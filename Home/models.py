@@ -176,6 +176,7 @@ class SiteSetting(models.Model):
 	call_contact = models.CharField(max_length=13, blank=True)
 	whatsapp_contact = models.CharField(max_length=13, blank=True)
 	email_contact = models.EmailField(blank=True)
+	how_to = models.TextField(blank=True)
 
 	def __str__(self):
 		return self.site_setting
