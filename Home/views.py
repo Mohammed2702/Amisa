@@ -35,27 +35,20 @@ else:
 def checker():
     curr_date = str(datetime.datetime.now()).split(' ')[0].split('-')
     curr_time = str(datetime.datetime.now()).split(' ')[1].split(':')
-    curr_exp_time = datetime.time(int(curr_time[0]), int(curr_time[1]), int(curr_time[2].split('.')[0]))    
     curr_exp_date = datetime.date(int(curr_date[0]), int(curr_date[1]), int(curr_date[2]))
 
     all_orders = models.Order.objects.all()
     for i in all_orders:
         order = models.Order.objects.get(pk=i.id)
-        date = str(order.date).split(' ')[0].split('-')
         time = str(order.date).split(' ')[1].split(':')
-        
-        order_date = datetime.date(int(date[0]), int(date[1]), int(date[2]))
-        order_time = datetime.time(int(time[0]), int(time[1]), int(time[2].split('.')[0]))
-        order_exp_time = datetime.time(int(time[0]) + 3, int(time[1]), int(time[2].split('.')[0]))
 
-        if order_date < curr_exp_date:
-            if order_time < order_exp_time:
-                description = ' - Order was Declined.'
-                if description not in order.description:
-                    order.description += description
-                    order.status = False
-                    order.user.wallet.wallet_balance += order.amount
-                    order.amount = 0
+        if int(time[0]) < int(curr_time[0]) + 3:
+            description = ' - Order was Declined.'
+            if description not in order.description:
+                order.description += description
+                order.status = False
+                order.user.wallet.wallet_balance += order.amount
+                order.amount = 0
 
         order.save()
 
