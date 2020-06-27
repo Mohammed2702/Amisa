@@ -77,6 +77,8 @@ class SiteSettingForm(forms.Form):
 	email_contact = forms.CharField(required=False)
 	services_note = forms.CharField(required=False)
 	how_to = forms.CharField(required=False)
+	about_us = forms.CharField(required=False)
+	faq = forms.CharField(required=False)
 
 
 class NetworkForm(forms.Form):

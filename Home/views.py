@@ -1300,6 +1300,7 @@ def site_settings(request):
                     whatsapp_contact = settings_form.cleaned_data.get('whatsapp_contact')
                     email_contact = settings_form.cleaned_data.get('email_contact')
                     how_to = settings_form.cleaned_data.get('how_to')
+                    about_us = settings_form.cleaned_data.get('about_us')
 
                     get_setting.customer_rate = customer_rate
                     get_setting.agent_rate = agent_rate
@@ -1311,6 +1312,7 @@ def site_settings(request):
                     get_setting.whatsapp_contact = whatsapp_contact
                     get_setting.email_contact = email_contact
                     get_setting.how_to = how_to
+                    get_setting.about_us = about_us
 
                     get_setting.save()
 
