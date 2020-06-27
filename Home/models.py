@@ -167,16 +167,18 @@ class Post(models.Model):
 
 class SiteSetting(models.Model):
 	site_setting = models.CharField(max_length=100, default='Setting_1', blank=True)
-	customer_rate = models.FloatField(blank=True)
-	agent_rate = models.FloatField(blank=True)
-	services_note = models.TextField(blank=True)
-	minimum_withdrawal = models.IntegerField(blank=True)
-	minimum_airtime = models.IntegerField(blank=True)
-	minimum_data = models.IntegerField(blank=True)
+	customer_rate = models.FloatField(blank=True, default=15)
+	agent_rate = models.FloatField(blank=True, default=20)
+	services_note = models.TextField(blank=True, default='services note')
+	minimum_withdrawal = models.IntegerField(blank=True, default=100)
+	minimum_airtime = models.IntegerField(blank=True, default=100)
+	minimum_data = models.IntegerField(blank=True, default=100)
 	call_contact = models.CharField(max_length=13, blank=True)
 	whatsapp_contact = models.CharField(max_length=13, blank=True)
 	email_contact = models.EmailField(blank=True)
 	how_to = models.TextField(blank=True)
+	faq = models.TextField(blank=True)
+	about_us = models.TextField(blank=True)
 
 	def __str__(self):
 		return self.site_setting

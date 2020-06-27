@@ -43,9 +43,11 @@ def checker():
         order = models.Order.objects.get(pk=i.id)
         date = str(order.date).split(' ')[0].split('-')
         time = str(order.date).split(' ')[1].split(':')
+        
         order_date = datetime.date(int(date[0]), int(date[1]), int(date[2]))
-        order_time = datetime.time(int(time[0]), int(time[1]), int(time[2].split('+')[0]))
+        order_time = datetime.time(int(time[0]), int(time[1]), int(time[2].split('.')[0]))
         order_exp_time = datetime.time(int(time[0]) + 3, int(time[1]), int(time[2].split('.')[0]))
+
         if order_date < curr_exp_date:
             if order_time < order_exp_time:
                 description = ' - Order was Declined.'
@@ -100,6 +102,7 @@ def external_context():
         'all_codes': [i for i in reversed(models.Code.objects.all())],
         'code_groups': [i for i in reversed(list(models.CodeGroup.objects.all()))],
         'notice_notes': models.SiteSetting.objects.get(pk=1).services_note,
+        'all_networks': models.Network.objects.all(),
     }
 
     return external_context
@@ -1206,7 +1209,7 @@ def account_user_airtime(request):
                             user_wallet.save()
                             create_order.save()
 
-                            messages.warning(request, f'''Your order has been placed, keep checkering your notifications to track your order(s)''')
+                            messages.warning(request, f'''Your order has been placed, keep checking your notifications to track your order(s)''')
 
                             return redirect('Home:account_user_airtime')
                         else:
@@ -1264,19 +1267,25 @@ def site_settings(request):
                 if network_form.is_valid():
                     network = network_form.cleaned_data.get('network')
                     data_rate = network_form.cleaned_data.get('data_rate')
-                    create_network = models.Network.objects.create(
-                        network=network,
-                        data_rate=data_rate,
-                    )
 
-                    if create_network:
-                        create_network.save()
+                    if network not in [i.network for i in models.Network.objects.all()]:
+                        create_network = models.Network.objects.create(
+                            network=network,
+                            data_rate=data_rate,
+                        )
 
-                        messages.warning(request, f'{network} has been added to networks')
+                        if create_network:
+                            create_network.save()
 
-                        return redirect('Home:site_settings')
+                            messages.warning(request, f'{network} has been added to networks')
+
+                            return redirect('Home:site_settings')
+                        else:
+                            messages.warning(request, f'{network} could not be added')
+
+                            return redirect('Home:site_settings')
                     else:
-                        messages.warning(request, f'{network} could not be added')
+                        messages.warning(request, f'{network} already exist !!!')
 
                         return redirect('Home:site_settings')
 

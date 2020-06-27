@@ -28,63 +28,63 @@
 
 {% block main_content %}
 	<div class="row">
-            <div class="col-lg-3 col-6">
-              <!-- small box -->
-              <div class="small-box bg-info">
-                  <div class="inner">
-                      <h3>{{all_codes_count}}</h3>
-                      <p>Codes</p>
-                  </div>
-                <div class="icon">
-                  <i class="ion fas fa-gifts"></i>
-                </div>
-                <a href="{% url 'Home:account_code' %}" class="small-box-footer">More info<i class="fas fa-arrow-circle-right"></i></a>
+        <div class="col-lg-3 col-6">
+          <!-- small box -->
+          <div class="small-box bg-info">
+              <div class="inner">
+                  <h3>{{all_codes_count}}</h3>
+                  <p>Codes</p>
               </div>
+            <div class="icon">
+              <i class="ion fas fa-gifts"></i>
             </div>
-            <!-- ./col -->
-            <div class="col-lg-3 col-6">
-              <!-- small box -->
-              <div class="small-box bg-success">
-                <div class="inner">
-                  <h3>&#8358; {{total_amount}}</h3>
-                  <p>Total Balance</p>
-                </div>
-                <div class="icon">
-                  <i class="ion fas fa-wallet"></i>
-                </div>
-                <a href="{% url 'Home:account_users_wallet' %}" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
-              </div>
-            </div>
-            <!-- ./col -->
-            <div class="col-lg-3 col-6">
-              <!-- small box -->
-              <div class="small-box bg-warning">
-                <div class="inner">
-                  <h3>{{all_customers}}</h3>
-                  <p>Customers</p>
-                </div>
-                <div class="icon">
-                  <i class="ion fas fa-user"></i>
-                </div>
-                <a href="{% url 'Home:account_users_list' 'customers' %}" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
-              </div>
-            </div>
-            <!-- ./col -->
-            <div class="col-lg-3 col-6">
-              <!-- small box -->
-              <div class="small-box bg-danger">
-                <div class="inner">
-                  <h3>{{all_agents}}</h3>
-                  <p>Agents</p>
-                </div>
-                <div class="icon">
-                  <i class="ion fas fa-user-tie"></i>
-                </div>
-                <a href="{% url 'Home:account_users_list' 'agents' %}" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
-              </div>
-            </div>
-            <!-- ./col -->
+            <a href="{% url 'Home:account_code' %}" class="small-box-footer">More info<i class="fas fa-arrow-circle-right"></i></a>
           </div>
+        </div>
+        <!-- ./col -->
+        <div class="col-lg-3 col-6">
+          <!-- small box -->
+          <div class="small-box bg-success">
+            <div class="inner">
+              <h3>&#8358; {{total_amount}}</h3>
+              <p>Total Balance</p>
+            </div>
+            <div class="icon">
+              <i class="ion fas fa-wallet"></i>
+            </div>
+            <a href="{% url 'Home:account_users_wallet' %}" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+          </div>
+        </div>
+        <!-- ./col -->
+        <div class="col-lg-3 col-6">
+          <!-- small box -->
+          <div class="small-box bg-warning">
+            <div class="inner">
+              <h3>{{all_customers}}</h3>
+              <p>Customers</p>
+            </div>
+            <div class="icon">
+              <i class="ion fas fa-user"></i>
+            </div>
+            <a href="{% url 'Home:account_users_list' 'customers' %}" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+          </div>
+        </div>
+        <!-- ./col -->
+        <div class="col-lg-3 col-6">
+          <!-- small box -->
+          <div class="small-box bg-danger">
+            <div class="inner">
+              <h3>{{all_agents}}</h3>
+              <p>Agents</p>
+            </div>
+            <div class="icon">
+              <i class="ion fas fa-user-tie"></i>
+            </div>
+            <a href="{% url 'Home:account_users_list' 'agents' %}" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+          </div>
+        </div>
+        <!-- ./col -->
+    </div>
 
 {% endblock %}
 
@@ -289,19 +289,28 @@
 							<h3 class="card-title">Networks</h3>
 						</div>
 						<div class="card-body">
-							<div class="input-group mb-3">
-								<div class="input-group-prepend">
-									<span class="input-group-text"><i class="fas fa-book"></i></span>
-								</div>
-								<input type="text" name="network" class="form-control" placeholder="Network">
-							</div>
-
-							<div class="input-group mb-3">
-								<div class="input-group-prepend">
-									<span class="input-group-text"><i class="fas fa-book"></i></span>
-								</div>
-								<input type="number" name="data_rate" class="form-control" placeholder="Data Rate">
-							</div>
+							<div class="table-responsive" style="height: 18rem;">
+                            <table class="table m-0">
+                                <thead>
+                                    <tr>
+                                    	<th>ID</th>
+                                    	<th>Network</th>
+                                    	<th>Data rate</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                	{% if all_networks %}
+                                		{% for network in all_networks %}
+                                			<tr>
+	                                			<td>{{forloop.counter}}</td>
+	                                			<td>{{network.network}}</td>
+	                                			<td>{{network.data_rate}}</td>
+	                                		</tr>
+                                		{% endfor %}
+                                	{% endif %}
+                                </tbody>
+                              </table>
+                          </div>
 						</div>
 					</div>
 				</div>
