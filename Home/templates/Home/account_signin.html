@@ -53,17 +53,20 @@
               </div>
             </div>
             <div class="card-body">
-              <p>
-                AMISA TECHNOLOGIES is a loyalty company that innovate services on how customers make purchases in order to increase the level of sales and Profit margin of a participating business outlets, providing a means of cashback solutions for both new and existing customers using AMISACARD(s).
-              </p>
-              <p>
-                Customers/clients can contact us for business deals, partnership, purchases, sponsorship, support, enquiry etc.
-              </p>
+              {{get_settings.about_us|safe}}
             </div>
             <div class="card-footer">
-              <p>Call      : +234 903 344 5157</p>
-              <p>WhatsApp  : +234 903 344 5157</p>
-              <p>E-Mail    : amisatechnologies@gmail.com</p>
+              <div class="row">
+                <div class="col-sm-4">
+                  <span class="fas fa-phone"></span><br>{{get_settings.call_contact}}
+                </div>
+                <div class="col-sm-4">
+                  <span class="fas fa-lock"></span><br>{{get_settings.whatsapp_contact}}
+                </div>
+                <div class="col-sm-4">
+                  <span class="fas fa-envelope"></span><br>{{get_settings.email_contact}}
+                </div>
+              </div>
               <p>Thanks for being part of AMISA community.</p>
             </div>
         </div>

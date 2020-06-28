@@ -96,6 +96,7 @@ def external_context():
         'code_groups': [i for i in reversed(list(models.CodeGroup.objects.all()))],
         'notice_notes': models.SiteSetting.objects.get(pk=1).services_note,
         'all_networks': models.Network.objects.all(),
+        'get_settings': models.SiteSetting.objects.get(pk=1),
     }
 
     return external_context
@@ -1682,6 +1683,7 @@ def faq(request):
             user_context = {
             }
             context = user_context
+            context = utils.dict_merge(external_context(), context)
 
             template_name = 'Home/faq.html'
 
