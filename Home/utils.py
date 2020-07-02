@@ -1,4 +1,5 @@
 from django.core.mail import send_mail
+from django.utils import timezone
 import string
 import random
 import datetime
@@ -157,3 +158,17 @@ def generate_url_scrambled(existing_url_scrambled):
 
 def generate_ver_code():
 	return random.randint(10000, 99999)
+
+
+def order_expiry(order_range=3):
+	date = str(datetime.datetime.now()).split(' ')[0].split('-')
+	time = str(datetime.datetime.now()).split(' ')[1].split(':')
+	current_year = int(date[0])
+	current_month = int(date[1])
+	current_day = int(date[2])
+	current_hour = int(time[0]) + order_range
+	current_minute = int(time[1])
+	current_seconds = int(time[2].split('.')[0])
+
+	# return datetime.datetime(current_year, current_month, current_day, current_hour, current_minute, current_seconds)
+	return current_year, current_month, current_day, current_hour, current_minute, current_seconds

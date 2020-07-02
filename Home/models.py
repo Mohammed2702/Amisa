@@ -3,8 +3,9 @@ from django.utils import timezone
 from django.contrib.auth.models import User
 from django.db.models.signals import *
 from django.dispatch import *
-
+import datetime
 from . import utils
+
 
 account_types = [
 	('Agent', 'Agent'),
@@ -141,7 +142,17 @@ class Order(models.Model):
 	recipient = models.CharField(max_length=15, default='08012345678')
 	description = models.CharField(max_length=100, blank=False, default='Order')
 	status = models.CharField(max_length=100, default='Pending')
-	date = models.DateTimeField(default=timezone.now)
+	date = models.DateTimeField(default=datetime.datetime.now)
+	expiry_date = models.DateTimeField(default=datetime.datetime(
+			utils.order_expiry()[0],
+			utils.order_expiry()[1],
+			utils.order_expiry()[2],
+			utils.order_expiry()[3],
+			utils.order_expiry()[4],
+			utils.order_expiry()[5],
+			int(str(datetime.datetime.now()).split(' ')[1].split(':')[-1].split('.')[0])
+		)
+	)
 
 	class Meta:
 		verbose_name = 'Order'

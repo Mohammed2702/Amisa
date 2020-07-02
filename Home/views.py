@@ -40,14 +40,24 @@ def checker():
     all_orders = models.Order.objects.all()
     for i in all_orders:
         order = models.Order.objects.get(pk=i.id)
-        time = str(order.date).split(' ')[1].split(':')
-
-        if int(time[0]) < int(curr_time[0]) + 3:
+        order_expiry_date = str(order.expiry_date).split(' ')
+        order_expiry_date = datetime.datetime(
+            int(order_expiry_date[0].split('-')[0]),
+            int(order_expiry_date[0].split('-')[1]),
+            int(order_expiry_date[0].split('-')[2]),
+            int(order_expiry_date[1].split(':')[0]),
+            int(order_expiry_date[1].split(':')[1]),
+            10
+            # int(order_expiry_date[1].split(':')[2])
+        )
+        if datetime.datetime.now() >= order_expiry_date:
             description = ' - Order was Declined.'
             if description not in order.description:
                 order.description += description
                 order.status = False
-                order.user.wallet.wallet_balance += order.amount
+                wallet = models.Wallet.objects.get(user=order.user)
+                wallet.wallet_balance += order.amount
+                wallet.save()
                 order.amount = 0
 
         order.save()
@@ -1167,9 +1177,7 @@ def account_user_data(request):
 def account_user_airtime(request):
     try:
         user_orders = [i for i in reversed(list(models.Order.objects.all()))]
-        user_orders_truncate = [i for i in reversed(
-            list(models.Order.objects.all()))][:5]
-
+        user_orders_truncate = [i for i in reversed(list(models.Order.objects.all()))][:5]
         template_name = 'Home/account_user_airtime.html'
         context = {
             'networks': [i.network for i in list(models.Network.objects.all())],
