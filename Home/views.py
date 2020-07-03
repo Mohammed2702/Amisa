@@ -36,6 +36,14 @@ def checker():
     curr_date = str(datetime.datetime.now()).split(' ')[0].split('-')
     curr_time = str(datetime.datetime.now()).split(' ')[1].split(':')
     curr_exp_date = datetime.date(int(curr_date[0]), int(curr_date[1]), int(curr_date[2]))
+    curr_order_date = datetime.datetime(
+        int(curr_date[0]),
+        int(curr_date[1]),
+        int(curr_date[2]),
+        int(curr_time[0]),
+        int(curr_time[1]),
+        10
+    )
 
     all_orders = models.Order.objects.all()
     for i in all_orders:
@@ -48,9 +56,9 @@ def checker():
             int(order_expiry_date[1].split(':')[0]),
             int(order_expiry_date[1].split(':')[1]),
             10
-            # int(order_expiry_date[1].split(':')[2])
         )
-        if datetime.datetime.now() >= order_expiry_date:
+        
+        if curr_order_date >= order_expiry_date:
             description = ' - Order was Declined.'
             if description not in order.description:
                 order.description += description
