@@ -147,11 +147,11 @@ all_chars = alphabets_lower + alphabets_upper + numbers
 
 
 def generate_url_scrambled(existing_url_scrambled):
-	url_scrambled = f'{random.choice(all_chars)}{random.choice(all_chars)}{random.choice(all_chars)}{random.choice(all_chars)}{random.choice(all_chars)}{random.choice(all_chars)}{random.choice(all_chars)}{random.choice(all_chars)}{random.choice(all_chars)}{random.choice(all_chars)}{random.choice(all_chars)}{random.choice(all_chars)}'
+	url_scrambled = f'{random.choice(all_chars)}{random.choice(all_chars)}{random.choice(all_chars)}{random.choice(all_chars)}{random.choice(all_chars)}{random.choice(all_chars)}{random.choice(all_chars)}{random.choice(all_chars)}{random.choice(all_chars)}{random.choice(all_chars)}{random.choice(all_chars)}{random.choice(all_chars)}{random.choice(all_chars)}{random.choice(all_chars)}{random.choice(all_chars)}'
 	while url_scrambled not in existing_url_scrambled:
 		break
 	else:
-		url_scrambled = f'{random.choice(all_chars)}{random.choice(all_chars)}{random.choice(all_chars)}{random.choice(all_chars)}{random.choice(all_chars)}{random.choice(all_chars)}{random.choice(all_chars)}{random.choice(all_chars)}{random.choice(all_chars)}{random.choice(all_chars)}{random.choice(all_chars)}{random.choice(all_chars)}'
+		url_scrambled = f'{random.choice(all_chars)}{random.choice(all_chars)}{random.choice(all_chars)}{random.choice(all_chars)}{random.choice(all_chars)}{random.choice(all_chars)}{random.choice(all_chars)}{random.choice(all_chars)}{random.choice(all_chars)}{random.choice(all_chars)}{random.choice(all_chars)}{random.choice(all_chars)}{random.choice(all_chars)}{random.choice(all_chars)}{random.choice(all_chars)}'
 
 	return url_scrambled
 
@@ -170,5 +170,23 @@ def order_expiry(order_range=3):
 	current_minute = int(time[1])
 	current_seconds = int(time[2].split('.')[0])
 
-	# return datetime.datetime(current_year, current_month, current_day, current_hour, current_minute, current_seconds)
+	if current_hour > 24:
+		current_day += 1
+
+	return current_year, current_month, current_day, current_hour, current_minute, current_seconds
+
+
+def password_expiry(order_range=5):
+	date = str(datetime.datetime.now()).split(' ')[0].split('-')
+	time = str(datetime.datetime.now()).split(' ')[1].split(':')
+	current_year = int(date[0])
+	current_month = int(date[1])
+	current_day = int(date[2])
+	current_hour = int(time[0])
+	current_minute = int(time[1]) + order_range
+	current_seconds = int(time[2].split('.')[0])
+
+	if current_minute > 59:
+		current_hour += 1
+
 	return current_year, current_month, current_day, current_hour, current_minute, current_seconds

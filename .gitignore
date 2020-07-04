@@ -1,7 +1,8 @@
 # Files
 db.sqlite3
+__pycache__
 Amisacb/__pycache__/
-./Home/__pycache__/
+Home/__pycache__/
 *.pyc
 
 # Byte-compiled / optimized / DLL files

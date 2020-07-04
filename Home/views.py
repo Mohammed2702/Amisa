@@ -57,7 +57,7 @@ def checker():
             int(order_expiry_date[1].split(':')[1]),
             10
         )
-        
+
         if curr_order_date >= order_expiry_date:
             description = ' - Order was Declined.'
             if description not in order.description:
@@ -91,13 +91,20 @@ def checker():
         code.save()
 
     all_resets = models.PasswordReset.objects.all()
-    expiry_time = 5
-    for i in all_resets:
-        hour = int(str(i.date).split(' ')[1].split(':')[0])
-        minute = int(str(i.date).split(' ')[1].split(':')[1])
 
-        if (minute + expiry_time) >= minute:
-            reset = models.PasswordReset.objects.get(pk=i.id)
+    for i in all_resets:
+        reset = models.PasswordReset.objects.get(pk=i.id)
+        reset_expiry_date = str(reset.expiry_date).split(' ')
+        reset_expiry_date = datetime.datetime(
+            int(reset_expiry_date[0].split('-')[0]),
+            int(reset_expiry_date[0].split('-')[1]),
+            int(reset_expiry_date[0].split('-')[2]),
+            int(reset_expiry_date[1].split(':')[0]),
+            int(reset_expiry_date[1].split(':')[1]),
+            10
+        )
+
+        if curr_order_date >= reset_expiry_date:
             reset.delete()
 
 
@@ -377,6 +384,7 @@ def account_forgot_password(request):
 
 
 def account_forgot_password_link(request, link):
+    from django.db import models as model
     try:
         checker()
 
@@ -424,6 +432,10 @@ def account_forgot_password_link(request, link):
         context = {}
 
         return render(request, template_name, context)
+    except model.DoesNotExist:
+        messages.info(request, 'Your link has expired. Request for another reset link.')
+        
+        return redirect('Home:account_forgot_password')
     except Exception as e:
         print('account_forgot_password_link', e)
 
