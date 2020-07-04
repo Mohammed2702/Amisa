@@ -1,6 +1,6 @@
 # Files
 db.sqlite3
-__pycache__
+__pycache__/
 Amisacb/__pycache__/
 Home/__pycache__/
 *.pyc
