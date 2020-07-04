@@ -3,6 +3,7 @@ from django.utils import timezone
 from django.contrib.auth.models import User
 from django.db.models.signals import *
 from django.dispatch import *
+from django.urls import reverse
 import datetime
 from . import utils
 
@@ -175,6 +176,9 @@ class Post(models.Model):
 	def __str__(self):
 		return self.title
 
+	def get_absolute_url(self):
+		return reverse('Home:post_details', args=[str(self.id)])
+
 
 class SiteSetting(models.Model):
 	site_setting = models.CharField(max_length=100, default='Setting_1', blank=True)
@@ -216,7 +220,18 @@ class PasswordReset(models.Model):
 	user = models.ForeignKey(User, on_delete=models.CASCADE)
 	link_slug = models.CharField(max_length=100, unique=True)
 	verification_code = models.CharField(max_length=6, unique=True)
-	date = models.DateTimeField(default=timezone.now)
+	date = models.DateTimeField(default=datetime.datetime.now)
+	expiry_date = models.DateTimeField(default=datetime.datetime(
+			utils.password_expiry()[0],
+			utils.password_expiry()[1],
+			utils.password_expiry()[2],
+			utils.password_expiry()[3],
+			utils.password_expiry()[4],
+			utils.password_expiry()[5],
+			int(str(datetime.datetime.now()).split(' ')[1].split(':')[-1].split('.')[0])
+		)
+	)
 
 	def __str__(self):
 		return self.user.username
+ 
