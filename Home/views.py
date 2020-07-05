@@ -80,7 +80,7 @@ def checker():
 
         code_date_ = str(code.expiry_date).split(' ')[0].split('-')
         code_exp_date = datetime.date(int(code_date_[0]), int(code_date_[1]), int(code_date_[2]))
-        if code_exp_date < curr_exp_date:
+        if code_exp_date <= curr_exp_date:
             if 'Expired' not in str(code.code).split('/'):
                 code.code = f'{code.code}/Expired'
             code.status = False
