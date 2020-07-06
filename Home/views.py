@@ -434,7 +434,7 @@ def account_forgot_password_link(request, link):
         return render(request, template_name, context)
     except model.DoesNotExist:
         messages.info(request, 'Your link has expired. Request for another reset link.')
-        
+
         return redirect('Home:account_forgot_password')
     except Exception as e:
         print('account_forgot_password_link', e)
@@ -1121,7 +1121,7 @@ def account_user_withdrawal(request):
                                 if order_mail:
                                     user_wallet.save()
                                     create_order.save()
-                                    
+
                                     messages.warning(request, f'''Your order has been placed, keep checking your notifications to track your order(s) :)''')
                                 else:
                                     create_order.delete()
@@ -1306,9 +1306,13 @@ def code_group_codes(request, group_id):
     try:
         if request.user.is_superuser:
             template_name = 'Home/code_group_codes.html'
+
+            group = models.CodeGroup.objects.get(pk=group_id)
+            code_group_children = list(models.Code.objects.all().filter(code_group=group))
+
             init_context = {
-                'group': list(models.CodeGroup.objects.get(pk=group_id)),
-                'code_group_children': list(models.Code.objects.all().get(code_group=models.CodeGroup.objects.get(pk=group_id))),
+                'group': group,
+                'code_group_children': code_group_children,
             }
             context = utils.dict_merge(external_context(), user_features(request.user.id))
             context = utils.dict_merge(init_context, context)
