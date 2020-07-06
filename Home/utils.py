@@ -1,5 +1,6 @@
 from django.core.mail import send_mail
 from django.utils import timezone
+from Amisacb import settings
 import string
 import random
 import datetime
@@ -110,6 +111,23 @@ def deliver_mail(title, body, recipient):
         return False
 
 
+def deliver_mail_order(title='Amisa order', body='Hey there, you got a test E-Mail', recipient=settings.ADMIN_EMAIL):
+    body = f'{body[i] for i in range(len(body))}'
+    
+    mail_delivery = send_mail(
+        title,
+        body,
+        recipient,
+        [recipient],
+        fail_silently=True
+    )
+    print(body)
+    if mail_delivery == 1:
+        return True
+    else:
+        return False
+
+
 def get_all_banks():
 	banks = ['Access Bank', 'First Bank', 'UBA', 'GT-Bank']
 	return banks
@@ -170,7 +188,8 @@ def order_expiry(order_range=3):
 	current_minute = int(time[1])
 	current_seconds = int(time[2].split('.')[0])
 
-	if current_hour > 24:
+	if current_hour > 23:
+		current_hour = 0
 		current_day += 1
 
 	return current_year, current_month, current_day, current_hour, current_minute, current_seconds
@@ -187,6 +206,7 @@ def password_expiry(order_range=5):
 	current_seconds = int(time[2].split('.')[0])
 
 	if current_minute > 59:
+		current_minute = 0
 		current_hour += 1
 
 	return current_year, current_month, current_day, current_hour, current_minute, current_seconds

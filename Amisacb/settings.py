@@ -124,6 +124,8 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/3.0/howto/static-files/
 LOGIN_REDIRECT_URL = 'Home:account_signin'
 
+ADMIN_EMAIL = 'amisachtechnologies@gmail.com'
+
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST_USER = 'amisatechnologies@gmail.com'
 EMAIL_HOST = 'smtp.gmail.com'
