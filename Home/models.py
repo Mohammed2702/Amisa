@@ -151,7 +151,7 @@ class Order(models.Model):
 			utils.order_expiry()[3],
 			utils.order_expiry()[4],
 			utils.order_expiry()[5],
-			int(str(datetime.datetime.now()).split(' ')[1].split(':')[-1].split('.')[0])
+			10
 		)
 	)
 
@@ -161,6 +161,9 @@ class Order(models.Model):
 
 	def __str__(self):
 		return self.user.username
+
+	def desc(self):
+		return self.user.get_full_name(), self.transaction, self.amount, self.recipient, self.description
 
 
 class Post(models.Model):
@@ -228,7 +231,7 @@ class PasswordReset(models.Model):
 			utils.password_expiry()[3],
 			utils.password_expiry()[4],
 			utils.password_expiry()[5],
-			int(str(datetime.datetime.now()).split(' ')[1].split(':')[-1].split('.')[0])
+			10
 		)
 	)
 

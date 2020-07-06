@@ -23,8 +23,8 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = 'v+yju=w%f4@9pe^acef#5_bdgq_=*n_x*t^z1t*6ly!2x)=nvc'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
-# DEBUG = False
+# DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = ['*']
 # www.amisacb.com
@@ -123,6 +123,8 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.0/howto/static-files/
 LOGIN_REDIRECT_URL = 'Home:account_signin'
+
+ADMIN_EMAIL = 'amisachtechnologies@gmail.com'
 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST_USER = 'amisatechnologies@gmail.com'

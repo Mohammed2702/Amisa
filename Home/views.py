@@ -80,7 +80,7 @@ def checker():
 
         code_date_ = str(code.expiry_date).split(' ')[0].split('-')
         code_exp_date = datetime.date(int(code_date_[0]), int(code_date_[1]), int(code_date_[2]))
-        if code_exp_date < curr_exp_date:
+        if code_exp_date <= curr_exp_date:
             if 'Expired' not in str(code.code).split('/'):
                 code.code = f'{code.code}/Expired'
             code.status = False
@@ -567,6 +567,12 @@ def account_profile(request):
                 )
 
                 print(f'E-Mail for {request.user.profile.reference_id} returned {email_success}')
+
+                if email_success:
+                    messages.info(request, 'Your profile is now up to date :)')
+                else:
+                    messages.info(request, 'Your profile could not be set, sorry ... :(')
+
                 return redirect('Home:account_profile')
             else:
                 profile_form = forms.ProfileForm(instance=request.user)
@@ -606,6 +612,12 @@ def account_profile(request):
                     )
 
                     print(f'E-Mail for {request.user.profile.reference_id} returned {email_success}')
+
+                    if email_success:
+                        messages.info(request, 'Your profile is now up to date :)')
+                    else:
+                        messages.info(request, 'Your profile could not be set, sorry ... :(')
+
                     return redirect('Home:account_profile')
                 else:
                     pass
@@ -1100,15 +1112,25 @@ def account_user_withdrawal(request):
                                 recipient=account_number,
                                 description=f'{account_name}/ {bank}'
                             )
-                            if create_order:
-                                user_wallet.save()
-                                create_order.save()
 
-                                messages.warning(request, f'''Your order has been placed, keep checkering your notifications to track your order(s)''')
+                            if create_order:
+                                order_mail = utils.deliver_mail_order(
+                                    title='',
+                                    body=create_order.desc()
+                                )
+                                if order_mail:
+                                    user_wallet.save()
+                                    create_order.save()
+                                    
+                                    messages.warning(request, f'''Your order has been placed, keep checking your notifications to track your order(s) :)''')
+                                else:
+                                    create_order.delete()
+
+                                    messages.warning(request, f'''Your order couldn't be placed at the moment :(''')
 
                                 return redirect('Home:account_user_withdrawal')
                             else:
-                                messages.warning(request, 'Sorry, your requets could not be processed at the moment')
+                                messages.warning(request, 'Sorry, your request could not be processed at the moment')
 
                                 return redirect('Home:account_user_withdrawal')
                         else:
@@ -1165,15 +1187,25 @@ def account_user_data(request):
                             recipient=user_phone,
                             description=f'Data/{network}'
                         )
-                        if create_order:
-                            user_wallet.save()
-                            create_order.save()
 
-                            messages.warning(request, f'''Your order has been placed, keep checkering your notifications to track your order(s)''')
+                        if create_order:
+                            order_mail = utils.deliver_mail_order(
+                                title='',
+                                body=create_order.desc()
+                            )
+                            if order_mail:
+                                user_wallet.save()
+                                create_order.save()
+
+                                messages.warning(request, f'''Your order has been placed, keep checking your notifications to track your order(s) :)''')
+                            else:
+                                create_order.delete()
+
+                                messages.warning(request, f'''Your order couldn't be placed at the moment :(''')
 
                             return redirect('Home:account_user_data')
                         else:
-                            messages.warning(request, 'Sorry, your requets could not be processed at the moment')
+                            messages.warning(request, 'Sorry, your request could not be processed at the moment')
 
                             return redirect('Home:account_user_data')
                     else:
@@ -1227,15 +1259,26 @@ def account_user_airtime(request):
                             recipient=user_phone,
                             description=f'Airtime/{network}'
                         )
-                        if create_order:
-                            user_wallet.save()
-                            create_order.save()
 
-                            messages.warning(request, f'''Your order has been placed, keep checking your notifications to track your order(s)''')
+                        if create_order:
+                            order_mail = utils.deliver_mail_order(
+                                title='',
+                                body=create_order.desc()
+                            )
+
+                            if order_mail:
+                                user_wallet.save()
+                                create_order.save()
+
+                                messages.warning(request, f'''Your order has been placed, keep checking your notifications to track your order(s) :)''')
+                            else:
+                                create_order.delete()
+
+                                messages.warning(request, f'''Your order couldn't be placed at the moment :(''')
 
                             return redirect('Home:account_user_airtime')
                         else:
-                            messages.warning(request, 'Sorry, your requets could not be processed at the moment')
+                            messages.warning(request, 'Sorry, your request could not be processed at the moment')
 
                             return redirect('Home:account_user_airtime')
                     else:
