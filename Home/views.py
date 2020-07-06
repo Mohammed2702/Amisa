@@ -1307,8 +1307,8 @@ def code_group_codes(request, group_id):
         if request.user.is_superuser:
             template_name = 'Home/code_group_codes.html'
             init_context = {
-                'group': models.CodeGroup.objects.get(pk=group_id),
-                'code_group_children': models.Code.objects.all().get(code_group=models.CodeGroup.objects.get(pk=group_id)),
+                'group': list(models.CodeGroup.objects.get(pk=group_id)),
+                'code_group_children': list(models.Code.objects.all().get(code_group=models.CodeGroup.objects.get(pk=group_id))),
             }
             context = utils.dict_merge(external_context(), user_features(request.user.id))
             context = utils.dict_merge(init_context, context)
