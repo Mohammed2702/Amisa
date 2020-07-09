@@ -123,10 +123,6 @@
 		                	</div>
 		                	<div class="form-group">
 			                  	<label>Quantity (MG - MegaByte)</label>
-			                  	<!-- {% if amount_error %}
-                          {% else %}
-                            <small>Not sufficient funds</small>
-                          {% endif %} -->
 			                  	<div class="input-group">
 				                    <div class="input-group-prepend">
 				                      <span class="input-group-text"><i class="fas fa-internet"></i></span>
@@ -193,8 +189,6 @@
                                         <div class="modal-body">
                                           {% if order.status == 'Pending' %}
                                             <p>Are you sure you want to approve this order?</p>
-                                          {% else %}
-                                            <p>Are you sure you want to decline this order?</p>
                                           {% endif %}
                                         </div>
                                         <div class="modal-footer justify-content-between">
@@ -222,8 +216,6 @@
                                     <td>
                                       {% if order.status == 'Pending' %}
                                         <button class="btn btn-primary btn-sm" data-toggle="modal" data-target="#confirmToggle">Approve</button>
-                                      {% else %}
-                                        <button class="btn btn-primary btn-sm" data-toggle="modal" data-target="#confirmToggle">Decline</button>
                                       {% endif %}
                                     </td>
                                   {% endif %}

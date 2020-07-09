@@ -185,8 +185,6 @@
 	                                        <div class="modal-body">
 	                                          {% if order.status == 'Pending' %}
 	                                            <p>Are you sure you want to approve this order?</p>
-	                                          {% else %}
-	                                            <p>Are you sure you want to decline this order?</p>
 	                                          {% endif %}
 	                                        </div>
 	                                        <div class="modal-footer justify-content-between">
@@ -214,8 +212,6 @@
 	                                    <td>
 	                                      {% if order.status == 'Pending' %}
 	                                        <button class="btn btn-primary btn-sm" data-toggle="modal" data-target="#confirmToggle">Approve</button>
-	                                      {% else %}
-	                                        <button class="btn btn-primary btn-sm" data-toggle="modal" data-target="#confirmToggle">Decline</button>
 	                                      {% endif %}
 	                                    </td>
 	                                  {% endif %}
