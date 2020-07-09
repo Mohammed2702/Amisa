@@ -214,7 +214,9 @@
                                           </td>
                                           <td>
                                             {% if order.status == 'Pending' %}
-                                              <a href="{% url 'Home:toggle_order' order.id %}"><button type="button" class="btn btn-primary btn-success">Approve</button></a>
+                                                <a href="{% url 'Home:toggle_order' order.id %}"><button type="button" class="btn btn-primary btn-success">Approve</button></a>
+                                            {% else %}
+                                                <button class="btn btn-primary btn-sm disabled">{{order.status}}</button>
                                             {% endif %}
                                           </td>
                                           <td>{{order.date}}</td>

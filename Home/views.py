@@ -62,11 +62,10 @@ def checker():
             description = ' - Order was Declined.'
             if description not in order.description:
                 order.description += description
-                order.status = False
+                order.status = 'Declined'
                 wallet = models.Wallet.objects.get(user=order.user)
                 wallet.wallet_balance += order.amount
                 wallet.save()
-                order.amount = 0
 
         order.save()
 
@@ -1551,6 +1550,24 @@ def post_edit(request, post_id):
         pass
     except Exception as e:
         print('post_edit', e)
+
+
+@login_required(login_url='Home:account_signin')
+def post_delete(request, post_id):
+    try:
+        if request.user.is_superuser:
+            post = models.Post.objects.get(pk=post_id)
+            post.delete()
+
+            messages.info(request, 'Post was successfully deleted :)')
+
+            return redirect('Home:posts')
+        else:
+            return render(request, 'Home/404Error.html')
+    except models.Post.DoesNotExist:
+        return render(request, 'Home/404Error.html')
+    except Exception as e:
+        print('post_delete', e)
 
 
 # Extras

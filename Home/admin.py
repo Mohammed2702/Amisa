@@ -6,9 +6,9 @@ from Amisacb import settings
 admin.site.register(models.Profile)
 admin.site.register(models.History)
 admin.site.register(models.Post)
-admin.site.register(models.Network)
 
 if settings.DEBUG:
+	admin.site.register(models.Network)
 	admin.site.register(models.Code)
 	admin.site.register(models.CodeGroup)
 	admin.site.register(models.Order)

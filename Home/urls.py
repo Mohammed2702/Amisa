@@ -49,7 +49,8 @@ urlpatterns = [
 	path('settings/', views.site_settings, name='site_settings'),
 	path('orders/', views.show_all_orders, name='show_all_orders'),
 	path('orders/<int:order_id>/toggle', views.toggle_order, name='toggle_order'),
-	path('post/', views.all_posts, name='posts'),
-	path('post/<int:post_id>/', views.post_detail, name='post_details'),
-	path('post/<int:post_id>/edit', views.post_edit, name='post_edit'),
+	path('posts/', views.all_posts, name='posts'),
+	path('posts/<int:post_id>/', views.post_detail, name='post_details'),
+	path('posts/<int:post_id>/edit', views.post_edit, name='post_edit'),
+	path('posts/<int:post_id>/delete', views.post_delete, name='post_delete'),
 ]
