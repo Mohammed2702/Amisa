@@ -1519,11 +1519,13 @@ def all_posts(request):
                     if create_post:
                         create_post.save()
 
-                        request.session['post_status'] = True
+                        messages.info(request, 'Post was successfully created.')
 
                         return redirect('Home:posts')
                     else:
-                        request.session['post_status'] = False
+                        messages.info(request, 'Post could not be created.')
+
+                        return redirect('Home:posts')
             else:
                 return render(request, 'Home/404Error.html')
         else:
@@ -1783,3 +1785,68 @@ def faq(request):
             return render(request, template_name, context)
     except Exception as e:
         print('card_issuance', e)
+
+
+@login_required(login_url='Home:account_signin')
+def resolution(request):
+    try:
+        user_context = {}
+        context = utils.dict_merge(
+            user_context,
+            user_features(request.user.id)
+        )
+
+        template_name = 'Home/resolution.html'
+
+        context = utils.dict_merge(external_context(), context)
+
+        if request.method == 'POST':
+            resolution_form = forms.ResolutionForm(request.POST)
+            context = utils.dict_merge(context, {'resolution_form': resolution_form})
+            if resolution_form.is_valid():
+                resolution_content = resolution_form.cleaned_data.get('resolution_content')
+
+                create_resolution = models.Resolution.objects.create(
+                    author=request.user,
+                    content=resolution_content,
+                )
+
+                if create_resolution:
+                    create_resolution.save()
+
+                    messages.info(request, 'Your request has been sent, we\'ll get back to you')
+
+                    return redirect('Home:resolution')
+                else:
+                    messages.info(request, 'Sorry, your request could not be processed, please try again')
+
+                    return redirect('Home:resolution')
+        else:
+            resolution_form = forms.ResolutionForm()
+            context = utils.dict_merge(context, {'resolution_form': resolution_form})
+
+        return render(request, template_name, context)
+    except Exception as e:
+        print('resolution', e)
+
+
+@login_required(login_url='Home:account_signin')
+def resolution_details(request, resolution_id):
+    try:
+        # resolution = models.Resolution.objects.get(pk=id)
+
+        user_context = {
+            'resolution': resolution
+        }
+        context = utils.dict_merge(
+            user_context,
+            user_features(request.user.id)
+        )
+
+        template_name = 'Home/resolution_details.html'
+
+        context = utils.dict_merge(external_context(), context)
+
+        return render(request, template_name, context)
+    except Exception as e:
+        print('resolution_details', e)

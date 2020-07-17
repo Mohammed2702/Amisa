@@ -212,6 +212,15 @@
                 </a>
               </li>
 
+              <li class="nav-item">
+                <a href="{% url 'Home:resolution' %}" class="nav-link">
+                  <i class="nav-icon fas fa-question"></i>
+                  <p>
+                    Resolution
+                  </p>
+                </a>
+              </li>
+
               {% if user.is_superuser %}
                 <li class="nav-item">
                   <a href="{% url 'Home:site_settings' %}" class="nav-link">

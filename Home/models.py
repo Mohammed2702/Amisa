@@ -237,4 +237,16 @@ class PasswordReset(models.Model):
 
 	def __str__(self):
 		return self.user.username
- 
+
+
+class Resolution(models.Model):
+	author = models.ForeignKey(User, on_delete=models.CASCADE)
+	content = models.TextField(blank=False)
+	date = models.DateTimeField(default=timezone.now)
+
+	def __str__(self):
+		return self.author.username
+
+	class Meta:
+		verbose_name = 'Resolution'
+		verbose_name_plural = 'Resolutions'

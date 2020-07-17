@@ -95,3 +95,7 @@ class VerificationForm(forms.Form):
 	email = forms.CharField(required=True)
 	new_password = forms.CharField(required=True)
 	confirm_password = forms.CharField(required=True)
+
+
+class ResolutionForm(forms.Form):
+	resolution_content = forms.CharField(required=True)

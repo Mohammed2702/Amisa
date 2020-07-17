@@ -53,4 +53,6 @@ urlpatterns = [
 	path('posts/<int:post_id>/', views.post_detail, name='post_details'),
 	path('posts/<int:post_id>/edit', views.post_edit, name='post_edit'),
 	path('posts/<int:post_id>/delete', views.post_delete, name='post_delete'),
+	path('resolution/', views.resolution, name='resolution'),
+	path('resolution/<int:resolution_id>/', views.resolution_details, name='resolution_details'),
 ]
