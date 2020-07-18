@@ -632,7 +632,7 @@ def account_profile(request):
 
                 authenticate_user = authenticate(username=request.user.username, password=old_password)
 
-                if new_password == old_password:
+                if new_password == confirm_password:
                     if authenticate_user:
                         user.set_password(new_password)
                         title = 'Password Reset'
