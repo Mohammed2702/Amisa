@@ -527,10 +527,9 @@ def account_profile(request):
         user_update_form = forms.UserUpdateForm(instance=request.user)
 
         if request.method == 'POST':
-            profile_form = forms.ProfileForm(
-                request.POST, instance=request.user.profile)
-            user_update_form = forms.UserUpdateForm(
-                request.POST, instance=request.user)
+            profile_form = forms.ProfileForm(request.POST, instance=request.user.profile)
+            user_update_form = forms.UserUpdateForm(request.POST, instance=request.user)
+            password_reset_form = forms.PasswordResetForm(request.POST)
 
             if profile_form.is_valid():
                 profile_form.save()
@@ -623,9 +622,59 @@ def account_profile(request):
             else:
                 user_update_form = forms.UserUpdateForm(instance=request.user)
 
-        context = utils.dict_merge(user_details, {
-            'profile_form': profile_form,
-            'user_update_form': user_update_form, }
+            if password_reset_form.is_valid():
+                user = User.objects.get(user=request.user)
+
+                old_password = user_update_form.cleaned_data.get('old_password')
+                new_password = request.POST.get('new_password')
+                confirm_password = request.POST.get('confirm_password')
+
+                authenticate_user = authenticate(username=request.user.username, password=old_password)
+
+                if new_password == old_password:
+                    if authenticate_user:
+                        user.set_password(new_password)
+                        title = 'Password Reset'
+                        body = open(f'{message_dir}/change_in_login_details.txt', 'r').read().format(
+                            request.user.first_name,
+                            request.user.get_full_name(),
+                            request.user.username,
+                            request.user.email,
+                            request.user.profile.account_type,
+                            request.user.profile.reference_id
+                        )
+                        recipient = request.user.email
+
+                        email_success = utils.deliver_mail(
+                            title=title,
+                            body=body,
+                            recipient=recipient
+                        )
+
+                        print(f'E-Mail for {request.user.profile.reference_id} returned {email_success}')
+
+                        if email_success:
+                            messages.info(request, 'Password reset Successfull :)')
+
+                            user.save()
+                        else:
+                            messages.info(request, 'Password reset could not be done :(')
+                    else:
+                        messages.info(request, 'Incorrect password, try again')
+                else:
+                    messages.info(request, 'Password mismatch')
+
+                return redirect('Home:account_profile')
+            else:
+                password_reset_form = forms.ProfileForm(instance=request.user)
+
+        context = utils.dict_merge(
+            user_details,
+            {
+                'profile_form': profile_form,
+                'user_update_form': user_update_form,
+                'password_reset_form': password_reset_form
+            }
         )
         context = utils.dict_merge(external_context(), context)
 
