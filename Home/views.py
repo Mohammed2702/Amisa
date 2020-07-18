@@ -624,7 +624,7 @@ def account_profile(request):
                 user_update_form = forms.UserUpdateForm(instance=request.user)
 
             if password_reset_form.is_valid():
-                user = User.objects.get(user=request.user)
+                user = User.objects.get(pk=request.user.id)
 
                 old_password = password_reset_form.cleaned_data.get('old_password')
                 new_password = password_reset_form.cleaned_data.get('new_password')
