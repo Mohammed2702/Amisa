@@ -525,6 +525,7 @@ def account_profile(request):
 
         profile_form = forms.ProfileForm(instance=request.user.profile)
         user_update_form = forms.UserUpdateForm(instance=request.user)
+        password_reset_form = forms.PasswordResetForm(request.POST)
 
         if request.method == 'POST':
             profile_form = forms.ProfileForm(request.POST, instance=request.user.profile)
@@ -625,9 +626,9 @@ def account_profile(request):
             if password_reset_form.is_valid():
                 user = User.objects.get(user=request.user)
 
-                old_password = user_update_form.cleaned_data.get('old_password')
-                new_password = request.POST.get('new_password')
-                confirm_password = request.POST.get('confirm_password')
+                old_password = password_reset_form.cleaned_data.get('old_password')
+                new_password = password_reset_form.cleaned_data.get('new_password')
+                confirm_password = password_reset_form.cleaned_data.get('confirm_password')
 
                 authenticate_user = authenticate(username=request.user.username, password=old_password)
 
