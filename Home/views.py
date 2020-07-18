@@ -667,8 +667,7 @@ def account_code(request):
                             code_amount = user_code.amount
                             description = 'Code Redemption'
                             if user_code.status:
-                                user_wallet = models.Wallet.objects.get(
-                                    user=request.user)
+                                user_wallet = models.Wallet.objects.get(user=request.user)
                                 user_balance = user_wallet.wallet_balance
                                 code_recharge = code_amount - (rate * code_amount)
                                 user_wallet.wallet_balance += code_recharge
@@ -685,7 +684,8 @@ def account_code(request):
                                 # No Error from here
                                 log_history.save()
 
-                                user_code.delete()
+                                user_code.status = False
+                                user_code.save()
 
                                 messages.info(request, f'{code_redeem} has been redeemed successfully, your new Wallet Balance is {request.user.wallet.wallet_balance}')
 
@@ -1434,48 +1434,66 @@ def toggle_order(request, order_id):
         if request.user.is_superuser:
             order = models.Order.objects.get(pk=order_id)
 
-            if order.status == 'Pending':
-                order.status = 'Approved'
-                order_message = open(f'{message_dir}/accept_order.txt', 'r').read().format(
-                    request.user.get_full_name,
-                    request.user.profile.reference_id,
-                    order.description
-                )
+            order.status = 'Approved'
+            order_message = open(f'{message_dir}/accept_order.txt', 'r').read().format(
+                request.user.get_full_name,
+                request.user.profile.reference_id,
+                order.description
+            )
 
-                title = 'Order Approved'
-                body = order_message
-                recipient = request.user.email
+            title = 'Order Approved'
+            body = order_message
+            recipient = request.user.email
 
-                email_success = utils.deliver_mail(
-                    title=title,
-                    body=body,
-                    recipient=recipient
-                )
-                print(f'E-Mail send returns {email_success} for {request.user.email}')
-            else:
-                pass
-                # order.status = 'Declined'
-                # order_user_wallet = models.Wallet.objects.get(user=order.user)
+            email_success = utils.deliver_mail(
+                title=title,
+                body=body,
+                recipient=recipient
+            )
+            
+            print(f'E-Mail send returns {email_success} for {request.user.email}')
 
-                # order_user_wallet.wallet_balance += order.amount
-                # order_user_wallet.save()
+            # if order.status == 'Pending':
+            #     order.status = 'Approved'
+            #     order_message = open(f'{message_dir}/accept_order.txt', 'r').read().format(
+            #         request.user.get_full_name,
+            #         request.user.profile.reference_id,
+            #         order.description
+            #     )
 
-                # order_message = open(f'{message_dir}/decline_order.txt', 'r').read().format(
-                #     request.user.get_full_name,
-                #     request.user.profile.reference_id,
-                #     order.description
-                # )
+            #     title = 'Order Approved'
+            #     body = order_message
+            #     recipient = request.user.email
 
-                # title = 'Order Declined'
-                # body = order_message
-                # recipient = request.user.email
+            #     email_success = utils.deliver_mail(
+            #         title=title,
+            #         body=body,
+            #         recipient=recipient
+            #     )
+            #     print(f'E-Mail send returns {email_success} for {request.user.email}')
+            # else:
+            #     order.status = 'Declined'
+            #     order_user_wallet = models.Wallet.objects.get(user=order.user)
 
-                # email_success = utils.deliver_mail(
-                #     title=title,
-                #     body=body,
-                #     recipient=recipient
-                # )
-                # print(f'E-Mail send returns {email_success} for {request.user.email}')
+            #     order_user_wallet.wallet_balance += order.amount
+            #     order_user_wallet.save()
+
+            #     order_message = open(f'{message_dir}/decline_order.txt', 'r').read().format(
+            #         request.user.get_full_name,
+            #         request.user.profile.reference_id,
+            #         order.description
+            #     )
+
+            #     title = 'Order Declined'
+            #     body = order_message
+            #     recipient = request.user.email
+
+            #     email_success = utils.deliver_mail(
+            #         title=title,
+            #         body=body,
+            #         recipient=recipient
+            #     )
+            #     print(f'E-Mail send returns {email_success} for {request.user.email}')
             if order:
                 order.save()
 
