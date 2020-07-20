@@ -87,6 +87,9 @@ def checker():
             if 'Expired' in str(code.code).split('/'):
                 code.code = f'{code.code}'.replace('/Expired', '')
             code.status = True
+
+        if 'Used' in str(code.code).split('/'):
+            code.status = False
         code.save()
 
     all_resets = models.PasswordReset.objects.all()
@@ -655,11 +658,10 @@ def account_profile(request):
                         print(f'E-Mail for {request.user.profile.reference_id} returned {email_success}')
 
                         if email_success:
-                            messages.info(request, 'Password reset Successfull :)')
-
-                            user.save()
+                            messages.info(request, 'Password reset Successfull, check your E-Mail for verfication')
                         else:
-                            messages.info(request, 'Password reset could not be done :(')
+                            messages.info(request, 'Password reset could not be done, E-Mail could not be sent :(')
+                        user.save()
                     else:
                         messages.info(request, 'Incorrect password, try again')
                 else:
@@ -731,13 +733,19 @@ def account_code(request):
                                     status=True
                                 )
 
-                                # No Error from here
                                 log_history.save()
 
+                                user_code += '/Used'
                                 user_code.status = False
+
                                 user_code.save()
 
-                                messages.info(request, f'{code_redeem} has been redeemed successfully, your new Wallet Balance is {request.user.wallet.wallet_balance}')
+                                messages.info(
+                                    request,
+                                    f'{code_redeem} has been redeemed\
+                                    successfully, your new Wallet Balance is\
+                                     {request.user.wallet.wallet_balance}'
+                                    )
 
                                 return redirect('Home:account_code')
                             else:
@@ -755,8 +763,7 @@ def account_code(request):
             else:
                 code_redeem_form = forms.CodeRedeemForm()
 
-            context = utils.dict_merge(
-                context, {'code_redeem_form': code_redeem_form})
+            context = utils.dict_merge(context, {'code_redeem_form': code_redeem_form})
             context = utils.dict_merge(external_context(), context)
             context = utils.dict_merge(context, user_features(request.user.id))
 
@@ -985,134 +992,138 @@ def account_code_request(request):
 # Code Redemption
 
 
-@login_required(login_url='Home:account_signin')
-def account_code_redeem(request, code_id):
-    try:
-        if request.user.profile.account_type == 'User':
-            rate = models.SiteSetting.objects.get(pk=1).agent_rate
-        else:
-            rate = models.SiteSetting.objects.get(pk=1).customer_rate
+# @login_required(login_url='Home:account_signin')
+# def account_code_redeem(request, code_id):
+#     try:
+#         if request.user.profile.account_type == 'User':
+#             rate = models.SiteSetting.objects.get(pk=1).agent_rate
+#         else:
+#             rate = models.SiteSetting.objects.get(pk=1).customer_rate
 
-        rate /= 100
+#         rate /= 100
 
-        description = 'Code Redemption'
-        if request.user.is_active:
-            if request.user.is_superuser:
+#         description = 'Code Redemption'
+#         if request.user.is_active:
+#             if request.user.is_superuser:
 
-                return redirect('Home:account_code')
-            else:
-                code = models.Code.objects.get(pk=code_id)
-                user_wallet = models.Wallet.objects.get(user=request.user)
+#                 return redirect('Home:account_code')
+#             else:
+#                 code = models.Code.objects.get(pk=code_id)
+#                 user_wallet = models.Wallet.objects.get(user=request.user)
 
-                if request.user.id == code_slip.user.id:
-                    if code.status:
-                        code_amount = code.amount * rate
-                        user_wallet.wallet_balance += code_amount
-                        user_wallet.save()
+#                 if request.user.id == code_slip.user.id:
+#                     if code.status:
+#                         code_amount = code.amount * rate
+#                         user_wallet.wallet_balance += code_amount
+#                         user_wallet.save()
 
-                        log_history = models.History.objects.create(
-                            user=user,
-                            description=description,
-                            amount=code.amount,
-                            charges=rate,
-                            status=True
-                        )
+#                         log_history = models.History.objects.create(
+#                             user=user,
+#                             description=description,
+#                             amount=code.amount,
+#                             charges=rate,
+#                             status=True
+#                         )
 
-                        log_history.save()
+#                         log_history.save()
 
-                        code.delete()
+#                         code.status = True
+#                         code.code += '/Used'
 
-                        return redirect('Home:home')
-                    else:
-                        return redirect('Home:account_code')
+#                        return redirect('Home:home')
+#                    else:
+#                        return redirect('Home:account_code')
 
-                    log_history.save()
+#                     code.save()
 
-                    code.delete()
+#                     return redirect('Home:home')
+#                 else:
+#                     logout(request)
 
-                    return redirect('Home:home')
-                else:
-                    logout(request)
+#                     return redirect('Home:account_signin')
+#         else:
+#             template_name = 'Home/404Error.html'
+#             context = {}
 
-                    return redirect('Home:account_signin')
-        else:
-            template_name = 'Home/404Error.html'
-            context = {}
+#             context = utils.dict_merge(external_context(), context)
 
-            context = utils.dict_merge(external_context(), context)
-
-            return render(request, template_name, context)
-    except Exception as e:
-        print('account_code_redeem', e)
+#             return render(request, template_name, context)
+#     except Exception as e:
+#         print('account_code_redeem', e)
 
 
-@login_required(login_url='Home:account_signin')
-def account_code_redeem_code(request, code):
-    try:
-        user_rate = 15
-        agent_rate = 20
-        description = 'Code Redemption'
-        if request.user.is_active:
-            if request.user.is_superuser:
+# @login_required(login_url='Home:account_signin')
+# def account_code_redeem_code(request, code):
+#     try:
+#         user_rate = 15
+#         agent_rate = 20
+#         description = 'Code Redemption'
+#         if request.user.is_active:
+#             if request.user.is_superuser:
 
-                return redirect('Home:account_code')
-            else:
-                code = models.Code.objects.get(code=code)
-                user_wallet = models.Wallet.objects.get(user=request.user)
+#                 return redirect('Home:account_code')
+#             else:
+#                 code = models.Code.objects.get(code=code)
+#                 user_wallet = models.Wallet.objects.get(user=request.user)
 
-                if request.user.id == code_slip.user.id:
-                    if models.Profile.objects.get(pk=request.user.id).account_type == 'Agent':
-                        if code.status:
-                            code_amount = code.amount * (agent_rate / 100)
-                            user_wallet.wallet_balance += code_amount
-                            user_wallet.save()
+#                 if request.user.id == code_slip.user.id:
+#                     if models.Profile.objects.get(pk=request.user.id).account_type == 'Agent':
+#                         if code.status:
+#                             code_amount = code.amount * (agent_rate / 100)
+#                             user_wallet.wallet_balance += code_amount
+#                             user_wallet.save()
 
-                            log_history = models.History.objects.create(
-                                user=user,
-                                description=description,
-                                amount=code.amount,
-                                charges=agent_rate,
-                                status=True
-                            )
+#                             log_history = models.History.objects.create(
+#                                 user=user,
+#                                 description=description,
+#                                 amount=code.amount,
+#                                 charges=agent_rate,
+#                                 status=True
+#                             )
 
-                            log_history.save()
+#                             log_history.save()
 
-                            code.delete()
+#                             code += '/Used'
+#                             code.status = False
 
-                            return redirect('Home:home')
-                        else:
-                            return redirect('Home:account_code')
-                    elif models.Profile.objects.get(pk=request.user.id).account_type == 'User':
-                        code_amount = code.amount * (user_rate / 100)
-                        user_wallet.wallet_balance += code_amount
-                        user_wallet.save()
+#                             code.save()
 
-                        log_history = models.History.objects.create(
-                            user=request.user,
-                            description=description,
-                            amount=code.amount,
-                            charges=user_rate,
-                            status=True
-                        )
+#                             return redirect('Home:home')
+#                         else:
+#                             return redirect('Home:account_code')
+#                     elif models.Profile.objects.get(pk=request.user.id).account_type == 'User':
+#                         code_amount = code.amount * (user_rate / 100)
+#                         user_wallet.wallet_balance += code_amount
+#                         user_wallet.save()
 
-                        log_history.save()
+#                         log_history = models.History.objects.create(
+#                             user=request.user,
+#                             description=description,
+#                             amount=code.amount,
+#                             charges=user_rate,
+#                             status=True
+#                         )
+#                         log_history.save()
 
-                        code.delete()
+#                         code += '/Used'
+#                         code.status = False
 
-                        return redirect('Home:home')
-                else:
-                    logout(request)
+#                         code.save()
 
-                    return redirect('Home:account_signin')
-        else:
-            template_name = 'Home/404Error.html'
-            context = {}
+#                         return redirect('Home:home')
+#                 else:
+#                     logout(request)
 
-            context = utils.dict_merge(external_context(), context)
+#                     return redirect('Home:account_signin')
+#         else:
+#             template_name = 'Home/404Error.html'
+#             context = {}
 
-            return render(request, template_name, context)
-    except Exception as e:
-        print('account_code_redeem_code')
+#             context = utils.dict_merge(external_context(), context)
+
+#             return render(request, template_name, context)
+#     except Exception as e:
+#         print('account_code_redeem_code')
 
 
 # Services

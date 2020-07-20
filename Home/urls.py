@@ -21,8 +21,8 @@ urlpatterns = [
 	path('users/<str:user_type>/', views.account_users_list, name='account_users_list'),
 
 	# Code Redemption
-	path('code/<int:code_id>/redeeem/', views.account_code_redeem, name='account_code_redeem'),
-	path('code/<str:code>/redeeem_code/', views.account_code_redeem_code, name='account_code_redeem_code'),
+	# path('code/<int:code_id>/redeeem/', views.account_code_redeem, name='account_code_redeem'),
+	# path('code/<str:code>/redeeem_code/', views.account_code_redeem_code, name='account_code_redeem_code'),
 
 	# Code
 	path('code/', views.account_code, name='account_code'),
