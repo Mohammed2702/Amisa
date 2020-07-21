@@ -89,7 +89,9 @@ def checker():
             code.status = True
 
         if 'Used' in str(code.code).split('/'):
+            code.code = f'{code.code}'
             code.status = False
+
         code.save()
 
     all_resets = models.PasswordReset.objects.all()
@@ -124,6 +126,7 @@ def external_context():
         'notice_notes': models.SiteSetting.objects.get(pk=1).services_note,
         'all_networks': models.Network.objects.all(),
         'get_settings': models.SiteSetting.objects.get(pk=1),
+        'resolutions': models.Resolution.objects.all(),
     }
 
     return external_context
@@ -714,13 +717,12 @@ def account_code(request):
 
                     try:
                         user_code = models.Code.objects.get(code=code_redeem)
-
+                        print(f'Code {code_redeem} {user_code.code} {user_code.status}')
                         if user_code.code_group.status:
                             code_amount = user_code.amount
                             description = 'Code Redemption'
                             if user_code.status:
                                 user_wallet = models.Wallet.objects.get(user=request.user)
-                                user_balance = user_wallet.wallet_balance
                                 code_recharge = code_amount - (rate * code_amount)
                                 user_wallet.wallet_balance += code_recharge
                                 user_wallet.save()
@@ -735,7 +737,7 @@ def account_code(request):
 
                                 log_history.save()
 
-                                user_code += '/Used'
+                                user_code.code += '/Used'
                                 user_code.status = False
 
                                 user_code.save()
@@ -756,10 +758,12 @@ def account_code(request):
                             messages.info(request, f'{code_redeem} has been disabled')
 
                             return redirect('Home:account_code')
-                    except Exception as e:
+                    except models.Code.DoesNotExist:
                         messages.info(request, f'{code_redeem} does not exist')
 
                         return redirect('Home:account_code')
+                    except Exception as e:
+                        print(f'account_code {e}')
             else:
                 code_redeem_form = forms.CodeRedeemForm()
 
@@ -990,7 +994,6 @@ def account_code_request(request):
 
 
 # Services
-
 
 @login_required(login_url='Home:account_signin')
 def account_user_withdrawal(request):
@@ -1742,8 +1745,13 @@ def resolution(request):
 
         context = utils.dict_merge(external_context(), context)
 
+        resolution_form = forms.ResolutionForm(request.POST)
+        reply_form = forms.ReplyForm(request.POST)
+            
         if request.method == 'POST':
             resolution_form = forms.ResolutionForm(request.POST)
+            reply_form = forms.ReplyForm(request.POST)
+
             context = utils.dict_merge(context, {'resolution_form': resolution_form})
             if resolution_form.is_valid():
                 resolution_content = resolution_form.cleaned_data.get('resolution_content')
@@ -1763,9 +1771,35 @@ def resolution(request):
                     messages.info(request, 'Sorry, your request could not be processed, please try again')
 
                     return redirect('Home:resolution')
+
+            if reply_form.is_valid():
+                reply_content = reply_form.cleaned_data.get('reply_content')
+                post_id = reply_form.cleaned_data.get('post')
+                create_reply = models.Reply.objects.create(
+                    author=request.user,
+                    post=models.Resolution.objects.get(pk=post_id),
+                    content=reply_content,
+                )
+
+                if create_reply:
+                    create_reply.save()
+
+                    messages.info(request, 'Your reply has been sent :)')
+
+                    return redirect('Home:resolution')
+                else:
+                    messages.info(request, 'Sorry, your request could not be processed, please try again')
+
+                    return redirect('Home:resolution')
         else:
             resolution_form = forms.ResolutionForm()
-            context = utils.dict_merge(context, {'resolution_form': resolution_form})
+            context = utils.dict_merge(
+                context,
+                {
+                    'resolution_form': resolution_form,
+                    'reply_form': reply_form
+                }
+            )
 
         return render(request, template_name, context)
     except Exception as e:
@@ -1775,7 +1809,7 @@ def resolution(request):
 @login_required(login_url='Home:account_signin')
 def resolution_details(request, resolution_id):
     try:
-        # resolution = models.Resolution.objects.get(pk=id)
+        resolution = models.Resolution.objects.get(pk=id)
 
         user_context = {
             'resolution': resolution

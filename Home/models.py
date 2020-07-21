@@ -250,3 +250,13 @@ class Resolution(models.Model):
 	class Meta:
 		verbose_name = 'Resolution'
 		verbose_name_plural = 'Resolutions'
+
+
+class Reply(models.Model):
+	author = models.ForeignKey(User, on_delete=models.CASCADE)
+	post = models.ForeignKey(Resolution, on_delete=models.CASCADE)
+	content = models.TextField(blank=False)
+	date = models.DateTimeField(default=timezone.now)
+
+	def __str__(self):
+		return self.post.author + ' ' + self.content
