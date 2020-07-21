@@ -1752,7 +1752,10 @@ def resolution(request):
             resolution_form = forms.ResolutionForm(request.POST)
             reply_form = forms.ReplyForm(request.POST)
 
-            context = utils.dict_merge(context, {'resolution_form': resolution_form})
+            context = utils.dict_merge(context, {
+                'resolution_form': resolution_form,
+                'reply_form': reply_form
+                })
             if resolution_form.is_valid():
                 resolution_content = resolution_form.cleaned_data.get('resolution_content')
 
@@ -1793,6 +1796,8 @@ def resolution(request):
                     return redirect('Home:resolution')
         else:
             resolution_form = forms.ResolutionForm()
+            reply_form = forms.ReplyForm()
+
             context = utils.dict_merge(
                 context,
                 {
