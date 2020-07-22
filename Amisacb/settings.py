@@ -125,6 +125,7 @@ USE_TZ = True
 LOGIN_REDIRECT_URL = 'Home:account_signin'
 
 ADMIN_EMAIL = 'amisatechnologies@gmail.com'
+# ADMIN_EMAIL = 'ameenmohammed2311@gmail.com'
 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST_USER = 'amisatechnologies@gmail.com'

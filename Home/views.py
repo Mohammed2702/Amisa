@@ -1031,18 +1031,19 @@ def account_user_withdrawal(request):
 
                             request.session['amount_error'] = False
 
+                            description = f'{account_name}/ {bank}'
                             create_order = models.Order.objects.create(
                                 user=request.user,
                                 transaction='Withdrawal request',
                                 amount=amount,
                                 recipient=account_number,
-                                description=f'{account_name}/ {bank}'
+                                description=description
                             )
 
                             if create_order:
                                 order_mail = utils.deliver_mail_order(
                                     title='',
-                                    body=create_order.desc()
+                                    body=description
                                 )
 
                                 if order_mail:
@@ -1107,18 +1108,19 @@ def account_user_data(request):
                         user_wallet = models.Wallet.objects.get(user=request.user)
                         user_wallet.wallet_balance -= amount
 
+                        description = f'Data/{network}'
                         create_order = models.Order.objects.create(
                             user=request.user,
                             transaction='Data purchase request',
                             amount=amount,
                             recipient=user_phone,
-                            description=f'Data/{network}'
+                            description=description
                         )
 
                         if create_order:
                             order_mail = utils.deliver_mail_order(
                                 title='',
-                                body=create_order.desc()
+                                body=description
                             )
                             if order_mail:
                                 user_wallet.save()
@@ -1179,12 +1181,13 @@ def account_user_airtime(request):
                         user_wallet = models.Wallet.objects.get(user=request.user)
                         user_wallet.wallet_balance -= amount
 
+                        description = f'Airtime/{network}'
                         create_order = models.Order.objects.create(
                             user=request.user,
                             transaction='Airtime purchase request',
                             amount=amount,
                             recipient=user_phone,
-                            description=f'Airtime/{network}'
+                            description=description
                         )
 
                         if create_order:
