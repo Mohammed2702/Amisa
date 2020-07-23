@@ -23,11 +23,11 @@ handler500 = 'Home.views.custom_500'
 urlpatterns = [
     path('sitemap.xml', sitemap, {'sitemaps': sitemaps}),
     path('', include('Home.urls')),
-    path('admin/', admin.site.urls),
 ]
 
 if settings.DEBUG:
     urlpatterns += [
+        path('ADM-admin/', admin.site.urls),
         url(r'^static_files/(?P<path>.*)$', serve,{'document_root': settings.STATIC_ROOT}),
     ]
 else:
