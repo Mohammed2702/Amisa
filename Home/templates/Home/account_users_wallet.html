@@ -2,9 +2,13 @@
 
 {% load static %}
 
+{% block extras_styles %}
+    <link rel="stylesheet" href="{% static 'plugins/datatables-bs4/css/dataTables.bootstrap4.min.css' %}">
+    <link rel="stylesheet" href="{% static 'plugins/datatables-responsive/css/responsive.bootstrap4.min.css' %}">
+{% endblock %}
 
 {% block title %}
-  {% if user.is_superuser %}
+  {% if user.is_staff %}
     <title>Users</title>
   {% else %}
     <title>User</title>
@@ -13,7 +17,7 @@
 
 
 {% block page_header %}
-  {% if user.is_superuser %}
+  {% if user.is_staff %}
     <div class="content-wrapper">
       <!-- Content Header (Page header) -->
       <div class="content-header">
@@ -55,7 +59,7 @@
 
 {% block content %}
   <div class="container">
-    {% if user.is_superuser %}
+    {% if user.is_staff %}
       <div class="row">
         <div class="col-md">
           <div class="card callout callout-info">
@@ -65,9 +69,11 @@
                 Users
               </h3>
             </div>
-            <div class="card-body table-responsive p-0" style="height: 21rem;">
-              <table class="table table-head-fixed text-nowrap">
-                <thead>
+            <div class="card">
+              <!-- /.card-header -->
+              <div class="card-body">
+                <table id="example1" class="table table-bordered table-striped">
+                  <thead>
                   <tr>
                     <th>s/n</th>
                     <th>Referrence ID</th>
@@ -75,35 +81,44 @@
                     <th>Username</th>
                     <th>E-Mail</th>
                     <th>Location</th>
+                    {% if user.is_superuser %}
+                        <th>Permission</th>
+                    {% endif %}
                     <th>Date Joined</th>
                     <th>Wallet Balance</th>
                   </tr>
                 </thead>
                 <tbody>
-                  {% for user in users %}
+                  {% for a_user in users %}
                     <tr>
-                      <td>{{forloop.counter}}</td>
-                      <td>{{user.profile.reference_id}}</td>
-                      <td>{{user.get_full_name}}</td>
-                      <td>{{user.username}}</td>
-                      <td>{{user.email}}</td>
-                      <td>{{user.profile.state}}</td>
-                      <td>{{user.date_joined}}</td>
-                      <td>&#8358; {{user.wallet.wallet_balance}}</td>
+                        <td>{{forloop.counter}}</td>
+                        <td>{{a_user.profile.reference_id}}</td>
+                        <td>{{a_user.get_full_name}}</td>
+                        <td>{{a_user.username}}</td>
+                        <td>{{a_user.email}}</td>
+                        <td>{{a_user.profile.state}}</td>
+                        {% if user.is_superuser %}
+                            <td>
+                                {% if a_user.is_staff %}
+                                    <a href="{% url 'Home:toggle_permission' a_user.id %}"><button class="btn btn-sm btn-danger">Restrict</button></a>
+                                {% else %}
+                                    <a href="{% url 'Home:toggle_permission' a_user.id %}"><button class="btn btn-sm btn-info">Authorize</button></a>
+                                {% endif %}
+                            </td>
+                        {% endif %}
+                        <td>{{a_user.date_joined}}</td>
+                        <td>&#8358; {{a_user.wallet.wallet_balance}}</td>
                     </tr>
                   {% endfor %}
-                  <tr>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td><b>Total Balance</b></td>
-                    <td><b>&#8358; {{total_amount}}</b></td>
-                  </tr>       
                 </tbody>
-              </table>
+                </table>
+                <div class="row">
+                    <div class="col-md-12 float-sm-right">
+                        <label class="float-sm-right">Total Balance <b>&#8358; {{total_amount}}</b></label>
+                    </div>
+                </div>
+              </div>
+              <!-- /.card-body -->
             </div>
           </div>
         </div>
@@ -119,7 +134,7 @@
               </h3>
             </div>
             <div class="card-body table-responsive p-0" style="height: 21rem;">
-              <table class="table table-head-fixed text-nowrap">
+              <table class="table table-head-fixed text-wrap">
                 <thead>
                   <tr>
                     <th>s/n</th>
@@ -153,5 +168,31 @@
       </div>
     {% endif %}
   </div>
+{% endblock %}
 
+{% block extra_scripts %}
+    <script src="{% static 'plugins/jquery/jquery.min.js' %}"></script>
+    <script src="{% static 'plugins/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+    <script src="{% static 'plugins/datatables/jquery.dataTables.min.js' %}"></script>
+    <script src="{% static 'plugins/datatables-bs4/js/dataTables.bootstrap4.min.js' %}"></script>
+    <script src="{% static 'plugins/datatables-responsive/js/dataTables.responsive.min.js' %}"></script>
+    <script src="{% static 'plugins/datatables-responsive/js/responsive.bootstrap4.min.js' %}"></script>
+    <script src="{% static 'dist/js/adminlte.min.js' %}"></script>
+    <script>
+        $(function () {
+            $("#example1").DataTable({
+                "responsive": true,
+                "autoWidth": false,
+            });
+            $('#example2').DataTable({
+                "paging": true,
+                "lengthChange": false,
+                "searching": false,
+                "ordering": true,
+                "info": true,
+                "autoWidth": false,
+                "responsive": true,
+            });
+        });
+    </script>
 {% endblock %}

@@ -20,6 +20,8 @@
     <link rel="stylesheet" href="{% static 'plugins/daterangepicker/daterangepicker.css' %}">
     <link rel="stylesheet" href="{% static 'plugins/summernote/summernote-bs4.css' %}">
     <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700" rel="stylesheet">
+    {% block extra_styles %}
+    {% endblock %}
 </head>
 <body class="hold-transition sidebar-mini layout-fixed">
 <div class="wrapper">
@@ -125,15 +127,17 @@
               </p>
             </a>
           </li>
-
+            
+        {% if user.is_staff %}
           <li class="nav-item">
-                <a href="{% url 'Home:show_all_orders' %}" class="nav-link">
-                  <i class="nav-icon fas fa-receipt"></i>
-                  <p>
-                    Orders
-                  </p>
-                </a>
-              </li>
+            <a href="{% url 'Home:show_all_orders' %}" class="nav-link">
+              <i class="nav-icon fas fa-receipt"></i>
+              <p>
+                Orders
+              </p>
+            </a>
+          </li>
+        {% endif %}
 
          <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
           <!-- Add icons to the links using the .nav-icon class
@@ -334,6 +338,8 @@
 <script src="{% static 'dist/js/adminlte.js' %}"></script>
 <script src="{% static 'dist/js/pages/dashboard.js' %}"></script>
 <script src="{% static 'dist/js/demo.js' %}"></script>
+{% block extra_scripts %}
+    {% endblock %}
 
 <script>
   $(function () {

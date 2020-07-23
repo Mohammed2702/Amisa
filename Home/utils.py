@@ -4,40 +4,6 @@ from Amisacb import settings
 import string
 import random
 import datetime
-# import africastalking
-
-
-# class SMS:
-#     def __init__(self, sender, recipients, message):
-#         # Set Credentials here
-
-#         self.sender = sender
-#         self.recipients = recipients
-#         self.message = message
-#         self.username = "sandbox"
-#         self.api_key = "b83c915d9678cf6a8cafc2a2525f052e23f25c93d5c2a881cf26ce7569f095b7"
-
-#         # Initialize the SDK
-#         africastalking.initialize(self.username, self.api_key)
-
-#         # Get the SMS service
-#         self.sms = africastalking.SMS
-
-#     def send(self):
-#             # Set the numbers you want to send to in international format
-#             recipients = self.recipients
-
-#             # Set your message
-#             message = self.message
-
-#             # Set your shortCode or senderId
-#             sender = self.sender
-#             try:
-# 				# Thats it, hit send and we'll take care of the rest.
-#                 response = self.sms.send(message, recipients, sender)
-#                 return(response)
-#             except Exception as e:
-#                 return('Encountered an error while sending: %s' % str(e))
 
 
 code_limit = 5
@@ -126,12 +92,6 @@ def deliver_mail_order(title='Amisa order', body='Hey there, you got a test E-Ma
         return True
     else:
         return False
-
-
-def get_all_banks():
-	banks = ['Access Bank', 'First Bank', 'UBA', 'GT-Bank']
-	return banks
-
 
 def check_date(date):
 	date = str(date).split('-')

@@ -127,6 +127,7 @@ def external_context():
         'all_networks': models.Network.objects.all(),
         'get_settings': models.SiteSetting.objects.get(pk=1),
         'resolutions': models.Resolution.objects.all(),
+        'all_banks': models.Bank.objects.all(),
     }
 
     return external_context
@@ -151,7 +152,7 @@ def user_features(user_id):
 
     # Orders
 
-    if user.is_superuser:
+    if user.is_staff:
         orders = [i for i in reversed(list(models.Order.objects.all()))][:5]
 
         notifications = orders + posts
@@ -451,7 +452,7 @@ def account_forgot_password_link(request, link):
 @login_required(login_url='Home:account_signin')
 def account_dashboard(request):
     try:
-        if request.user.is_superuser:
+        if request.user.is_staff:
             all_code_groups = list(models.CodeGroup.objects.all())[-5:]
             all_codes = list(models.Code.objects.all())[-15:]
             context = {
@@ -504,7 +505,7 @@ def account_users_wallet(request):
         user_details = user_features(request.user.id)
         context = utils.dict_merge(external_context(), user_details)
 
-        if request.user.is_superuser:
+        if request.user.is_staff:
             users = User.objects.all()
             context = utils.dict_merge(context, {'users': users})
 
@@ -696,7 +697,7 @@ def account_profile(request):
 def account_code(request):
     try:
         code_redeem_form = forms.CodeRedeemForm(request.POST)
-        if request.user.is_superuser:
+        if request.user.is_staff:
             template_name = 'Home/account_code.html'
             context = utils.dict_merge(
                 external_context(), user_features(request.user.id))
@@ -779,7 +780,7 @@ def account_code(request):
 @login_required
 def account_code_group(request, action_type, group_id):
     try:
-        if request.user.is_superuser:
+        if request.user.is_staff:
             code_group = models.CodeGroup.objects.get(pk=group_id)
             if action_type == 'delete':
                 code_group.delete()
@@ -806,7 +807,7 @@ def account_code_group(request, action_type, group_id):
 def account_code_details(request, code_id):
     try:
         if request.user.is_active:
-            if request.user.is_superuser:
+            if request.user.is_staff:
                 template_name = 'Home/account_code_details.html'
                 context = {
                     'code': get_object_or_404(models.Code, pk=code_id)
@@ -834,7 +835,7 @@ def account_code_details(request, code_id):
 def account_code_delete(request, code_id):
     try:
         if request.user.is_active:
-            if request.user.is_superuser:
+            if request.user.is_staff:
                 code = models.Code.objects.get(pk=code_id)
                 code.delete()
                 # code.save()
@@ -865,7 +866,7 @@ def account_code_delete(request, code_id):
 @login_required(login_url='Home:account_signin')
 def account_code_toggle(request, code_id):
     try:
-        if request.user.is_superuser:
+        if request.user.is_staff:
             code = models.Code.objects.get(pk=code_id)
             if code.status:
                 description = 'Order was Declined by Admin.'
@@ -909,7 +910,7 @@ def account_code_request(request):
         template_name = 'Home/account_code_requests.html'
         context = {}
         if request.user.is_active:
-            if request.user.is_superuser:
+            if request.user.is_staff:
                 all_code_groups = list(models.CodeGroup.objects.all())[-5:]
                 current_date = str(datetime.datetime.now())
                 all_codes = models.Code.objects.all()
@@ -1003,7 +1004,6 @@ def account_user_withdrawal(request):
             list(models.Order.objects.all()))][:5]
 
         context = {
-            'banks': utils.get_all_banks(),
             'user_orders': user_orders,
             'user_orders_truncate': user_orders_truncate,
 
@@ -1234,7 +1234,7 @@ def account_user_airtime(request):
 @login_required(login_url='Home:account_signin')
 def code_group_codes(request, group_id):
     try:
-        if request.user.is_superuser:
+        if request.user.is_staff:
             template_name = 'Home/code_group_codes.html'
 
             group = models.CodeGroup.objects.get(pk=group_id)
@@ -1262,6 +1262,7 @@ def site_settings(request):
             if request.method == 'POST':
                 settings_form = forms.SiteSettingForm(request.POST)
                 network_form = forms.NetworkForm(request.POST)
+                bank_form = forms.BankForm(request.POST)
 
                 if network_form.is_valid():
                     network = network_form.cleaned_data.get('network')
@@ -1287,7 +1288,23 @@ def site_settings(request):
                         messages.warning(request, f'{network} already exist !!!')
 
                         return redirect('Home:site_settings')
+                elif bank_form.is_valid():
+                    bank = bank_form.cleaned_data.get('bank')
 
+                    if bank not in [i.bank for i in models.Bank.objects.all()]:
+                        create_bank = models.Bank.objects.create(
+                            bank=bank
+                        )
+
+                        create_bank.save()
+
+                        messages.info(request, f'Bank ({bank}) added')
+
+                        return redirect('Home:site_settings')
+                    else:
+                        messages.info(request, f'{bank} already exist')
+
+                        return redirect('Home:site_settings')
                 elif settings_form.is_valid():
                     customer_rate = settings_form.cleaned_data.get('customer_rate')
                     agent_rate = settings_form.cleaned_data.get('agent_rate')
@@ -1321,6 +1338,7 @@ def site_settings(request):
             else:
                 settings_form = forms.SiteSettingForm(request.POST)
                 network_form = forms.NetworkForm(request.POST)
+                bank_form = forms.BankForm(request.POST)
 
             template_name = 'Home/site_settings.html'
             context = utils.dict_merge(external_context(), user_features(request.user.id))
@@ -1362,7 +1380,7 @@ def show_all_orders(request):
 @login_required(login_url='Home:account_signin')
 def toggle_order(request, order_id):
     try:
-        if request.user.is_superuser:
+        if request.user.is_staff:
             order = models.Order.objects.get(pk=order_id)
 
             order.status = 'Approved'
@@ -1411,7 +1429,7 @@ def all_posts(request):
         template_name = 'Home/posts.html'
 
         if request.method == 'POST':
-            if request.user.is_superuser:
+            if request.user.is_staff:
                 post_form = forms.PostForm(request.POST)
                 context = utils.dict_merge(context, {'post_form': post_form})
                 if post_form.is_valid():
@@ -1465,7 +1483,7 @@ def post_edit(request, post_id):
 @login_required(login_url='Home:account_signin')
 def post_delete(request, post_id):
     try:
-        if request.user.is_superuser:
+        if request.user.is_staff:
             post = models.Post.objects.get(pk=post_id)
             post.delete()
 
@@ -1794,3 +1812,23 @@ def resolution_details(request, resolution_id):
         return render(request, template_name, context)
     except Exception as e:
         print('resolution_details', e)
+
+
+@login_required(login_url='Home:account_signin')
+def toggle_permission(request, user_id):
+    try:
+        if request.user.is_superuser:
+            user = User.objects.get(pk=user_id)
+            if user.is_staff:
+                user.is_staff = False
+            elif not user.is_staff:
+                user.is_staff = True
+
+            user.save()
+            return redirect('Home:account_users_wallet')
+        else:
+            return render(request, 'Home/404Error.html')
+    except User.DoesNotExist:
+        return render(request, 'Home/404Error.html')
+    except Exception as e:
+        print('toggle_permission', e)

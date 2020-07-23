@@ -121,8 +121,8 @@
                             <label for="id_code_group">Bank</label></th><td>
                           <select name="bank" required id="id_code_group" class="form-control">
                                   <option value="">-- Bank --</option>
-                                  {% for bank in banks %}
-                                      <option value="{{bank}}">{{bank}}</option>
+                                  {% for bank in all_banks %}
+                                      <option value="{{bank.bank}}">{{bank.bank}}</option>
                                 {% endfor %}
                                 </select>
                             </label>

@@ -344,6 +344,64 @@
 					</div>
 				</div>
 			</div>
+
+
+			<div class="row connectedSortable">
+				<div class="col-sm-12">
+					<div class="card card-info">
+						<div class="card-header">
+							<h3 class="card-title">New Bank</h3>
+						</div>
+						<form method="post">
+							{% csrf_token %}
+	
+							<div class="card-body">
+								<div class="input-group mb-3">
+									<div class="input-group-prepend">
+										<span class="input-group-text"><i class="fas fa-money-check"></i></span>
+									</div>
+									<input type="text" name="bank" class="form-control" placeholder="Bank" required>
+								</div>
+							</div>
+							<div class="card-footer" style="text-align: center;">
+								<button type="submit" class="btn btn-primary">Save</button>
+							</div>
+						</form>
+					</div>
+				</div>
+			</div>
+
+			<div class="row connectedSortable">
+				<div class="col-sm-12">
+					<div class="card card-info">
+						<div class="card-header">
+							<h3 class="card-title">Banks</h3>
+						</div>
+						<div class="card-body">
+							<div class="table-responsive" style="height: 18rem;">
+                            <table class="table m-0">
+                                <thead>
+                                    <tr>
+                                    	<th>ID</th>
+                                    	<th>Bank</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                	{% if all_banks %}
+                                		{% for bank in all_banks %}
+                                			<tr>
+	                                			<td>{{forloop.counter}}</td>
+	                                			<td>{{bank.bank}}</td>
+	                                		</tr>
+                                		{% endfor %}
+                                	{% endif %}
+                                </tbody>
+                              </table>
+                          </div>
+						</div>
+					</div>
+				</div>
+			</div>
 		</div>
 	</div>
 

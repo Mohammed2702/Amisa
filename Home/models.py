@@ -55,9 +55,6 @@ user_location = [
 ]
 
 
-banks = [(i, i) for i in utils.get_all_banks()]
-
-
 class Profile(models.Model):
 	user = models.OneToOneField(User, on_delete=models.CASCADE)
 	reference_id = models.CharField(max_length=100, blank=False, unique=True)
@@ -260,3 +257,11 @@ class Reply(models.Model):
 
 	def __str__(self):
 		return self.post.author + ' ' + self.content
+
+
+class Bank(models.Model):
+	bank = models.CharField(max_length=200, blank=False)
+	date = models.DateTimeField(default=timezone.now)
+
+	def __str__(self):
+		return self.bank

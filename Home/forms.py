@@ -86,6 +86,10 @@ class NetworkForm(forms.Form):
 	data_rate = forms.FloatField()
 
 
+class BankForm(forms.Form):
+	bank = forms.CharField(max_length=500, required=True)
+
+
 class ForgotPasswordForm(forms.Form):
 	username = forms.CharField(required=True)
 
