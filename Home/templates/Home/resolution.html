@@ -63,12 +63,7 @@
 						</div>
 						<!-- /.card-header -->
 						<div class="card-body pad">
-							<!-- <div class="form-group">
-								{% if post_form.post_title.errors %}
-									<small>{{post_form.post_title.errors}}</small>
-								{% endif %}
-								<input class="form-control" type="text" name="post_title" placeholder="Post Title" required>
-							</div> -->
+							
 							<div class="form-group">
 								{% if resolution_form.resolution_content.errors %}
 									<small>{{resolution_form.resolution_content.errors}}</small>
@@ -85,6 +80,12 @@
 		</div>
 		
 		<div class="row">
+			{% for message in messages %}
+				<div class="alert alert-warning">
+					<button class="close" data-dismiss="alert">×</button>
+					{{ message }}
+				</div>
+			{% endfor %}
 			<form method="POST">
 				{% csrf_token %}
 
@@ -114,7 +115,7 @@
 							                        {% if user.is_staff %}
 							                        	<input class="form-group"></input>
 							                        {% endif %}
-							                        <a class="btn btn-primary btn-sm">Reply</a>
+							                        <a class="btn btn-primary btn-sm" type="submit">Reply</a>
 			                      				</div>
 			                    			</div>
 			                  			</div>

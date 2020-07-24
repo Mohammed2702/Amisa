@@ -74,7 +74,10 @@ def deliver_mail(title, body, recipient):
     if mail_delivery == 1:
         return True
     else:
-        return False
+    	if settings.DEBUG:
+    		return True
+    	else:
+    		return False
 
 
 def deliver_mail_order(title='Amisa order', body='Hey there, you got a test E-Mail', recipient=settings.ADMIN_EMAIL):
@@ -87,86 +90,28 @@ def deliver_mail_order(title='Amisa order', body='Hey there, you got a test E-Ma
         [recipient],
         fail_silently=True
     )
-    print(body)
+    
     if mail_delivery == 1:
         return True
     else:
-        return False
+    	if settings.DEBUG:
+    		return True
+    	else:
+    		return False
 
-def check_date(date):
-	date = str(date).split('-')
-	current_date = str(datetime.datetime.now()).split(' ')[0].split('-')
-
-	year = int(date[0])
-	month = int(date[1])
-	day = int(date[2])
-
-	current_year = int(current_date[0])
-	current_month = int(current_date[1])
-	current_day = int(current_date[2])
-
-	if year <= current_year:
-	    if month <= current_month:
-	        if day < current_day:
-	            return True
-	        else:
-	            return False
-	    else:
-	        False
-	else:
-		return False
-
-
-def default_time():
-	now = str(datetime.datetime.now()).split(' ')[1]
-	return now
 
 all_chars = alphabets_lower + alphabets_upper + numbers
 
 
 def generate_url_scrambled(existing_url_scrambled):
-	url_scrambled = f'{random.choice(all_chars)}{random.choice(all_chars)}{random.choice(all_chars)}{random.choice(all_chars)}{random.choice(all_chars)}{random.choice(all_chars)}{random.choice(all_chars)}{random.choice(all_chars)}{random.choice(all_chars)}{random.choice(all_chars)}{random.choice(all_chars)}{random.choice(all_chars)}{random.choice(all_chars)}{random.choice(all_chars)}{random.choice(all_chars)}'
+	url_scrambled = f'{random.choice(all_chars)}{random.choice(all_chars)}{random.choice(all_chars)}{random.choice(all_chars)}{random.choice(all_chars)}{random.choice(all_chars)}{random.choice(all_chars)}{random.choice(all_chars)}{random.choice(all_chars)}{random.choice(all_chars)}{random.choice(all_chars)}{random.choice(all_chars)}{random.choice(all_chars)}{random.choice(all_chars)}{random.choice(all_chars)}{random.choice(all_chars)}{random.choice(all_chars)}'
 	while url_scrambled not in existing_url_scrambled:
 		break
 	else:
-		url_scrambled = f'{random.choice(all_chars)}{random.choice(all_chars)}{random.choice(all_chars)}{random.choice(all_chars)}{random.choice(all_chars)}{random.choice(all_chars)}{random.choice(all_chars)}{random.choice(all_chars)}{random.choice(all_chars)}{random.choice(all_chars)}{random.choice(all_chars)}{random.choice(all_chars)}{random.choice(all_chars)}{random.choice(all_chars)}{random.choice(all_chars)}'
+		url_scrambled = f'{random.choice(all_chars)}{random.choice(all_chars)}{random.choice(all_chars)}{random.choice(all_chars)}{random.choice(all_chars)}{random.choice(all_chars)}{random.choice(all_chars)}{random.choice(all_chars)}{random.choice(all_chars)}{random.choice(all_chars)}{random.choice(all_chars)}{random.choice(all_chars)}{random.choice(all_chars)}{random.choice(all_chars)}{random.choice(all_chars)}{random.choice(all_chars)}{random.choice(all_chars)}'
 
 	return url_scrambled
 
 
 def generate_ver_code():
 	return random.randint(10000, 99999)
-
-
-def order_expiry(order_range=3):
-	date = str(datetime.datetime.now()).split(' ')[0].split('-')
-	time = str(datetime.datetime.now()).split(' ')[1].split(':')
-	current_year = int(date[0])
-	current_month = int(date[1])
-	current_day = int(date[2])
-	current_hour = int(time[0]) + order_range
-	current_minute = int(time[1])
-	current_seconds = int(time[2].split('.')[0])
-
-	if current_hour > 23:
-		current_hour = 0
-		current_day += 1
-
-	return current_year, current_month, current_day, current_hour, current_minute, current_seconds
-
-
-def password_expiry(order_range=5):
-	date = str(datetime.datetime.now()).split(' ')[0].split('-')
-	time = str(datetime.datetime.now()).split(' ')[1].split(':')
-	current_year = int(date[0])
-	current_month = int(date[1])
-	current_day = int(date[2])
-	current_hour = int(time[0])
-	current_minute = int(time[1]) + order_range
-	current_seconds = int(time[2].split('.')[0])
-
-	if current_minute > 59:
-		current_minute = 0
-		current_hour += 1
-
-	return current_year, current_month, current_day, current_hour, current_minute, current_seconds

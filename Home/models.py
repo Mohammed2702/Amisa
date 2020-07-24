@@ -140,17 +140,8 @@ class Order(models.Model):
 	recipient = models.CharField(max_length=15, default='08012345678')
 	description = models.CharField(max_length=100, blank=False, default='Order')
 	status = models.CharField(max_length=100, default='Pending')
-	date = models.DateTimeField(default=datetime.datetime.now)
-	expiry_date = models.DateTimeField(default=datetime.datetime(
-			utils.order_expiry()[0],
-			utils.order_expiry()[1],
-			utils.order_expiry()[2],
-			utils.order_expiry()[3],
-			utils.order_expiry()[4],
-			utils.order_expiry()[5],
-			10
-		)
-	)
+	date = models.DateTimeField(default=timezone.now)
+	expiry_date = models.DateTimeField(default=timezone.now() + timezone.timedelta(hours=3))
 
 	class Meta:
 		verbose_name = 'Order'
@@ -220,17 +211,18 @@ class PasswordReset(models.Model):
 	user = models.ForeignKey(User, on_delete=models.CASCADE)
 	link_slug = models.CharField(max_length=100, unique=True)
 	verification_code = models.CharField(max_length=6, unique=True)
-	date = models.DateTimeField(default=datetime.datetime.now)
-	expiry_date = models.DateTimeField(default=datetime.datetime(
-			utils.password_expiry()[0],
-			utils.password_expiry()[1],
-			utils.password_expiry()[2],
-			utils.password_expiry()[3],
-			utils.password_expiry()[4],
-			utils.password_expiry()[5],
-			10
-		)
-	)
+	date = models.DateTimeField(default=timezone.now)
+	expiry_date = models.DateTimeField(default=timezone.now() + timezone.timedelta(minutes=5))
+	# expiry_date = models.DateTimeField(default=datetime.datetime(
+	# 		utils.password_expiry()[0],
+	# 		utils.password_expiry()[1],
+	# 		utils.password_expiry()[2],
+	# 		utils.password_expiry()[3],
+	# 		utils.password_expiry()[4],
+	# 		utils.password_expiry()[5],
+	# 		10
+	# 	)
+	# )
 
 	def __str__(self):
 		return self.user.username

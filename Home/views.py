@@ -33,31 +33,15 @@ else:
 
 
 def checker():
-    curr_date = str(datetime.datetime.now()).split(' ')[0].split('-')
-    curr_time = str(datetime.datetime.now()).split(' ')[1].split(':')
-    curr_exp_date = datetime.date(int(curr_date[0]), int(curr_date[1]), int(curr_date[2]))
-    curr_order_date = datetime.datetime(
-        int(curr_date[0]),
-        int(curr_date[1]),
-        int(curr_date[2]),
-        int(curr_time[0]),
-        int(curr_time[1]),
-        10
-    )
+    curr_date = timezone.now().date()
+    curr_time = timezone.now().time()
+    curr_exp_date = curr_date
+    curr_order_date = timezone.now()
 
     all_orders = models.Order.objects.all()
     for i in all_orders:
         order = models.Order.objects.get(pk=i.id)
-        order_expiry_date = str(order.expiry_date).split(' ')
-        order_expiry_date = datetime.datetime(
-            int(order_expiry_date[0].split('-')[0]),
-            int(order_expiry_date[0].split('-')[1]),
-            int(order_expiry_date[0].split('-')[2]),
-            int(order_expiry_date[1].split(':')[0]),
-            int(order_expiry_date[1].split(':')[1]),
-            10
-        )
-
+        order_expiry_date = order.expiry_date
         if curr_order_date >= order_expiry_date:
             description = ' - Order was Declined.'
             if description not in order.description:
@@ -77,8 +61,7 @@ def checker():
         else:
             code.status = False
 
-        code_date_ = str(code.expiry_date).split(' ')[0].split('-')
-        code_exp_date = datetime.date(int(code_date_[0]), int(code_date_[1]), int(code_date_[2]))
+        code_exp_date = code.expiry_date
         if code_exp_date <= curr_exp_date:
             if 'Expired' not in str(code.code).split('/'):
                 code.code = f'{code.code}/Expired'
@@ -98,15 +81,7 @@ def checker():
 
     for i in all_resets:
         reset = models.PasswordReset.objects.get(pk=i.id)
-        reset_expiry_date = str(reset.expiry_date).split(' ')
-        reset_expiry_date = datetime.datetime(
-            int(reset_expiry_date[0].split('-')[0]),
-            int(reset_expiry_date[0].split('-')[1]),
-            int(reset_expiry_date[0].split('-')[2]),
-            int(reset_expiry_date[1].split(':')[0]),
-            int(reset_expiry_date[1].split(':')[1]),
-            10
-        )
+        reset_expiry_date = reset.expiry_date
 
         if curr_order_date >= reset_expiry_date:
             reset.delete()
