@@ -1702,7 +1702,6 @@ def resolution(request):
         context = utils.dict_merge(external_context(), context)
 
         resolution_form = forms.ResolutionForm(request.POST)
-        reply_form = forms.ReplyForm(request.POST)
             
         if request.method == 'POST':
             resolution_form = forms.ResolutionForm(request.POST)
@@ -1731,26 +1730,6 @@ def resolution(request):
                     messages.info(request, 'Sorry, your request could not be processed, please try again')
 
                     return redirect('Home:resolution')
-
-            if reply_form.is_valid():
-                reply_content = reply_form.cleaned_data.get('reply_content')
-                post_id = reply_form.cleaned_data.get('post')
-                create_reply = models.Reply.objects.create(
-                    author=request.user,
-                    post=models.Resolution.objects.get(pk=post_id),
-                    content=reply_content,
-                )
-
-                if create_reply:
-                    create_reply.save()
-
-                    messages.info(request, 'Your reply has been sent :)')
-
-                    return redirect('Home:resolution')
-                else:
-                    messages.info(request, 'Sorry, your request could not be processed, please try again')
-
-                    return redirect('Home:resolution')
         else:
             resolution_form = forms.ResolutionForm()
             reply_form = forms.ReplyForm()
@@ -1771,17 +1750,46 @@ def resolution(request):
 @login_required(login_url='Home:account_signin')
 def resolution_response(request):
     try:
-        user_context = {
-
-        }
+        user_context = {}
         context = utils.dict_merge(
             user_context,
             user_features(request.user.id)
         )
 
-        template_name = 'Home/resolution_responses.html'
-
         context = utils.dict_merge(external_context(), context)
+        reply_form = forms.ReplyForm(request.POST)
+
+        if request.method == 'POST':
+            if reply_form.is_valid():
+                reply_content = reply_form.cleaned_data.get('reply_content')
+                post_id = reply_form.cleaned_data.get('post')
+                create_reply = models.Reply.objects.create(
+                    author=request.user,
+                    post=models.Resolution.objects.get(pk=post_id),
+                    content=reply_content,
+                )
+
+                if create_reply:
+                    create_reply.save()
+
+                    messages.info(request, 'Your reply has been sent :)')
+
+                    return redirect('Home:resolution_response')
+                else:
+                    messages.info(request, 'Sorry, your request could not be processed, please try again')
+
+                    return redirect('Home:resolution_response')
+        else:
+            reply_form = forms.ReplyForm()
+
+            context = utils.dict_merge(
+                context,
+                {
+                    'reply_form': reply_form
+                }
+            )
+
+        template_name = 'Home/resolution_responses.html'
 
         return render(request, template_name, context)
     except Exception as e:

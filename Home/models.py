@@ -213,16 +213,6 @@ class PasswordReset(models.Model):
 	verification_code = models.CharField(max_length=6, unique=True)
 	date = models.DateTimeField(default=timezone.now)
 	expiry_date = models.DateTimeField(default=timezone.now() + timezone.timedelta(minutes=5))
-	# expiry_date = models.DateTimeField(default=datetime.datetime(
-	# 		utils.password_expiry()[0],
-	# 		utils.password_expiry()[1],
-	# 		utils.password_expiry()[2],
-	# 		utils.password_expiry()[3],
-	# 		utils.password_expiry()[4],
-	# 		utils.password_expiry()[5],
-	# 		10
-	# 	)
-	# )
 
 	def __str__(self):
 		return self.user.username
