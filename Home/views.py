@@ -1711,8 +1711,7 @@ def resolution(request):
             context = utils.dict_merge(context, {
                 'resolution_form': resolution_form,
                 'reply_form': reply_form
-                }
-            )
+                })
             if resolution_form.is_valid():
                 resolution_content = resolution_form.cleaned_data.get('resolution_content')
 
@@ -1769,23 +1768,25 @@ def resolution(request):
 
 
 @login_required(login_url='Home:account_signin')
-def resolution_response(request):
+def resolution_details(request, resolution_id):
     try:
-        user_context = {
+        resolution = models.Resolution.objects.get(pk=id)
 
+        user_context = {
+            'resolution': resolution
         }
         context = utils.dict_merge(
             user_context,
             user_features(request.user.id)
         )
 
-        template_name = 'Home/resolution_responses.html'
+        template_name = 'Home/resolution_details.html'
 
         context = utils.dict_merge(external_context(), context)
 
         return render(request, template_name, context)
     except Exception as e:
-        print('resolution_responses', e)
+        print('resolution_details', e)
 
 
 @login_required(login_url='Home:account_signin')

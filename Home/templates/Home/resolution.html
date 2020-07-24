@@ -33,59 +33,61 @@
 
 {% block content %}
 	<section class="content">
-			<div class="row">
-				{% for message in messages %}
-					<div class="alert alert-warning">
-						<button class="close" data-dismiss="alert">×</button>
-						{{ message }}
-					</div>
-				{% endfor %}
-				
-				<div class="col-md-12">
-					<form method="POST">
-						{% csrf_token %}
-						
-						<div class="card card-outline card-info">
-							<div class="card-header">
-								<h3 class="card-title">
-									<small>Create new post</small>
-								</h3>
-								<!-- tools box -->
-								<div class="card-tools">
-									<button type="button" class="btn btn-tool btn-sm" data-card-widget="collapse" data-toggle="tooltip" title="Collapse">
-										<i class="fas fa-minus"></i>
-									</button>
-									<button type="button" class="btn btn-tool btn-sm" data-card-widget="remove" data-toggle="tooltip" title="Remove">
-										<i class="fas fa-times"></i>
-									</button>
-								</div>
-								<!-- /. tools -->
+		<div class="row">
+			{% for message in messages %}
+				<div class="alert alert-warning">
+					<button class="close" data-dismiss="alert">×</button>
+					{{ message }}
+				</div>
+			{% endfor %}
+			
+			<div class="col-md-12">
+				<form method="POST">
+					{% csrf_token %}
+					
+					<div class="card card-outline card-info">
+						<div class="card-header">
+							<h3 class="card-title">
+								<small>Create new post</small>
+							</h3>
+							<!-- tools box -->
+							<div class="card-tools">
+								<button type="button" class="btn btn-tool btn-sm" data-card-widget="collapse" data-toggle="tooltip" title="Collapse">
+									<i class="fas fa-minus"></i>
+								</button>
+								<button type="button" class="btn btn-tool btn-sm" data-card-widget="remove" data-toggle="tooltip" title="Remove">
+									<i class="fas fa-times"></i>
+								</button>
 							</div>
-							<!-- /.card-header -->
-							<div class="card-body pad">
-								
-								<div class="form-group">
-									{% if resolution_form.resolution_content.errors %}
-										<small>{{resolution_form.resolution_content.errors}}</small>
-									{% endif %}
-									<textarea class="form-control" name="resolution_content" placeholder="We'll like to hear from you :) ..." required></textarea>
-								</div>
-							</div>
-							<div class="card-footer">
-								<button type="submit" class="btn btn-sm btn-primary float-sm-right">submit</button>
+							<!-- /. tools -->
+						</div>
+						<!-- /.card-header -->
+						<div class="card-body pad">
+							
+							<div class="form-group">
+								{% if resolution_form.resolution_content.errors %}
+									<small>{{resolution_form.resolution_content.errors}}</small>
+								{% endif %}
+								<textarea class="form-control" name="resolution_content" placeholder="We'll like to hear from you :) ..." required></textarea>
 							</div>
 						</div>
-					</form>
-				</div>
-			</div>
-			
-			<div class="row">
-				{% for message in messages %}
-					<div class="alert alert-warning">
-						<button class="close" data-dismiss="alert">×</button>
-						{{ message }}
+						<div class="card-footer">
+							<button type="submit" class="btn btn-sm btn-primary float-sm-right">submit</button>
+						</div>
 					</div>
-				{% endfor %}
+				</form>
+			</div>
+		</div>
+		
+		<div class="row">
+			{% for message in messages %}
+				<div class="alert alert-warning">
+					<button class="close" data-dismiss="alert">×</button>
+					{{ message }}
+				</div>
+			{% endfor %}
+			<form method="POST">
+				{% csrf_token %}
 
 				{% if user.is_staff %}
 					{% for resolution in resolutions %}
@@ -102,19 +104,19 @@
 			                      				<div class="timeline-header">
 			                      					<label>{{resolution.author.get_full_name}}</label>
 			                      					{% if user.is_staff %}
-				                      					<a>
-				                      						<button class="btn btn-sm btn-danger float-sm-right">Delete</button>
-				                      					</a>
+				                      					<button class="btn btn-sm btn-danger float-sm-right">Delete</button>
 				                      				{% endif %}
 			                      				</div>
 							                    <div class="timeline-body">
 							                        {{resolution.content}}
 							                    </div>
+
 							                    <div class="timeline-footer">
-							                    	<a>
-							                    		<button class="btn btn-success">Respond</button>
-							                    	</a>
-							                    </div>
+							                        {% if user.is_staff %}
+							                        	<input class="form-group"></input>
+							                        {% endif %}
+							                        <a class="btn btn-primary btn-sm" type="submit">Reply</a>
+			                      				</div>
 			                    			</div>
 			                  			</div>
 			                  			<div>
@@ -126,6 +128,7 @@
 			            </div>
 				    {% endfor %}
 				{% endif %}
-			</div>
+			</form>
+		</div>
 	</section>
 {% endblock %}
