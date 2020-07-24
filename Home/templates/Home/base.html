@@ -65,7 +65,7 @@
           {% for order in orders %}
             <a href="{% url 'Home:show_all_orders' %}#{{order.id}}" class="dropdown-item" style="height: 3rem;">
               <small class="text-truncate">{{order.transaction}}</small>
-              <span class="float-right text-muted text-sm">{{order.date}}</span>
+              {# <span class="float-right text-muted text-sm">{{order.date}}</span> #}
             </a>
             <div class="dropdown-divider"></div>
           {% endfor %}
