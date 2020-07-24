@@ -1758,11 +1758,12 @@ def resolution_response(request):
 
         context = utils.dict_merge(external_context(), context)
         reply_form = forms.ReplyForm(request.POST)
-
+        
         if request.method == 'POST':
             if reply_form.is_valid():
-                reply_content = reply_form.cleaned_data.get('reply_content')
-                post_id = reply_form.cleaned_data.get('post')
+                reply_content = reply_form.cleaned_data.get('resolution_content')
+                post_id = reply_form.cleaned_data.get('resolution')
+                print('dsyfgsudy', reply_content, post_id)
                 create_reply = models.Reply.objects.create(
                     author=request.user,
                     post=models.Resolution.objects.get(pk=post_id),

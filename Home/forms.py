@@ -106,8 +106,8 @@ class ResolutionForm(forms.Form):
 
 
 class ReplyForm(forms.Form):
-	post = forms.CharField(required=True)
-	resolution_content = forms.CharField(required=True)
+	resolution = forms.CharField(required=True)
+	reply_content = forms.CharField(required=True)
 
 
 class PasswordResetForm(forms.Form):
