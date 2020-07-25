@@ -137,10 +137,10 @@ EMAIL_HOST_PASSWORD = 'amisatechnologies12'
 STATIC_ROOT = os.path.join(BASE_DIR, 'static_files')
 STATIC_URL = '/static_files/'
 STATICFILES_DIRS = [
-   'admin',
-   'dist',
-   'plugins',
-   'img',
+   os.path.join(STATIC_ROOT, 'admin'),
+   os.path.join(STATIC_ROOT, 'dist'),
+   os.path.join(STATIC_ROOT, 'plugins'),
+   os.path.join(STATIC_ROOT, 'img'),
 ]
 
 MEDIA_ROOT = os.path.join(BASE_DIR, 'Media')

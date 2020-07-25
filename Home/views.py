@@ -1380,7 +1380,7 @@ def toggle_order(request, order_id):
             if order:
                 order.save()
 
-                return redirect('Home:home')
+                return redirect('Home:show_all_orders')
             else:
                 return redirect('Home:show_all_orders')
         else:
