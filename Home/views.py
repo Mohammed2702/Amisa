@@ -42,7 +42,8 @@ def checker():
     for i in all_orders:
         order = models.Order.objects.get(pk=i.id)
         order_expiry_date = order.expiry_date
-        if curr_order_date >= order_expiry_date:
+        condition = curr_order_date >= order_expiry_date
+        if condition:
             description = ' - Order was Declined.'
             if description not in order.description:
                 order.description += description
@@ -1705,11 +1706,9 @@ def resolution(request):
             
         if request.method == 'POST':
             resolution_form = forms.ResolutionForm(request.POST)
-            reply_form = forms.ReplyForm(request.POST)
 
             context = utils.dict_merge(context, {
                 'resolution_form': resolution_form,
-                'reply_form': reply_form
                 }
             )
             if resolution_form.is_valid():
@@ -1732,13 +1731,11 @@ def resolution(request):
                     return redirect('Home:resolution')
         else:
             resolution_form = forms.ResolutionForm()
-            reply_form = forms.ReplyForm()
 
             context = utils.dict_merge(
                 context,
                 {
                     'resolution_form': resolution_form,
-                    'reply_form': reply_form
                 }
             )
 
@@ -1761,12 +1758,13 @@ def resolution_response(request):
         
         if request.method == 'POST':
             if reply_form.is_valid():
-                reply_content = reply_form.cleaned_data.get('resolution_content')
+                print('form is valid')
+                reply_content = reply_form.cleaned_data.get('reply_content')
                 post_id = reply_form.cleaned_data.get('resolution')
-                print('dsyfgsudy', reply_content, post_id)
+                post = models.Resolution.objects.get(pk=post_id)
                 create_reply = models.Reply.objects.create(
                     author=request.user,
-                    post=models.Resolution.objects.get(pk=post_id),
+                    post=post,
                     content=reply_content,
                 )
 
