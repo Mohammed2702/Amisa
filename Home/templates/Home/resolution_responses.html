@@ -67,7 +67,7 @@
 
 													<input type="text" name="resolution" value="{{resolution.id}}" hidden>
 							                        {% if user.is_staff %}
-								                    	<label class="badge badge-info">{{resolution.reply_set.values.count}} replys</label>
+								                    	<label class="badge badge-info">replys - {{resolution.reply_set.values.count}}</label>
 							                        	<div class="input-group input-group-sm">
 										                  	<input type="text" class="form-control" name="reply_content" required>
 										                  	<span class="input-group-append">
