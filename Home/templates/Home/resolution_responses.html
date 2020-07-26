@@ -38,7 +38,7 @@
                 <div class="row" id="{{post.id}}">
               		<div class="col">
                 		<div class="timeline">
-							{% for resolution in resolutions %}
+							{% for resolution in resolutions.reverse %}
 		                			<div>
 		                    			<i class="fas fa-clock bg-gray"></i>
 		                  			</div><br>
@@ -67,7 +67,10 @@
 
 													<input type="text" name="resolution" value="{{resolution.id}}" hidden>
 							                        {% if user.is_staff %}
-								                    	<label class="badge badge-info">replys - {{resolution.reply_set.values.count}}</label>
+						                    			<a href="{% url 'Home:resolution_details' resolution.id %}" class="btn btn-info btn-sm">
+						                    				replys - {{resolution.reply_set.values.count}}
+						                    			</a>
+						                    			<br>
 							                        	<div class="input-group input-group-sm">
 										                  	<input type="text" class="form-control" name="reply_content" required>
 										                  	<span class="input-group-append">

@@ -1,0 +1,125 @@
+{% extends 'Home/base.html' %}
+
+{% load static %}
+
+
+<link rel="icon" type="image/x-icon" href="{% static 'img/logo.png' %}">
+
+
+{% block title %}
+	<title>Resolution</title>
+{% endblock %}
+
+
+{% block page_header %}
+	<div class="content-wrapper">
+		<div class="content-header">
+			<div class="container-fluid">
+				<div class="row mb-2">
+					<div class="col-sm-6">
+						<h1 class="m-0 text-dark">Resolution</h1>
+					</div>
+					<div class="col-sm-6">
+						<ol class="breadcrumb float-sm-right">
+							<li class="breadcrumb-item"><a href="{% url 'Home:resolution_details' resolution.id %}">Resolution</a></li>
+							<li class="breadcrumb-item active">Resolution</li>
+						</ol>
+					</div>
+				</div>
+			</div>
+		</div>
+{% endblock %}
+
+
+{% block content %}
+	<section class="content">
+		{% if user.is_staff %}
+			<div class="container-fluid">
+                <div class="row" id="{{post.id}}">
+              		<div class="col">
+                		<div class="timeline">
+		                  	<div class="time-label">
+		                    	<span class="bg-red">{{resolution.date}}</span>
+		                  	</div>
+			                <div>
+			                    <i class="fas fa-envelope bg-blue"></i>
+								
+			                    <div class="timeline-item">
+                      				<div class="timeline-header">
+                      					<label>{{resolution.author.get_full_name}}</label>
+                      					{% if user.is_staff %}
+	                      					<a>
+	                      						<button class="btn btn-sm btn-danger float-sm-right">Delete</button>
+	                      					</a>
+	                      				{% endif %}
+                      				</div>
+				                    <div class="timeline-body">
+				                    	<div class="card">
+				                    		<div class="card-header">
+				                        		<h5 class="card-title">Resolution</h5>
+				                        	</div>
+				                    		<div class="card-body">
+				                        		{{resolution.content}}
+				                        	</div>
+				                        	<div class="card-footer">
+						                		<form method="post">
+						                    		{% csrf_token %}
+
+													<input type="text" name="resolution" value="{{resolution.id}}" hidden>
+							                        {% if user.is_staff %}
+								                    	<label class="badge badge-info">replys - {{resolution.reply_set.values.count}}</label>
+							                        	<div class="input-group input-group-sm">
+										                  	<input type="text" class="form-control" name="reply_content" required>
+										                  	<span class="input-group-append">
+										                    	<button type="submit" class="btn btn-info btn-flat">Reply</button>
+										                  	</span>
+										                </div>
+							                        {% endif %}
+						                    	</form>
+						                	</div>
+				                    	</div>
+				                        <div class="card">
+				                        	<div class="card-header">
+				                        		<h5 class="card-title">Replies</h5>
+				                        	</div>
+				                        	<div class="card-body">
+						                        <div class="timeline">
+					                  				{% for reply in resolution.reply_set.values.reverse %}
+									                  	<div class="time-label">
+									                    	<span class="bg-red">{{reply.date}}</span>
+									                  	</div>
+										                <div>
+										                    <i class="fas fa-comments"></i>
+															
+										                    <div class="timeline-item">
+							                      				<div class="timeline-header">
+							                      					<label>{{reply.author.get_full_name}}</label>
+							                      					{% if user.is_staff %}
+								                      					<a>
+								                      						<button class="btn btn-sm btn-danger float-sm-right">Delete</button>
+								                      					</a>
+								                      				{% endif %}
+							                      				</div>
+											                    <div class="timeline-body">
+											                        {{reply.content}}
+											                    </div>
+															
+											                    <div class="timeline-footer">
+											                    	
+							                      				</div>
+							                				</div>
+							                  			</div>
+							                  		{% endfor %}
+						                		</div>
+						                	</div>
+					                	</div>
+				                    </div>
+                				</div>
+                  			</div>
+                		</div>
+              		</div>
+                </div>
+            </div>
+		{% endif %}
+	</section>
+{% endblock %}

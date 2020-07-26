@@ -1741,6 +1741,57 @@ def resolution(request):
 
 
 @login_required(login_url='Home:account_signin')
+def resolution_details(request, resolution_id):
+    try:
+        user_context = {}
+        context = utils.dict_merge(
+            user_context,
+            user_features(request.user.id)
+        )
+
+        context = utils.dict_merge(external_context(), context)
+        reply_form = forms.ReplyForm(request.POST)
+        
+        if request.method == 'POST':
+            if reply_form.is_valid():
+                reply_content = reply_form.cleaned_data.get('reply_content')
+                post_id = reply_form.cleaned_data.get('resolution')
+                post = models.Resolution.objects.get(pk=post_id)
+                create_reply = models.Reply.objects.create(
+                    author=request.user,
+                    post=post,
+                    content=reply_content,
+                )
+
+                if create_reply:
+                    create_reply.save()
+
+                    messages.info(request, 'Your reply has been sent :)')
+
+                    return redirect('Home:resolution_details', resolution_id=resolution_id)
+                else:
+                    messages.info(request, 'Sorry, your request could not be processed, please try again')
+
+                    return redirect('Home:resolution_details', resolution_id=resolution_id)
+        else:
+            reply_form = forms.ReplyForm()
+
+            context = utils.dict_merge(
+                context,
+                {
+                    'reply_form': reply_form,
+                    'resolution': models.Resolution.objects.get(pk=resolution_id),
+                }
+            )
+
+        template_name = 'Home/resolution_details.html'
+
+        return render(request, template_name, context)
+    except Exception as e:
+        print('resolution_details', e)
+
+
+@login_required(login_url='Home:account_signin')
 def resolution_response(request):
     try:
         user_context = {}
@@ -1754,7 +1805,6 @@ def resolution_response(request):
         
         if request.method == 'POST':
             if reply_form.is_valid():
-                print('form is valid')
                 reply_content = reply_form.cleaned_data.get('reply_content')
                 post_id = reply_form.cleaned_data.get('resolution')
                 post = models.Resolution.objects.get(pk=post_id)
