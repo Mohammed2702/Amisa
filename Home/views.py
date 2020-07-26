@@ -41,9 +41,8 @@ def checker():
     all_orders = models.Order.objects.all()
     for i in all_orders:
         order = models.Order.objects.get(pk=i.id)
-        order_expiry_date = order.expiry_date
-        condition = curr_order_date >= order_expiry_date
-        if condition:
+
+        if order.is_expired():
             description = ' - Order was Declined.'
             if description not in order.description:
                 order.description += description
@@ -62,8 +61,7 @@ def checker():
         else:
             code.status = False
 
-        code_exp_date = code.expiry_date
-        if code_exp_date <= curr_exp_date:
+        if code.is_expired():
             if 'Expired' not in str(code.code).split('/'):
                 code.code = f'{code.code}/Expired'
             code.status = False
@@ -82,9 +80,7 @@ def checker():
 
     for i in all_resets:
         reset = models.PasswordReset.objects.get(pk=i.id)
-        reset_expiry_date = reset.expiry_date
-
-        if curr_order_date >= reset_expiry_date:
+        if reset.is_expired():
             reset.delete()
 
 

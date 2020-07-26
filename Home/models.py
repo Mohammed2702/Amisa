@@ -116,6 +116,12 @@ class Code(models.Model):
 	def __str__(self):
 		return self.code
 
+	def is_expired(self):
+		if timezone.now().date() >= self.expiry_date:
+			return True
+		else:
+			return False
+
 
 class History(models.Model):
 	user = models.ForeignKey(User, on_delete=models.CASCADE)
@@ -152,6 +158,12 @@ class Order(models.Model):
 
 	def desc(self):
 		return self.user.get_full_name(), self.transaction, self.amount, self.recipient, self.description
+
+	def is_expired(self):
+		if timezone.now() >= self.expiry_date:
+			return True
+		else:
+			return False
 
 
 class Post(models.Model):
@@ -216,6 +228,12 @@ class PasswordReset(models.Model):
 
 	def __str__(self):
 		return self.user.username
+
+	def is_expired(self):
+		if timezone.now() >= self.expiry_date:
+			return True
+		else:
+			return False
 
 
 class Resolution(models.Model):
