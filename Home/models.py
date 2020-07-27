@@ -138,6 +138,7 @@ class History(models.Model):
 	def __str__(self):
 		return self.description
 
+order_expiry = timezone.timedelta(hours=3)
 
 class Order(models.Model):
 	user = models.ForeignKey(User, on_delete=models.CASCADE)
@@ -146,8 +147,8 @@ class Order(models.Model):
 	recipient = models.CharField(max_length=15, default='08012345678')
 	description = models.CharField(max_length=100, blank=False, default='Order')
 	status = models.CharField(max_length=100, default='Pending')
-	date = models.DateTimeField(default=timezone.now)
-	expiry_date = models.DateTimeField(default=timezone.now() + timezone.timedelta(hours=3))
+	date = models.DateTimeField(auto_now_add=True)
+	# expiry_date = models.DateTimeField(default=timezone.now() + timezone.timedelta(hours=3))
 
 	class Meta:
 		verbose_name = 'Order'
@@ -160,7 +161,7 @@ class Order(models.Model):
 		return self.user.get_full_name(), self.transaction, self.amount, self.recipient, self.description
 
 	def is_expired(self):
-		if timezone.now() >= self.expiry_date:
+		if timezone.now() >= self.date + order_expiry:
 			return True
 		else:
 			return False
