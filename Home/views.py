@@ -39,7 +39,7 @@ def checker():
     curr_exp_date = curr_date
     curr_order_date = timezone.now()
 
-    all_orders = models.Order.objects.all()
+    all_orders = models.Order.objects.all().filter(status='Declined')
     for i in all_orders:
         order = models.Order.objects.get(pk=i.id)
 
