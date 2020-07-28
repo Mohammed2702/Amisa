@@ -99,7 +99,6 @@ def external_context():
         'notice_notes': models.SiteSetting.objects.get(pk=1).services_note,
         'all_networks': models.Network.objects.all(),
         'get_settings': models.SiteSetting.objects.get(pk=1),
-        'resolutions': models.Resolution.objects.all(),
         'all_banks': models.Bank.objects.all(),
     }
 
@@ -127,10 +126,12 @@ def user_features(user_id):
 
     if user.is_staff:
         orders = [i for i in reversed(list(models.Order.objects.all()))][:5]
+        resolutions = models.Resolution.objects.all()
 
         notifications = orders + posts
     else:
         orders = [i for i in reversed(list(models.Order.objects.all().filter(user=user)))][:5]
+        resolutions = models.Resolution.objects.all().filter(author=user)
 
         notifications = orders + posts
 
@@ -146,6 +147,7 @@ def user_features(user_id):
         'orders': orders,
         'posts': posts,
         'notifications_count': len(notifications),
+        'resolutions': resolutions
     }
 
     return context
@@ -1785,6 +1787,8 @@ def resolution_details(request, resolution_id):
                 }
             )
 
+        if not request.user.is_staff:
+            context['resolutions'] = models.Resolution.objects.all().filter(author=request.user)
         template_name = 'Home/resolution_details.html'
 
         return render(request, template_name, context)
@@ -1800,6 +1804,9 @@ def resolution_response(request):
             user_context,
             user_features(request.user.id)
         )
+
+        if not request.user.is_staff:
+            context['resolutions'] = models.Resolution.objects.all().filter(author=request.user)
 
         context = utils.dict_merge(external_context(), context)
         reply_form = forms.ReplyForm(request.POST)
