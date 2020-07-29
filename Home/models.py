@@ -58,7 +58,7 @@ user_location = [
 class Profile(models.Model):
 	user = models.OneToOneField(User, on_delete=models.CASCADE)
 	reference_id = models.CharField(max_length=100, blank=False, unique=True)
-	account_type = models.CharField(max_length=10, choices=account_types)
+	account_type = models.CharField(max_length=10, choices=account_types, default='Not Specified')
 	state = models.CharField(max_length=15, choices=user_location, default='Kano')
 	date_joined = models.DateTimeField(default=timezone.now)
 	phone_number = models.CharField(max_length=12, blank=True, default='---- --- ----')
