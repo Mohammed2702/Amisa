@@ -198,7 +198,7 @@ def account_signup(request):
                 profile_model = models.Profile.objects.create(
                     user=user,
                     reference_id=new_reference_id,
-                    account_type='User',
+                    # account_type='User',
                 )
                 profile_model.save()
 
@@ -679,69 +679,73 @@ def account_code(request):
         else:
             context = {}
             if request.user.profile.account_type == 'User':
+                rate = models.SiteSetting.objects.get(pk=1).customer_rate
+            elif request.user.profile.account_type == 'Agent':
                 rate = models.SiteSetting.objects.get(pk=1).agent_rate
             else:
-                rate = models.SiteSetting.objects.get(pk=1).customer_rate
+                rate = None
 
-            rate /= 100
+            if rate:
+                rate /= 100
 
-            template_name = 'Home/account_user_code.html'
-            if request.method == 'POST':
-                if code_redeem_form.is_valid():
-                    code_redeem = code_redeem_form.cleaned_data.get('code')
-                    context = {'code_redeem': code_redeem}
+                template_name = 'Home/account_user_code.html'
+                if request.method == 'POST':
+                    if code_redeem_form.is_valid():
+                        code_redeem = code_redeem_form.cleaned_data.get('code')
+                        context = {'code_redeem': code_redeem}
 
-                    try:
-                        user_code = models.Code.objects.get(code=code_redeem)
-                        print(f'Code {code_redeem} {user_code.code} {user_code.status}')
-                        if user_code.code_group.status:
-                            code_amount = user_code.amount
-                            description = 'Code Redemption'
-                            if user_code.status:
-                                user_wallet = models.Wallet.objects.get(user=request.user)
-                                code_recharge = code_amount - (rate * code_amount)
-                                user_wallet.wallet_balance += code_recharge
-                                user_wallet.save()
+                        try:
+                            user_code = models.Code.objects.get(code=code_redeem)
+                            print(f'Code {code_redeem} {user_code.code} {user_code.status}')
+                            if user_code.code_group.status:
+                                code_amount = user_code.amount
+                                description = 'Code Redemption'
+                                if user_code.status:
+                                    user_wallet = models.Wallet.objects.get(user=request.user)
+                                    code_recharge = code_amount - (rate * code_amount)
+                                    user_wallet.wallet_balance += code_recharge
+                                    user_wallet.save()
 
-                                log_history = models.History.objects.create(
-                                    user=request.user,
-                                    description=description,
-                                    amount=code_amount,
-                                    charges=rate,
-                                    status=True
-                                )
-
-                                log_history.save()
-
-                                user_code.code += '/Used'
-                                user_code.status = False
-
-                                user_code.save()
-
-                                messages.info(
-                                    request,
-                                    f'{code_redeem} has been redeemed\
-                                    successfully, your new Wallet Balance is\
-                                     {request.user.wallet.wallet_balance}'
+                                    log_history = models.History.objects.create(
+                                        user=request.user,
+                                        description=description,
+                                        amount=code_amount,
+                                        charges=rate,
+                                        status=True
                                     )
 
-                                return redirect('Home:account_code')
+                                    log_history.save()
+
+                                    user_code.code += '/Used'
+                                    user_code.status = False
+
+                                    user_code.save()
+
+                                    messages.info(
+                                        request,
+                                        f'{code_redeem} has been redeemed\
+                                        successfully, your new Wallet Balance is\
+                                         {request.user.wallet.wallet_balance}'
+                                        )
+
+                                    return redirect('Home:account_code')
+                                else:
+                                    messages.info(request, f'{code_redeem} has expired')
+
+                                    return redirect('Home:account_code')
                             else:
-                                messages.info(request, f'{code_redeem} has expired')
+                                messages.info(request, f'{code_redeem} has been disabled')
 
                                 return redirect('Home:account_code')
-                        else:
-                            messages.info(request, f'{code_redeem} has been disabled')
+                        except models.Code.DoesNotExist:
+                            messages.info(request, f'{code_redeem} does not exist')
 
                             return redirect('Home:account_code')
-                    except models.Code.DoesNotExist:
-                        messages.info(request, f'{code_redeem} does not exist')
-
-                        return redirect('Home:account_code')
-                    except Exception as e:
-                        print(f'account_code {e}')
-            else:
-                code_redeem_form = forms.CodeRedeemForm()
+                        except Exception as e:
+                            print(f'account_code {e}')
+                else:
+                    code_redeem_form = forms.CodeRedeemForm()
+            messages.warnings(request, 'Account type not specified. Please complete update your profile to continue.')
 
             context = utils.dict_merge(context, {'code_redeem_form': code_redeem_form})
             context = utils.dict_merge(external_context(), context)
