@@ -11,6 +11,7 @@ from . import utils
 account_types = [
 	('Agent', 'Agent'),
 	('User', 'User'),
+	('Not Specified', 'Not Specified'),
 ]
 
 
@@ -58,7 +59,7 @@ user_location = [
 class Profile(models.Model):
 	user = models.OneToOneField(User, on_delete=models.CASCADE)
 	reference_id = models.CharField(max_length=100, blank=False, unique=True)
-	account_type = models.CharField(max_length=10, choices=account_types, default='Not Specified')
+	account_type = models.CharField(max_length=20, choices=account_types, default='Not Specified')
 	state = models.CharField(max_length=15, choices=user_location, default='Kano')
 	date_joined = models.DateTimeField(default=timezone.now)
 	phone_number = models.CharField(max_length=12, blank=True, default='---- --- ----')
@@ -219,19 +220,18 @@ class Network(models.Model):
 		verbose_name = 'Network'
 		verbose_name_plural = 'Networks'
 
-
+password_reset_exp = timezone.now() + timezone.timedelta(minutes=5)
 class PasswordReset(models.Model):
 	user = models.ForeignKey(User, on_delete=models.CASCADE)
 	link_slug = models.CharField(max_length=100, unique=True)
 	verification_code = models.CharField(max_length=6, unique=True)
 	date = models.DateTimeField(default=timezone.now)
-	expiry_date = models.DateTimeField(default=timezone.now() + timezone.timedelta(minutes=5))
 
 	def __str__(self):
 		return self.user.username
 
 	def is_expired(self):
-		if timezone.now() >= self.expiry_date:
+		if timezone.now() >= password_reset_exp:
 			return True
 		else:
 			return False

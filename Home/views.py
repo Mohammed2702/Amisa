@@ -682,7 +682,7 @@ def account_code(request):
                 rate = models.SiteSetting.objects.get(pk=1).customer_rate
             elif request.user.profile.account_type == 'Agent':
                 rate = models.SiteSetting.objects.get(pk=1).agent_rate
-            else:
+            else: # Not Specified Account Type
                 rate = None
 
             if rate:
