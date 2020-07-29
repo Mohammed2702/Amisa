@@ -39,7 +39,7 @@ def checker():
     curr_exp_date = curr_date
     curr_order_date = timezone.now()
 
-    all_orders = models.Order.objects.all().filter(status='Declined')
+    all_orders = models.Order.objects.all().filter(status='Pending')
     for i in all_orders:
         order = models.Order.objects.get(pk=i.id)
 
@@ -126,14 +126,14 @@ def user_features(user_id):
 
     if user.is_staff:
         orders = [i for i in reversed(list(models.Order.objects.all()))][:5]
-        resolutions = models.Resolution.objects.all()
+        resolutions = list(models.Resolution.objects.all().order_by('date'))
 
-        notifications = orders + posts
+        notifications = orders + posts + resolutions
     else:
         orders = [i for i in reversed(list(models.Order.objects.all().filter(user=user)))][:5]
-        resolutions = models.Resolution.objects.all().filter(author=user)
+        resolutions = list(models.Resolution.objects.all().filter(author=user).order_by('date'))
 
-        notifications = orders + posts
+        notifications = orders + posts + resolutions
 
     context = {
         'current_user': user,
