@@ -1788,6 +1788,9 @@ def resolution_details(request, resolution_id):
                 {
                     'reply_form': reply_form,
                     'resolution': models.Resolution.objects.get(pk=resolution_id),
+                    'replies': models.Reply.objects.all().filter(
+                        post=models.Resolution.objects.get(pk=resolution_id),
+                    )
                 }
             )
 

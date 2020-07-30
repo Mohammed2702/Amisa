@@ -257,7 +257,12 @@ class Reply(models.Model):
 	date = models.DateTimeField(default=timezone.now)
 
 	def __str__(self):
-		return self.post.author + ' ' + self.content
+		return str(self.post.author) + ' ' + str(self.content)
+
+	def get_author(self):
+		author = self.author.get_full_name()
+		
+		return author
 
 
 class Bank(models.Model):
