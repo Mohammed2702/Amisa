@@ -37,6 +37,13 @@
             <div class="row" id="{{post.id}}">
           		<div class="col">
             		<div class="timeline">
+            			{% for message in messages %}
+				            <div class="alert alert-warning">
+				                <button class="close" data-dismiss="alert">×</button>
+				                {{ message }}
+				          </div>
+				        {% endfor %}
+				        
 						{% for resolution in resolutions %}
 	                			<div>
 	                    			<i class="fas fa-clock bg-gray"></i>
@@ -59,12 +66,7 @@
 					                    <div class="timeline-body">
 					                        {{resolution.content}}
 					                    </div>
-										{% for message in messages %}
-								            <div class="alert alert-warning">
-								                <button class="close" data-dismiss="alert">×</button>
-								                {{ message }}
-								          </div>
-								        {% endfor %}
+										
 					                    <div class="timeline-footer">
 					                    	<form method="post">
 					                    		{% csrf_token %}
