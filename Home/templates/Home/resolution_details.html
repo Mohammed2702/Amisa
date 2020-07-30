@@ -60,6 +60,12 @@
 			                    		<div class="card-body">
 			                        		{{resolution.content}}
 			                        	</div>
+			                        	{% for message in messages %}
+								            <div class="alert alert-warning">
+								                <button class="close" data-dismiss="alert">×</button>
+								                {{ message }}
+								          </div>
+								        {% endfor %}
 			                        	<div class="card-footer">
 					                		<form method="post">
 					                    		{% csrf_token %}
