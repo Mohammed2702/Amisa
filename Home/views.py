@@ -745,7 +745,7 @@ def account_code(request):
                             print(f'account_code {e}')
                 else:
                     code_redeem_form = forms.CodeRedeemForm()
-            messages.warnings(request, 'Account type not specified. Please complete update your profile to continue.')
+            messages.warning(request, 'Account type not specified. Please complete update your profile to continue.')
 
             context = utils.dict_merge(context, {'code_redeem_form': code_redeem_form})
             context = utils.dict_merge(external_context(), context)
