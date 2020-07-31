@@ -509,74 +509,30 @@ def account_profile(request):
         user_update_form = forms.UserUpdateForm(instance=request.user)
         password_reset_form = forms.PasswordResetForm(request.POST)
 
-        if request.method == 'POST':
-            profile_form = forms.ProfileForm(request.POST, instance=request.user.profile)
-            user_update_form = forms.UserUpdateForm(request.POST, instance=request.user)
-            password_reset_form = forms.PasswordResetForm(request.POST)
+        if request.user.profile.account_type_change_counter <= 1:
+            if request.method == 'POST':
+                profile_form = forms.ProfileForm(request.POST, instance=request.user.profile)
+                user_update_form = forms.UserUpdateForm(request.POST, instance=request.user)
+                password_reset_form = forms.PasswordResetForm(request.POST)
 
-            if profile_form.is_valid():
-                profile_form.save()
+                if profile_form.is_valid():
+                    profile_form.save()
 
-                new_account_type = profile_form.cleaned_data.get(
-                    'account_type')
-                new_state = profile_form.cleaned_data.get('state')
-                new_phone_number = profile_form.cleaned_data.get('phone_number')
+                    new_account_type = profile_form.cleaned_data.get(
+                        'account_type')
+                    new_state = profile_form.cleaned_data.get('state')
+                    new_phone_number = profile_form.cleaned_data.get('phone_number')
 
-                profile_user = User.objects.get(pk=request.user.id)
+                    profile_user = User.objects.get(pk=request.user.id)
 
-                profile_user.profile.account_type = new_account_type
-                profile_user.profile.state = new_state
-                profile_user.profile.phone_number = new_phone_number
+                    profile_user.profile.account_type = new_account_type
+                    profile_user.profile.state = new_state
+                    profile_user.profile.phone_number = new_phone_number
 
-                profile_user.save()
-
-                title = 'Profile Update'
-                body = open(f'{message_dir}/change_in_login_details.txt', 'r').read().format(
-                    request.user.first_name,
-                    request.user.get_full_name(),
-                    request.user.username,
-                    request.user.email,
-                    request.user.profile.account_type,
-                    request.user.profile.reference_id
-                )
-                recipient = request.user.email
-
-                email_success = utils.deliver_mail(
-                    title=title,
-                    body=body,
-                    recipient=recipient
-                )
-
-                print(f'E-Mail for {request.user.profile.reference_id} returned {email_success}')
-
-                if email_success:
-                    messages.info(request, 'Your profile is now up to date :)')
-                else:
-                    messages.info(request, 'Your profile could not be set, sorry ... :(')
-
-                return redirect('Home:account_profile')
-            else:
-                profile_form = forms.ProfileForm(instance=request.user)
-
-            if user_update_form.is_valid():
-                get_user = User.objects.select_for_update().filter(pk=request.user.id)
-
-                username = user_update_form.cleaned_data.get('username')
-                password = request.POST.get('password1')
-                authenticate_user = authenticate(
-                    username=username, password=password)
-
-                if authenticate_user:
-                    first_name = user_update_form.cleaned_data.get(
-                        'first_name')
-                    last_name = user_update_form.cleaned_data.get('last_name')
-                    email = user_update_form.cleaned_data.get('email')
-
-                    user_update_form.save()
+                    profile_user.save()
 
                     title = 'Profile Update'
-                    body = open(f'{message_dir}/change_in_login_details.txt', 'r')
-                    body = body.read().format(
+                    body = open(f'{message_dir}/change_in_login_details.txt', 'r').read().format(
                         request.user.first_name,
                         request.user.get_full_name(),
                         request.user.username,
@@ -584,7 +540,7 @@ def account_profile(request):
                         request.user.profile.account_type,
                         request.user.profile.reference_id
                     )
-                    recipient = email
+                    recipient = request.user.email
 
                     email_success = utils.deliver_mail(
                         title=title,
@@ -601,24 +557,27 @@ def account_profile(request):
 
                     return redirect('Home:account_profile')
                 else:
-                    pass
-            else:
-                user_update_form = forms.UserUpdateForm(instance=request.user)
+                    profile_form = forms.ProfileForm(instance=request.user)
 
-            if password_reset_form.is_valid():
-                user = User.objects.get(pk=request.user.id)
+                if user_update_form.is_valid():
+                    get_user = User.objects.select_for_update().filter(pk=request.user.id)
 
-                old_password = password_reset_form.cleaned_data.get('old_password')
-                new_password = password_reset_form.cleaned_data.get('new_password')
-                confirm_password = password_reset_form.cleaned_data.get('confirm_password')
+                    username = user_update_form.cleaned_data.get('username')
+                    password = request.POST.get('password1')
+                    authenticate_user = authenticate(
+                        username=username, password=password)
 
-                authenticate_user = authenticate(username=request.user.username, password=old_password)
-
-                if new_password == confirm_password:
                     if authenticate_user:
-                        user.set_password(new_password)
-                        title = 'Password Reset'
-                        body = open(f'{message_dir}/change_in_login_details.txt', 'r').read().format(
+                        first_name = user_update_form.cleaned_data.get(
+                            'first_name')
+                        last_name = user_update_form.cleaned_data.get('last_name')
+                        email = user_update_form.cleaned_data.get('email')
+
+                        user_update_form.save()
+
+                        title = 'Profile Update'
+                        body = open(f'{message_dir}/change_in_login_details.txt', 'r')
+                        body = body.read().format(
                             request.user.first_name,
                             request.user.get_full_name(),
                             request.user.username,
@@ -626,7 +585,7 @@ def account_profile(request):
                             request.user.profile.account_type,
                             request.user.profile.reference_id
                         )
-                        recipient = request.user.email
+                        recipient = email
 
                         email_success = utils.deliver_mail(
                             title=title,
@@ -637,19 +596,65 @@ def account_profile(request):
                         print(f'E-Mail for {request.user.profile.reference_id} returned {email_success}')
 
                         if email_success:
-                            messages.info(request, 'Password reset Successfull, check your E-Mail for verfication')
+                            messages.info(request, 'Your profile is now up to date :)')
                         else:
-                            messages.info(request, 'Password reset could not be done, E-Mail could not be sent :(')
-                        user.save()
+                            messages.info(request, 'Your profile could not be set, sorry ... :(')
+
+                        return redirect('Home:account_profile')
                     else:
-                        messages.info(request, 'Incorrect password, try again')
+                        pass
                 else:
-                    messages.info(request, 'Password mismatch')
+                    user_update_form = forms.UserUpdateForm(instance=request.user)
 
-                return redirect('Home:account_profile')
-            else:
-                password_reset_form = forms.ProfileForm(instance=request.user)
+                if password_reset_form.is_valid():
+                    user = User.objects.get(pk=request.user.id)
 
+                    old_password = password_reset_form.cleaned_data.get('old_password')
+                    new_password = password_reset_form.cleaned_data.get('new_password')
+                    confirm_password = password_reset_form.cleaned_data.get('confirm_password')
+
+                    authenticate_user = authenticate(username=request.user.username, password=old_password)
+
+                    if new_password == confirm_password:
+                        if authenticate_user:
+                            user.set_password(new_password)
+                            title = 'Password Reset'
+                            body = open(f'{message_dir}/change_in_login_details.txt', 'r').read().format(
+                                request.user.first_name,
+                                request.user.get_full_name(),
+                                request.user.username,
+                                request.user.email,
+                                request.user.profile.account_type,
+                                request.user.profile.reference_id
+                            )
+                            recipient = request.user.email
+
+                            email_success = utils.deliver_mail(
+                                title=title,
+                                body=body,
+                                recipient=recipient
+                            )
+
+                            print(f'E-Mail for {request.user.profile.reference_id} returned {email_success}')
+
+                            if email_success:
+                                messages.info(request, 'Password reset Successfull, check your E-Mail for verfication')
+                            else:
+                                messages.info(request, 'Password reset could not be done, E-Mail could not be sent :(')
+                            user.save()
+                        else:
+                            messages.info(request, 'Incorrect password, try again')
+                    else:
+                        messages.info(request, 'Password mismatch')
+
+                    return redirect('Home:account_profile')
+                else:
+                    password_reset_form = forms.ProfileForm(instance=request.user)
+        else:
+            messages.warning(request, 'Account type change exceeded. You can only change your account type once.')
+
+            return redirect('Home:account_profile')
+            
         context = utils.dict_merge(
             user_details,
             {

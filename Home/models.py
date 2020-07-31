@@ -63,6 +63,7 @@ class Profile(models.Model):
 	state = models.CharField(max_length=15, choices=user_location, default='Kano')
 	date_joined = models.DateTimeField(default=timezone.now)
 	phone_number = models.CharField(max_length=12, blank=True, default='---- --- ----')
+	account_type_change_counter = models.IntegerField(default=0, blank=True)
 
 	class Meta:
 		verbose_name = "Profile"
@@ -70,6 +71,11 @@ class Profile(models.Model):
 
 	def __str__(self):
 		return self.user.username
+
+	def save(self, *args, **kwargs):
+		self.account_type_change_counter += 1
+
+		super().save(*args, **kwargs)
 
 
 class Wallet(models.Model):
