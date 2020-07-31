@@ -652,9 +652,6 @@ def account_profile(request):
                     password_reset_form = forms.ProfileForm(instance=request.user)
         else:
             messages.warning(request, 'Account type change exceeded. You can only change your account type once.')
-
-            return redirect('Home:account_profile')
-            
         context = utils.dict_merge(
             user_details,
             {
