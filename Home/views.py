@@ -515,7 +515,7 @@ def account_profile(request):
             password_reset_form = forms.PasswordResetForm(request.POST)
 
             if profile_form.is_valid():
-                if request.user.profile.account_type_change_counter <= 1:
+                if request.user.profile.account_type_change_counter <= 2:
 
                     profile_form.save()
 
