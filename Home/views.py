@@ -680,6 +680,7 @@ def account_code(request):
         template_name = 'Home/account_code.html'
         code_redeem_form = forms.CodeRedeemForm(request.POST)
         if request.user.is_staff:
+            template_name = 'Home/account_user_code.html'
             context = utils.dict_merge(
                 external_context(), user_features(request.user.id))
         else:
@@ -693,8 +694,7 @@ def account_code(request):
 
             if rate:
                 rate /= 100
-
-                template_name = 'Home/account_user_code.html'
+                
                 if request.method == 'POST':
                     if code_redeem_form.is_valid():
                         code_redeem = code_redeem_form.cleaned_data.get('code')
