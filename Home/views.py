@@ -671,9 +671,9 @@ def account_profile(request):
 @login_required
 def account_code(request):
     try:
+        template_name = 'Home/account_code.html'
         code_redeem_form = forms.CodeRedeemForm(request.POST)
         if request.user.is_staff:
-            template_name = 'Home/account_code.html'
             context = utils.dict_merge(
                 external_context(), user_features(request.user.id))
         else:
