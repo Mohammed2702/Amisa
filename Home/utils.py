@@ -120,8 +120,6 @@ def generate_ver_code():
 # Reloadly
 
 import requests
-# import http.client
-# import mimetypes
 
 
 def get_token():
@@ -140,24 +138,152 @@ def get_token():
 
 	data = requests.post(url, json=payload, headers=headers)
 
-	# conn = http.client.HTTPSConnection("auth.reloadly.com")
-
-	# conn.request("POST", "/oauth/token", payload, headers)
-	# res = conn.getresponse()
-	# data = res.read()
-
 	return data
 
     
-def get_balance(auth_token=get_token().json()['access_token']):
-	url = f'{settings.CLIENT_LIVE}/accounts/balance'
-	headers = {
-	  'Accept': 'application/com.reloadly.topups-v1+json',
-	  'Authorization': f'Bearer {auth_token}'
-	}
+def get_balance():
+	auth_token=get_token()
 
-	request = requests.get(url, headers)
+	if auth_token:
+		auth_token = auth_token.json()['access_token']
+		url = f'{settings.CLIENT_LIVE}/accounts/balance'
+		headers = {
+		  'Accept': 'application/com.reloadly.topups-v1+json',
+		  'Authorization': f'Bearer {auth_token}'
+		}
 
-	response_body = request
+		data = requests.get(url, headers=headers)
 
-	return response_body
+		return data.json()['balance']
+	else:
+		return False
+
+
+def get_discount_all():
+	auth_token=get_token()
+
+	if auth_token:
+		auth_token = auth_token.json()['access_token']
+		url = f'{settings.CLIENT_LIVE}/operators/commissions'
+		headers = {
+		  'Accept': 'application/com.reloadly.topups-v1+json',
+		  'Authorization': f'Bearer {auth_token}'
+		}
+
+		data = requests.get(url, headers=headers)
+
+		return data.json()
+	else:
+		return False
+
+
+def get_discount_by_id(countryID=646):
+	auth_token=get_token()
+
+	if auth_token:
+		auth_token = auth_token.json()['access_token']
+		url = f'{settings.CLIENT_LIVE}/operators/{countryID}/commissions'
+		headers = {
+		  'Accept': 'application/com.reloadly.topups-v1+json',
+		  'Authorization': f'Bearer {auth_token}'
+		}
+
+		data = requests.get(url, headers=headers)
+
+		return data.json()
+	else:
+		return False
+
+
+def get_fx_by_id(ID=646, amount=100):
+	auth_token=get_token()
+
+	if auth_token:
+		auth_token = auth_token.json()['access_token']
+		url = f'{settings.CLIENT_LIVE}/operators/fx-rate'
+		headers = {
+		  'Content-Type': 'application/json',
+		  'Accept': 'application/com.reloadly.topups-v1+json',
+		  'Authorization': f'Bearer {auth_token}'
+		}
+
+		data = {
+			"operatorId": ID,
+  			"amount": amount
+		}
+
+		data = requests.post(url, headers=headers, json=data)
+
+		return data.json()
+	else:
+		return False
+
+
+def get_countries():
+	auth_token=get_token()
+
+	if auth_token:
+		auth_token = auth_token.json()['access_token']
+		url = f'{settings.CLIENT_LIVE}/countries'
+		headers = {
+		  'Accept': 'application/com.reloadly.topups-v1+json',
+		}
+
+		data = requests.get(url, headers=headers)
+
+		return data.json()
+	else:
+		return False
+
+
+def get_country_by_iso(iso):
+	auth_token=get_token()
+
+	if auth_token:
+		auth_token = auth_token.json()['access_token']
+		url = f'{settings.CLIENT_LIVE}/countries/{iso}'
+		headers = {
+		  'Accept': 'application/com.reloadly.topups-v1+json',
+		}
+
+		data = requests.get(url, headers=headers)
+
+		return data.json()
+	else:
+		return False
+
+
+def make_topup(ops_ID, amount, recipient, sender, customIdentifier):
+	auth_token=get_token()
+
+	if auth_token:
+		auth_token = auth_token.json()['access_token']
+		url = f'{settings.CLIENT_LIVE}/topups'
+		headers = {
+			'Content-Type': 'application/json',
+		  	'Accept': 'application/com.reloadly.topups-v1+json',
+		  	'Authorization': f'Bearer {auth_token}'
+		}
+
+		r_countryCode = 'NG'
+		s_countryCode = 'NG'
+
+		value = {
+			"recipientPhone": {
+				"countryCode": r_countryCode,
+				"number": recipient
+			},
+			"senderPhone": {
+				"countryCode": s_countryCode,
+				"number": sender
+			},
+			"operatorId": ops_ID,
+			"amount": amount,
+			"customIdentifier": customIdentifier
+		}
+
+		data = requests.post(url, headers=headers, json=value)
+
+		return data.json()
+	else:
+		return False
