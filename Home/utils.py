@@ -115,3 +115,49 @@ def generate_url_scrambled(existing_url_scrambled):
 
 def generate_ver_code():
 	return random.randint(10000, 99999)
+
+
+# Reloadly
+
+import requests
+# import http.client
+# import mimetypes
+
+
+def get_token():
+	url = "https://auth.reloadly.com/oauth/token"
+	payload = {
+		"client_id": settings.CLIENT_ID,
+        "client_secret": settings.CLIENT_SECRET,
+        "grant_type": "client_credentials",
+        "audience": settings.CLIENT_LIVE
+	}
+
+	headers = {
+	  'Content-Type': 'application/json',
+	  'Accept': 'application/json'
+	}
+
+	data = requests.post(url, json=payload, headers=headers)
+
+	# conn = http.client.HTTPSConnection("auth.reloadly.com")
+
+	# conn.request("POST", "/oauth/token", payload, headers)
+	# res = conn.getresponse()
+	# data = res.read()
+
+	return data
+
+    
+def get_balance(auth_token=get_token().json()['access_token']):
+	url = f'{settings.CLIENT_LIVE}/accounts/balance'
+	headers = {
+	  'Accept': 'application/com.reloadly.topups-v1+json',
+	  'Authorization': f'Bearer {auth_token}'
+	}
+
+	request = requests.get(url, headers)
+
+	response_body = request
+
+	return response_body
