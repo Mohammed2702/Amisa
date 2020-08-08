@@ -145,3 +145,11 @@ STATICFILES_DIRS = [
 
 MEDIA_ROOT = os.path.join(BASE_DIR, 'Media')
 MEDIA_URL = '/Media/'
+
+
+# Reloadly API settings
+
+CLIENT_ID = 'tUxAvIjQGOAnrZXLwx3a4AfzBIDDX6am'
+CLIENT_SECRET = '7SSTbxyfD9-UAYmzELByVhzWhR8qAV-G9twF749RiJEwos7A1GvCplCD1NdzAA0'
+# CLIENT_LIVE = 'https://reloadly.com'
+CLIENT_LIVE = 'https://topups-sandbox.reloadly.com'
