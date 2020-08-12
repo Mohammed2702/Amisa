@@ -122,6 +122,23 @@ def generate_ver_code():
 import requests
 
 
+# Operators ...
+
+airtime = {
+	'airtel': 342,
+	'mtn': 341,
+	'glo': 344,
+	'9mobile': 340
+}
+
+data = {
+	'airtel': 646,
+	'mtn': 345,
+	'glo': 647,
+	'9mobile': 645
+}
+
+
 def get_token():
 	url = "https://auth.reloadly.com/oauth/token"
 	payload = {
@@ -253,7 +270,7 @@ def get_country_by_iso(iso):
 		return False
 
 
-def make_topup(ops_ID, amount, recipient, sender, customIdentifier):
+def make_topup(ops_ID, amount, recipient, sender='', customIdentifier=''):
 	auth_token=get_token()
 
 	if auth_token:

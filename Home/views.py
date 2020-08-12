@@ -1102,12 +1102,18 @@ def account_user_data(request):
                             description=description
                         )
 
+                        operator = utils.airtime[network.loweer()]
+                        amount = amount
+                        recipient = user_phone
+
+                        load_data = utils.topup(operator, amount, recipient, customIdentifier=user.profile.reference_id)
+
                         if create_order:
                             order_mail = utils.deliver_mail_order(
                                 title='',
                                 body=description
                             )
-                            if order_mail:
+                            if order_mail and load_data:
                                 user_wallet.save()
                                 create_order.save()
 
@@ -1149,7 +1155,6 @@ def account_user_airtime(request):
             'networks': [i.network for i in list(models.Network.objects.all())],
             'user_orders': user_orders,
             'user_orders_truncate': user_orders_truncate,
-
         }
 
         if request.method == 'POST':
@@ -1175,13 +1180,19 @@ def account_user_airtime(request):
                             description=description
                         )
 
+                        operator = utils.airtime[network.loweer()]
+                        amount = amount
+                        recipient = user_phone
+
+                        load_airtime = utils.topup(operator, amount, recipient, customIdentifier=user.profile.reference_id)
+
                         if create_order:
                             order_mail = utils.deliver_mail_order(
                                 title='',
                                 body=create_order.desc()
                             )
 
-                            if order_mail:
+                            if order_mail and load_airtime:
                                 user_wallet.save()
                                 create_order.save()
 
