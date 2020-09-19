@@ -1,2 +1,1 @@
-# MyProjects
-Person Web Applications
+# Amisa
