@@ -1,0 +1,35 @@
+Section_1
+
+Requirements and price Range for issuance of AMISACARD to customers.
+
+Grocery stores, provision stores, pharmacies, eatery, restaurant etc 
+	N15 AMISACARD	- Minimum of N150 to N250 of purchases and minimum of 2 varieties of goods.
+	N30 AMISACARD 	- Minimum of N250 to N500 of purchases and minimum of 3 varieties of goods.
+	N50 AMISACARD	- Minimum of N500 to N800 of purchases and minimum of 3 varieties of goods.
+	N70 AMISACARD	- Minimum of N800 to N1,100 of purchases and minimum of 3 varieties of goods.
+	N100 AMISACARD	- Minimum of N1,100 to N1,800 of purchases and minimum of 3 varieties of goods.
+	N250 AMISACARD	- Minimum of N1,800 and above of purchases and minimum of 3 varieties of goods.
+
+Section_2
+
+Notice
+	1. Business outlets should concentrate on the number varieties of the goods after reaching the price before issuance of the appropriate card.
+	2. Manufacturers and wholesalers are to give retailers cards based on their capability, will and level of the retailers purchases for the benefit of them giving to their customers.
+
+Section_3
+
+Services rendered businesses
+	N30 AMISACARD Minimum of N100 to N250 of payment.
+	N50 AMISACARD Minimum of N250 to N800 of payment.
+	N70 AMISACARD Minimum of N800 to N1,500 of payment.
+	N100 AMISACARD Minimum of N1500 to N2,600 of payment.
+	N250 AMISACARD Minimum of N2,600 and above  of payment.
+
+Section_4
+
+Filling stations.
+	N30 AMISACARD for 2 to 3 litres of purchases.
+	N50 AMISACARD for 4 to 10 litres of purchases.
+	N70 AMISACARD for 11 to 15 litres of purchases.
+	N100 AMISACARD for 16 to 20 litres of purchases.
+	N250 AMISACARD for 21 litres and above of purchases.

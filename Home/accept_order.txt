@@ -1,0 +1,13 @@
+Acceptance of order
+
+Dear {}
+
+Reference ID: 	{}
+Transaction:	{}
+
+This is to inform you about the acceptance of your order. The order will be processed within 3hrs.
+
+WhatsApp  - +234 903 344 5157
+Call      - +234 903 344 5157
+
+Thanks for being part of AMISA community

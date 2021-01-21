@@ -1,0 +1,16 @@
+Retrieval of Password!
+
+Dear {}
+
+Full name:	 	{}
+Username:	 	{}
+Email:		 	{}
+Account Type:	{}
+Reference ID:	{}
+
+In reply to your change in profile. Below is your details.
+
+WhatsApp  - +234 903 344 5157
+Call      - +234 903 344 5157	  
+
+Thank you for being part of AMISA community.
