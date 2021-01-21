@@ -11,23 +11,26 @@ https://docs.djangoproject.com/en/3.0/ref/settings/
 """
 
 import os
+import json
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
+CONFIG_FILE = os.path.join(BASE_DIR, 'config.json')
+
+with open(CONFIG_FILE, 'r') as config:
+    config = json.load(config)
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'v+yju=w%f4@9pe^acef#5_bdgq_=*n_x*t^z1t*6ly!2x)=nvc'
+SECRET_KEY = config['SECRET_KEY']
 
 # SECURITY WARNING: don't run with debug turned on in production!
-# DEBUG = True
-DEBUG = False
+DEBUG = config['DEBUG']
 
-ALLOWED_HOSTS = ['*']
-# www.amisacb.com
+ALLOWED_HOSTS = config['ALLOWED_HOSTS']
 
 # Application definition
 
@@ -115,7 +118,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'Africa/Lagos'
+TIME_ZONE = config['TIME_ZONE']
 
 USE_I18N = True
 
@@ -128,17 +131,17 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/3.0/howto/static-files/
 LOGIN_REDIRECT_URL = 'Home:account_signin'
 
-ADMIN_EMAIL = 'amisatechnologies@gmail.com'
+ADMIN_EMAIL = config['ADMIN_EMAIL']
 
-EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST_USER = 'amisatechnologies@gmail.com'
-EMAIL_HOST = 'smtp.gmail.com'
-EMAIL_PORT = 587
-EMAIL_USE_TLS = True
-EMAIL_HOST_PASSWORD = 'amisatechnologies12'
+EMAIL_BACKEND = config['EMAIL_BACKEND']
+EMAIL_HOST_USER = config['EMAIL_HOST_USER']
+EMAIL_HOST = config['EMAIL_HOST']
+EMAIL_PORT = config['EMAIL_PORT']
+EMAIL_USE_TLS = config['EMAIL_USE_TLS']
+EMAIL_HOST_PASSWORD = config['EMAIL_HOST_PASSWORD']
 
-STATIC_ROOT = os.path.join(BASE_DIR, 'static_files')
-STATIC_URL = '/static_files/'
+STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+STATIC_URL = '/static/'
 STATICFILES_DIRS = [
    os.path.join(STATIC_ROOT, 'admin'),
    os.path.join(STATIC_ROOT, 'dist'),
@@ -147,4 +150,4 @@ STATICFILES_DIRS = [
 ]
 
 MEDIA_ROOT = os.path.join(BASE_DIR, 'Media')
-MEDIA_URL = '/Media/'
+MEDIA_URL = '/media/'

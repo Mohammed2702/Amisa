@@ -13,17 +13,13 @@ handler403 = 'Home.views.custom_403'
 handler404 = 'Home.views.custom_404'
 handler500 = 'Home.views.custom_500'
 
+STATIC_URL = settings.STATIC_URL.replace('/', '')
 
 urlpatterns = [
     path('', include('Home.urls')),
 ]
 
-if settings.DEBUG:
-    urlpatterns += [
-        path('ADM-admin/', admin.site.urls),
-        url(r'^static_files/(?P<path>.*)$', serve,{'document_root': settings.STATIC_ROOT}),
-    ]
-else:
-    urlpatterns += [
-        url(r'^static_files/(?P<path>.*)$', serve,{'document_root': settings.STATIC_ROOT}),
-    ]
+urlpatterns += [
+    path('ADM-admin/', admin.site.urls),
+    path(f'{STATIC_URL}/<slug:slug>', serve,{'document_root': settings.STATIC_ROOT}),
+]
