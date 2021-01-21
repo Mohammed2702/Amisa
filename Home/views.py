@@ -9,6 +9,7 @@ from django.http import JsonResponse
 from django.utils import timezone
 from django.shortcuts import *
 from django.forms import formset_factory
+from django.conf import settings
 import random
 import datetime
 import pytz
@@ -20,13 +21,12 @@ from . import forms
 from . import models
 from . import utils
 
-from Amisacb import settings
-
 # ENV
 
-password_reset_main = 'amisacb.pythonanywhere.com/forgot_password'
+HOST_HEADER = 'amisacb.pythonanywhere.com'
+password_reset_main = f'{HOST_HEADER}/forgot_password'
 
-message_dir = os.path.join(settings.BASE_DIR, 'Home')
+message_dir = os.path.join(settings.BASE_DIR, 'data/messages')
 
 
 # External contexts
@@ -91,8 +91,7 @@ def external_context():
         'year': time.gmtime().tm_year,
         'total_amount': sum([i['wallet_balance'] for i in list(models.Wallet.objects.all().values('wallet_balance'))]),
         'all_codes_count': len(list(models.Code.objects.all())),
-        'all_agents': len(list(models.Profile.objects.filter(account_type='Agent'))),
-        'all_customers': len(list(models.Profile.objects.filter(account_type='User'))),
+        'all_customers': len(list(models.Profile.objects.order_by('-date_joined'))),
         'all_codes': [i for i in reversed(models.Code.objects.all())],
         'code_groups': [i for i in reversed(list(models.CodeGroup.objects.all()))],
         'notice_notes': models.SiteSetting.objects.get_or_create(pk=1)[0].services_note,
@@ -116,8 +115,6 @@ def user_features(user_id):
     user_wallet = models.Wallet.objects.get(user=user)
     all_states = models.user_location
     all_states = [i[1] for i in all_states]
-    all_account_types = models.account_types
-    all_account_types = [i[1] for i in all_account_types]
     user_history = [i for i in reversed(list(models.History.objects.all().filter(user=user)))]
     user_history_truncate = [i for i in reversed(list(models.History.objects.all().filter(user=user)))][:10]
     posts = [i for i in reversed(list(models.Post.objects.all()))][:5]
@@ -140,7 +137,6 @@ def user_features(user_id):
         'user_profile': user_profile,
         'user_wallet': user_wallet,
         'all_states': all_states,
-        'all_account_types': all_account_types,
         'user_history': user_history,
         'user_history_truncate': user_history_truncate,
         'notifications': notifications,
@@ -332,7 +328,6 @@ def account_forgot_password(request):
                         get_user.get_full_name(),
                         get_user.username,
                         get_user.email,
-                        get_user.profile.account_type,
                         reset_link
                     )
                     recipient = get_user_email
@@ -455,12 +450,8 @@ def account_dashboard(request):
 @login_required(login_url='Home:account_signin')
 def account_users_list(request, user_type):
     try:
-        if user_type == 'customers':
-            user_type = True
-            users = models.Profile.objects.all().filter(account_type='User')
-        else:
-            user_type = False
-            users = models.Profile.objects.all().filter(account_type='Agent')
+        user_type = True
+        users = models.Profile.objects.order_by('-date_joined')
 
         template_name = 'Home/account_users_list.html'
         user_details = user_features(request.user.id)
@@ -515,52 +506,43 @@ def account_profile(request):
             password_reset_form = forms.PasswordResetForm(request.POST)
 
             if profile_form.is_valid():
-                if request.user.profile.account_type_change_counter <= 2:
+                profile_form.save()
 
-                    profile_form.save()
+                new_state = profile_form.cleaned_data.get('state')
+                new_phone_number = profile_form.cleaned_data.get('phone_number')
 
-                    new_account_type = profile_form.cleaned_data.get(
-                        'account_type')
-                    new_state = profile_form.cleaned_data.get('state')
-                    new_phone_number = profile_form.cleaned_data.get('phone_number')
+                profile_user = User.objects.get(pk=request.user.id)
 
-                    profile_user = User.objects.get(pk=request.user.id)
+                profile_user.profile.state = new_state
+                profile_user.profile.phone_number = new_phone_number
 
-                    profile_user.profile.account_type = profile_user.profile.account_type
-                    profile_user.profile.state = new_state
-                    profile_user.profile.phone_number = new_phone_number
+                profile_user.save()
 
-                    profile_user.save()
+                title = 'Profile Update'
+                body = open(f'{message_dir}/change_in_login_details.txt', 'r').read().format(
+                    request.user.first_name,
+                    request.user.get_full_name(),
+                    request.user.username,
+                    request.user.email,
+                    request.user.profile.account_type,
+                    request.user.profile.reference_id
+                )
+                recipient = request.user.email
 
-                    title = 'Profile Update'
-                    body = open(f'{message_dir}/change_in_login_details.txt', 'r').read().format(
-                        request.user.first_name,
-                        request.user.get_full_name(),
-                        request.user.username,
-                        request.user.email,
-                        request.user.profile.account_type,
-                        request.user.profile.reference_id
-                    )
-                    recipient = request.user.email
+                email_success = utils.deliver_mail(
+                    title=title,
+                    body=body,
+                    recipient=recipient
+                )
 
-                    email_success = utils.deliver_mail(
-                        title=title,
-                        body=body,
-                        recipient=recipient
-                    )
+                print(f'E-Mail for {request.user.profile.reference_id} returned {email_success}')
 
-                    print(f'E-Mail for {request.user.profile.reference_id} returned {email_success}')
-
-                    if email_success:
-                        messages.info(request, 'Your profile is now up to date :)')
-                    else:
-                        messages.info(request, 'Your profile could not be set, sorry ... :(')
-
-                    return redirect('Home:account_profile')
+                if email_success:
+                    messages.info(request, 'Your profile is now up to date :)')
                 else:
-                    messages.warning(request, 'Your profile is now up to date . NB: You can only change your account type once.')
+                    messages.info(request, 'Your profile could not be set, sorry ... :(')
 
-                    return redirect('Home:account_profile')
+                return redirect('Home:account_profile')
             else:
                 profile_form = forms.ProfileForm(instance=request.user)
 
@@ -569,8 +551,7 @@ def account_profile(request):
 
                 username = user_update_form.cleaned_data.get('username')
                 password = request.POST.get('password1')
-                authenticate_user = authenticate(
-                    username=username, password=password)
+                authenticate_user = authenticate(username=username, password=password)
 
                 if authenticate_user:
                     first_name = user_update_form.cleaned_data.get(
@@ -587,7 +568,6 @@ def account_profile(request):
                         request.user.get_full_name(),
                         request.user.username,
                         request.user.email,
-                        request.user.profile.account_type,
                         request.user.profile.reference_id
                     )
                     recipient = email
@@ -629,7 +609,6 @@ def account_profile(request):
                             request.user.get_full_name(),
                             request.user.username,
                             request.user.email,
-                            request.user.profile.account_type,
                             request.user.profile.reference_id
                         )
                         recipient = request.user.email
@@ -685,12 +664,7 @@ def account_code(request):
                 external_context(), user_features(request.user.id))
         else:
             context = {}
-            if request.user.profile.account_type == 'User':
-                rate = models.SiteSetting.objects.get(pk=1).customer_rate
-            elif request.user.profile.account_type == 'Agent':
-                rate = models.SiteSetting.objects.get(pk=1).agent_rate
-            else: # Not Specified Account Type
-                rate = None
+            rate = models.SiteSetting.objects.get(pk=1).customer_rate
 
             if rate:
                 rate /= 100
@@ -1263,16 +1237,10 @@ def site_settings(request):
                             create_network.save()
 
                             messages.warning(request, f'{network} has been added to networks')
-
-                            return redirect('Home:site_settings')
                         else:
                             messages.warning(request, f'{network} could not be added')
-
-                            return redirect('Home:site_settings')
                     else:
                         messages.warning(request, f'{network} already exist !!!')
-
-                        return redirect('Home:site_settings')
                 elif bank_form.is_valid():
                     bank = bank_form.cleaned_data.get('bank')
 
@@ -1284,12 +1252,9 @@ def site_settings(request):
                         create_bank.save()
 
                         messages.info(request, f'Bank ({bank}) added')
-
-                        return redirect('Home:site_settings')
                     else:
                         messages.info(request, f'{bank} already exist')
 
-                        return redirect('Home:site_settings')
                 elif settings_form.is_valid():
                     customer_rate = settings_form.cleaned_data.get('customer_rate')
                     agent_rate = settings_form.cleaned_data.get('agent_rate')
@@ -1302,6 +1267,8 @@ def site_settings(request):
                     email_contact = settings_form.cleaned_data.get('email_contact')
                     how_to = settings_form.cleaned_data.get('how_to')
                     about_us = settings_form.cleaned_data.get('about_us')
+                    terms_of_use = settings_form.cleaned_data.get('terms_of_use')
+                    faq = settings_form.cleaned_data.get('faq')
 
                     get_setting.customer_rate = customer_rate
                     get_setting.agent_rate = agent_rate
@@ -1314,12 +1281,13 @@ def site_settings(request):
                     get_setting.email_contact = email_contact
                     get_setting.how_to = how_to
                     get_setting.about_us = about_us
+                    get_setting.terms_of_use = terms_of_use
+                    get_setting.faq = faq
 
                     get_setting.save()
 
                     messages.warning(request, 'Settings Update Successful !!!')
 
-                    return redirect('Home:site_settings')
             else:
                 settings_form = forms.SiteSettingForm(request.POST)
                 network_form = forms.NetworkForm(request.POST)
@@ -1332,6 +1300,7 @@ def site_settings(request):
             return render(request, template_name, context)
         else:
             return render(request, 'Home/404Error.html')
+        return redirect('Home:site_settings')
     except Exception as e:
         print('site_settings', e)
 

@@ -28,7 +28,7 @@ class UserUpdateForm(forms.ModelForm):
 class ProfileForm(forms.ModelForm):
     class Meta:
         model = models.Profile
-        fields = ('state', 'account_type', 'phone_number',)
+        fields = ('state', 'phone_number',)
 
 
 class CodeGroupForm(forms.ModelForm):
@@ -79,6 +79,7 @@ class SiteSettingForm(forms.Form):
 	how_to = forms.CharField(required=False)
 	about_us = forms.CharField(required=False)
 	faq = forms.CharField(required=False)
+	terms_of_use = forms.CharField(required=False)
 
 
 class NetworkForm(forms.Form):

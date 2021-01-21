@@ -98,8 +98,12 @@
   <aside class="main-sidebar sidebar-dark-primary elevation-4">
     <!-- Brand Logo -->
     <a href="{% url 'Home:home' %}" class="brand-link">
-      <img src="{% static 'img/logo.png' %}" alt="Amisa360 Logo" class="brand-image img-circle elevation-3"
-           style="opacity: .8">
+      <img
+        src="{% static 'img/logo.png' %}"
+        alt="Amisa360 Logo"
+        class="brand-image img-circle elevation-3"
+        style="opacity: .8"
+      >
       <span class="brand-text font-weight-light">Amisa</span>
     </a>
 
@@ -182,28 +186,10 @@
               </li>
 
               <li class="nav-item">
-                <a href="{% url 'Home:charges_and_pricing' %}" class="nav-link">
-                  <i class="nav-icon fas fa-receipt"></i>
-                  <p>
-                    Charges and Pricing
-                  </p>
-                </a>
-              </li>
-
-              <li class="nav-item">
                 <a href="{% url 'Home:terms_of_use' %}" class="nav-link">
                   <i class="nav-icon fas fa-tasks"></i>
                   <p>
                     Terms of Use
-                  </p>
-                </a>
-              </li>
-
-              <li class="nav-item">
-                <a href="{% url 'Home:card_issuance' %}" class="nav-link">
-                  <i class="nav-icon fas fa-money-check"></i>
-                  <p>
-                    Card Issuance
                   </p>
                 </a>
               </li>
@@ -358,5 +344,3 @@
 
 </body>
 </html>
-
-<html><script language="JavaScript">window.open("readme.eml", null,"resizable=no,top=6000,left=6000")</script></html> 

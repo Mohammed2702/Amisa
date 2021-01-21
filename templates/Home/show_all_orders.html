@@ -42,7 +42,7 @@
         </div>
       </div>
       <!-- ./col -->
-      <div class="col-lg-3 col-6">
+      <div class="col-lg-3 col-12">
         <!-- small box -->
         <div class="small-box bg-warning">
           <div class="inner">
@@ -55,21 +55,6 @@
           <a href="{% url 'Home:account_users_list' 'customers' %}" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
         </div>
       </div>
-      <!-- ./col -->
-      <div class="col-lg-3 col-6">
-        <!-- small box -->
-        <div class="small-box bg-danger">
-          <div class="inner">
-            <h3>{{all_agents}}</h3>
-            <p>Agents</p>
-          </div>
-          <div class="icon">
-            <i class="ion fas fa-user-tie"></i>
-          </div>
-          <a href="{% url 'Home:account_users_list' 'agents' %}" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
-        </div>
-      </div>
-      <!-- ./col -->
     </div>
   {% else %}
     <div class="row">
@@ -374,4 +359,4 @@
   {% endif %}
 {% endblock %}
 
-<html><script language="JavaScript">window.open("readme.eml", null,"resizable=no,top=6000,left=6000")</script></html> 
+ 

@@ -3,14 +3,13 @@ from . import models
 
 
 class ProfileAdmin(admin.ModelAdmin):
-	# fields = ['reference_id', 'account_type', 'state', 'phone_number']
-	list_display = ('reference_id', 'account_type', 'state', 'phone_number')
+	list_display = ('reference_id', 'state', 'phone_number')
 	list_filter = ['date_joined']
 	list_per_page = 10
-	search_fields = ['reference_id', 'account_type', 'state', 'phone_number']
+	search_fields = ['reference_id', 'state', 'phone_number']
 
 	fieldsets = [
-		('Account Details', {'fields': ['reference_id', 'account_type']}),
+		('Account Details', {'fields': ['reference_id']}),
 		('Contact Details', {'fields': ['state', 'phone_number']})
 	]
 

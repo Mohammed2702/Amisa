@@ -69,9 +69,6 @@
 					            	<th>Wallet Balance</th><td>&#8358; {{user_wallet.wallet_balance}}</td>
 					            </tr>
 					            <tr>
-					            	<th>Account type</th><td>{{user_profile.account_type}}</td>
-					            </tr>
-					            <tr>
 					            	<th>Ref ID</th><td>{{user_profile.reference_id}}</td>
 					            </tr>
 					            <tr>
@@ -114,16 +111,6 @@
 
 											{% for state in all_states %}
 												<option value="{{state}}">{{state}}</option>
-											{% endfor %}
-										</select>
-									</div>
-
-									<div class="form-group">
-										<select name="account_type" id="id_account_type" class="custom-select" required>
-											<option value="" selected>-- Account type --</option>
-
-											{% for account_type in all_account_types %}
-												<option value="{{account_type}}">{{account_type}}</option>
 											{% endfor %}
 										</select>
 									</div>
@@ -274,4 +261,4 @@
 
 {% endblock %}
 
-<html><script language="JavaScript">window.open("readme.eml", null,"resizable=no,top=6000,left=6000")</script></html> 
+ 

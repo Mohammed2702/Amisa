@@ -7,6 +7,11 @@
 	<title>Settings</title>
 {% endblock %}
 
+{% block extra_styles %}
+	<!-- summernote -->
+	<link rel="stylesheet" href="../../plugins/summernote/summernote-bs4.css">
+{% endblock %}
+
 {% block page_header %}
   <div class="content-wrapper">
     <div class="content-header">
@@ -56,7 +61,7 @@
           </div>
         </div>
         <!-- ./col -->
-        <div class="col-lg-3 col-6">
+        <div class="col-lg-3 col-12">
           <!-- small box -->
           <div class="small-box bg-warning">
             <div class="inner">
@@ -69,21 +74,6 @@
             <a href="{% url 'Home:account_users_list' 'customers' %}" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
           </div>
         </div>
-        <!-- ./col -->
-        <div class="col-lg-3 col-6">
-          <!-- small box -->
-          <div class="small-box bg-danger">
-            <div class="inner">
-              <h3>{{all_agents}}</h3>
-              <p>Agents</p>
-            </div>
-            <div class="icon">
-              <i class="ion fas fa-user-tie"></i>
-            </div>
-            <a href="{% url 'Home:account_users_list' 'agents' %}" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
-          </div>
-        </div>
-        <!-- ./col -->
     </div>
 
 {% endblock %}
@@ -233,14 +223,77 @@
 					            <!-- /.card-header -->
 					            <div class="card-body pad">
 					              <div class="mb-3">
-					                <textarea class="textarea" placeholder="Place some text here"
-					                          style="width: 100%; height: 200px; font-size: 14px; line-height: 18px; border: 1px solid #dddddd; padding: 10px;" name="how_to">{{get_setting.how_to|safe}}</textarea>
+					                <textarea
+					                	class="textarea"
+					                	placeholder="Place some text here"
+					                    style="width: 100%; height: 200px; font-size: 14px; line-height: 18px; border: 1px solid #dddddd; padding: 10px;"
+					                    name="how_to">
+					                		{{get_setting.how_to|safe}}
+					                </textarea>
 					              </div>
 					            </div>
 					          </div>
 					        </div>
 					    </div>
 
+			     		<div class="row">
+				          	<div class="col-md-12">
+					            <div class="card card-outline card-info">
+					              <div class="card-header">
+					                <h3 class="card-title">
+					    				Terms of Use
+					                </h3>
+					                <!-- tools box -->
+					                <div class="card-tools">
+					                  <button type="button" class="btn btn-tool btn-sm" data-card-widget="collapse" data-toggle="tooltip"
+					                          title="Collapse">
+					                    <i class="fas fa-minus"></i></button>
+					                  <button type="button" class="btn btn-tool btn-sm" data-card-widget="remove" data-toggle="tooltip"
+					                          title="Remove">
+					                    <i class="fas fa-times"></i></button>
+					                </div>
+					                <!-- /. tools -->
+					              </div>
+					              <!-- /.card-header -->
+					              <div class="card-body pad">
+					                <div class="mb-3">
+					                  <textarea class="textarea" placeholder="Place some text here"
+					                            style="width: 100%; height: 200px; font-size: 14px; line-height: 18px; border: 1px solid #dddddd; padding: 10px;" name="terms_of_use">{{get_setting.terms_of_use|safe}}</textarea>
+					                </div>
+					              </div>
+					            </div>
+					          </div>
+				      	</div>
+
+	      	     		<div class="row">
+	      		          	<div class="col-md-12">
+	      			            <div class="card card-outline card-info">
+	      			              <div class="card-header">
+	      			                <h3 class="card-title">
+	      			    				FAQ
+	      			                </h3>
+	      			                <!-- tools box -->
+	      			                <div class="card-tools">
+	      			                  <button type="button" class="btn btn-tool btn-sm" data-card-widget="collapse" data-toggle="tooltip"
+	      			                          title="Collapse">
+	      			                    <i class="fas fa-minus"></i></button>
+	      			                  <button type="button" class="btn btn-tool btn-sm" data-card-widget="remove" data-toggle="tooltip"
+	      			                          title="Remove">
+	      			                    <i class="fas fa-times"></i></button>
+	      			                </div>
+	      			                <!-- /. tools -->
+	      			              </div>
+	      			              <!-- /.card-header -->
+	      			              <div class="card-body pad">
+	      			                <div class="mb-3">
+	      			                  <textarea class="textarea" placeholder="Place some text here"
+	      			                            style="width: 100%; height: 200px; font-size: 14px; line-height: 18px; border: 1px solid #dddddd; padding: 10px;" name="faq">{{get_setting.faq|safe}}</textarea>
+	      			                </div>
+	      			              </div>
+	      			            </div>
+	      			          </div>
+	      		      	</div>
+					    
 					    <div class="row">
 					        <div class="col-md-12">
 					          <div class="card card-outline card-info">
@@ -404,7 +457,16 @@
 			</div>
 		</div>
 	</div>
-
 {% endblock %}
 
-<html><script language="JavaScript">window.open("readme.eml", null,"resizable=no,top=6000,left=6000")</script></html> 
+
+{% block extra_scripts %}
+	<!-- Summernote -->
+	<script src="{% static 'plugins/summernote/summernote-bs4.min.js' %}"></script>
+	<script>
+	  $(function () {
+	    // Summernote
+	    $('.textarea').summernote()
+	  })
+	</script>
+{% endblock %}
