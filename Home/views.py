@@ -168,6 +168,15 @@ def custom_400(request, exception=None):
     return render(request, template_name='Home/400Error.html')
 
 
+# Index
+
+def index(request):
+    template_name = 'index.html'
+    context = {}
+
+    return render(request, template_name, context)
+
+
 # AUTHs
 
 
@@ -435,14 +444,12 @@ def account_dashboard(request):
             context = utils.dict_merge(context, context)
             context = utils.dict_merge(external_context(), context)
             template_name = 'Home/account_dashboard.html'
-
-            return render(request, template_name, context)
         else:
             context = user_features(request.user.id)
             context = utils.dict_merge(external_context(), context)
             template_name = 'Home/account_user_dashboard.html'
 
-            return render(request, template_name, context)
+        return render(request, template_name, context)
     except Exception as e:
         print('account_dashboard', e)
 
@@ -1257,7 +1264,6 @@ def site_settings(request):
 
                 elif settings_form.is_valid():
                     customer_rate = settings_form.cleaned_data.get('customer_rate')
-                    agent_rate = settings_form.cleaned_data.get('agent_rate')
                     services_note = settings_form.cleaned_data.get('services_note')
                     minimum_withdrawal = settings_form.cleaned_data.get('minimum_withdrawal')
                     minimum_airtime = settings_form.cleaned_data.get('minimum_airtime')
@@ -1271,7 +1277,6 @@ def site_settings(request):
                     faq = settings_form.cleaned_data.get('faq')
 
                     get_setting.customer_rate = customer_rate
-                    get_setting.agent_rate = agent_rate
                     get_setting.services_note = services_note
                     get_setting.minimum_withdrawal = minimum_withdrawal
                     get_setting.minimum_airtime = minimum_airtime

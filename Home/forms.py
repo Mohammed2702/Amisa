@@ -68,7 +68,6 @@ class PostForm(forms.Form):
 
 class SiteSettingForm(forms.Form):
 	customer_rate = forms.FloatField(required=False)
-	agent_rate = forms.FloatField(required=False)
 	minimum_withdrawal = forms.IntegerField(required=False)
 	minimum_airtime = forms.IntegerField(required=False)
 	minimum_data = forms.IntegerField(required=False)

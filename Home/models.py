@@ -146,7 +146,6 @@ class Order(models.Model):
 	description = models.CharField(max_length=100, blank=False, default='Order')
 	status = models.CharField(max_length=100, default='Pending')
 	date = models.DateTimeField(auto_now_add=True)
-	# expiry_date = models.DateTimeField(default=timezone.now() + timezone.timedelta(hours=3))
 
 	class Meta:
 		verbose_name = 'Order'
@@ -185,7 +184,6 @@ class Post(models.Model):
 class SiteSetting(models.Model):
 	site_setting = models.CharField(max_length=100, default='Setting_1', blank=True)
 	customer_rate = models.FloatField(blank=True, default=15)
-	agent_rate = models.FloatField(blank=True, default=20)
 	services_note = models.TextField(blank=True, default='services note')
 	minimum_withdrawal = models.IntegerField(blank=True, default=100)
 	minimum_airtime = models.IntegerField(blank=True, default=100)

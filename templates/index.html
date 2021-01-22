@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+	{% load static %}
+
+	<head>
+		<title>Amisa360 | Home</title>
+
+		<link rel="stylesheet" type="text/css" href="{% static 'dist/css/layout.css' %}">
+		<link rel="stylesheet" type="text/css" href="{% static 'dist/css/index.css' %}">
+	</head>
+	<body>
+		<nav class="c-nav">
+			<div class="c-nav-brand">
+				<img src="{% static 'img/logo.png' %}">
+				<p class="c-nav-item">
+					<a href="{% url 'Home:index' %}" class="c-button">Amisa</a>
+				</p>
+			</div>
+
+			<div class="right">
+				<a href="{% url 'Home:account_signin' %}" class="c-button">
+					LOGIN
+				</a>
+			</div>
+		</nav>
+	</body>
+</html>

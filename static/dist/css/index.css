@@ -1,0 +1,71 @@
+:root {
+	--nav-bg-color: #333;
+	--nav-color: white;
+	--nav-height: 3em;
+}
+
+* {
+	margin: 0;
+	padding: 0;
+}
+
+body {
+	font-family: Verdana;
+}
+
+nav.c-nav {
+	background-color: var(--nav-bg-color);
+	color: var(--nav-color);
+	position: fixed;
+	height: var(--nav-height);
+	width: 100%;
+	padding: 1em;
+	display: inline-flex;
+}
+
+nav.c-nav .c-nav-item {
+	height: var(--nav-height);
+	display: inline-flex;
+	padding-bottom: .5em;
+}
+
+nav.c-nav .c-nav-brand {}
+
+nav.c-nav .c-nav-brand a.c-button {
+	background-color: rgba(0, 0, 0, 0);
+	padding: 0;
+}
+
+nav.c-nav .c-nav-brand a.c-button:hover {
+	border: 0;
+}
+
+nav.c-nav .c-nav-brand img {
+	max-height: var(--nav-height);
+	max-width: 50px;
+}
+
+main {
+	padding-top: var(--nav-height);
+}
+
+a,
+button
+{
+	text-decoration: none;
+	color: white;
+	background-color: rgba(255, 0, 0, 0.4);
+	border: 0;
+	transition: 1s;
+}
+
+.c-button {
+	padding: 1em;
+	margin: .2em;
+}
+
+.c-button:hover {
+	background-color: #333;
+	border: .2em solid white;
+	padding: .9em;
+}

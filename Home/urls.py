@@ -7,6 +7,9 @@ app_name = 'Home'
 
 
 urlpatterns = [
+	# Index
+	path('', views.index, name='index'),
+
 	# AUTHs
 	path('register/', views.account_signup, name='account_signup'),
 	path('login/', views.account_signin, name='account_signin'),
@@ -15,7 +18,7 @@ urlpatterns = [
 	path('forgot_password/<str:link>/', views.account_forgot_password_link, name='account_forgot_password_link'),
 
 	# Dashboard
-	path('', views.account_dashboard, name='home'),
+	path('dashboard/', views.account_dashboard, name='home'),
 	path('profile/', views.account_profile, name='account_profile'),
 	path('users/', views.account_users_wallet, name='account_users_wallet'),
 	path('users/<int:user_id>', views.toggle_permission, name='toggle_permission'),
