@@ -173,6 +173,7 @@ def custom_400(request, exception=None):
 def index(request):
     template_name = 'index.html'
     context = {}
+    context = utils.dict_merge(external_context(), context)
 
     return render(request, template_name, context)
 

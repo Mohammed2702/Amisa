@@ -1,19 +1,4 @@
-.left-align {
-	text-align: left;
-}
-
-.right-align {
-	text-align: right;
-}
-
-.center, .center-align {
-	text-align: center;
-}
-
-.left {
-	float: left !important;
-}
-
-.right {
-	float: right !important;
+.pama-0 {
+	padding: 0 !important;
+	margin: 0 !important;
 }
