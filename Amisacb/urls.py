@@ -17,6 +17,7 @@ STATIC_URL = settings.STATIC_URL.replace('/', '')
 
 urlpatterns = [
     path('', include('Home.urls')),
+    path('', include('blog.urls'))
 ]
 
 urlpatterns += [

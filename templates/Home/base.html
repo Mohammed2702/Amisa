@@ -195,24 +195,6 @@
               </li>
 
               <li class="nav-item">
-                <a href="{% url 'Home:how_to' %}" class="nav-link">
-                  <i class="nav-icon fas fa-question"></i>
-                  <p>
-                    How To
-                  </p>
-                </a>
-              </li>
-
-              <li class="nav-item">
-                <a href="{% url 'Home:faq' %}" class="nav-link">
-                  <i class="nav-icon fas fa-comments"></i>
-                  <p>
-                    FAQ
-                  </p>
-                </a>
-              </li>
-
-              <li class="nav-item">
                 <a href="{% url 'Home:resolution' %}" class="nav-link">
                   <i class="nav-icon fas fa-book"></i>
                   <p>
@@ -240,6 +222,15 @@
                   </a>
                 </li>
               {% endif %}
+
+              <li class="nav-item">
+                <a href="{% url 'blog:blog' %}" class="nav-link">
+                  <i class="nav-icon fas fa-blog"></i>
+                  <p>
+                    Blog
+                  </p>
+                </a>
+              </li>
 
               <li class="nav-item">
                 <a href="{% url 'Home:account_signout' %}" class="nav-link">

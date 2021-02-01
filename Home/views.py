@@ -902,6 +902,8 @@ def account_code_request(request):
 
                     if code_form.is_valid():
                         code_group = code_form.cleaned_data.get('code_group')
+                        code_batch_number = code_form.cleaned_data.get('code_batch_number')
+
                         code_group = models.CodeGroup.objects.get(
                             id=code_group)
                         code = code_form.cleaned_data.get('code')
@@ -916,6 +918,7 @@ def account_code_request(request):
 
                         create_code = models.Code.objects.create(
                             code_group=code_group,
+                            code_batch_number=code_batch_number,
                             code=code,
                             amount=amount,
                             expiry_date=expiry_date
@@ -1624,49 +1627,6 @@ def how_to(request):
             context = user_context
 
             template_name = 'Home/how_to.html'
-
-            return render(request, template_name, context)
-    except Exception as e:
-        print('card_issuance', e)
-
-
-def faq(request):
-    try:
-        if str(request.user) != 'AnonymousUser':
-            user_orders = [i for i in reversed(
-                list(models.Order.objects.all().filter(user=request.user)))]
-            user_orders_truncate = [i for i in reversed(
-                list(models.Order.objects.all().filter(user=request.user))[:5])]
-            admin_orders = [i for i in reversed(
-                list(models.Order.objects.all()))]
-            admin_orders_truncate = [i for i in reversed(
-                list(models.Order.objects.all()))][:5]
-
-            user_context = {
-                'user_orders': user_orders,
-                'user_orders_truncate': user_orders_truncate,
-                'admin_orders': admin_orders,
-                'admin_orders_truncate': admin_orders_truncate,
-            }
-            context = user_context
-            context = utils.dict_merge(external_context(), context)
-
-            user_details = utils.dict_merge(
-                user_features(request.user.id), context)
-            context = utils.dict_merge(external_context(), user_details)
-            user_details = user_features(request.user.id)
-            context = utils.dict_merge(external_context(), user_details)
-
-            template_name = 'Home/faq.html'
-
-            return render(request, template_name, context)
-        else:
-            user_context = {
-            }
-            context = user_context
-            context = utils.dict_merge(external_context(), context)
-
-            template_name = 'Home/faq.html'
 
             return render(request, template_name, context)
     except Exception as e:

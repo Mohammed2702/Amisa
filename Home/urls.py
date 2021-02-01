@@ -41,8 +41,6 @@ urlpatterns = [
 	path('pricing/', views.charges_and_pricing, name='charges_and_pricing'),
 	path('terms/', views.terms_of_use, name='terms_of_use'),
 	path('cardissunance/', views.card_issuance, name='card_issuance'),
-	path('howto/', views.how_to, name='how_to'),
-	path('faq/', views.faq, name='faq'),
 	path('locator/', views.locator, name='locator'),
 
 	# Tools
@@ -56,5 +54,5 @@ urlpatterns = [
 	path('posts/<int:post_id>/delete', views.post_delete, name='post_delete'),
 	path('resolution/', views.resolution, name='resolution'),
 	path('resolution/responses/', views.resolution_response, name='resolution_response'),
-	path('resolution/<int:resolution_id>/', views.resolution_details, name='resolution_details'),
+	path('resolution/<int:resolution_id>/', views.resolution_details, name='resolution_details')
 ]

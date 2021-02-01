@@ -17,14 +17,10 @@ body {
 	padding: 0 !important;
 }
 
-nav {
-	padding-left: .3em;
-	padding-right: .3em;
-}
-
 footer {
 	padding-bottom: 0;
 	margin-bottom: 0;
+	width: 100%;
 }
 
 button.btn {

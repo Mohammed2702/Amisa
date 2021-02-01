@@ -84,6 +84,7 @@ class Wallet(models.Model):
 
 class CodeGroup(models.Model):
 	code_group_name = models.CharField(max_length=100, blank=False, unique=True)
+	code_batch_number = models.CharField(max_length=100, blank=False, unique=True, default=datetime.datetime.now())
 	date_created = models.DateTimeField(default=timezone.now)
 	status = models.BooleanField(default=True)
 
