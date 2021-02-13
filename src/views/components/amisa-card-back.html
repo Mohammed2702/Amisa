@@ -1,0 +1,43 @@
+{% extends 'components/amisa-card-base.html' %}
+{% load static %}
+
+{% block card_content %}
+	<div class="row">
+		<div class="col s12 m12 l12">
+			<small>HOW TO REDEEM</small>
+			<label>
+				<small style="font-style: italic;" class="white-text right">
+					A product of Amisa360 LTD
+				</small>
+			</label>
+			<p class="left white-text" style="font-size: .7em;">
+				1. Log in to amisa360.com<br>
+				2. Click "More Info" on the Blue square "My Codes"<br>
+				3. Type in the codes below including the dash-linker("-") and the redemption button<br>
+			</p>
+		</div>
+
+		<div class="col s12 m12 l12">
+			<div class="divider"></div>
+			<div class="row">
+				<div class="col s6 m6 l6" style="font-size: .9em;">
+					<small>Customer support</small>
+					<li class="pama-0">
+						<span><i class="fas fa-phone"></i> {{ get_settings.call_contact }}</span>
+						<span><i class="fab fa-whatsapp"></i> {{ get_settings.whatsapp_contact }}</span>
+					</li>
+				</div>
+				<div class="col s6 m6 l6" style="border: 1px solid white; font-size: .6em; border-top: none;">
+					<p>After redemption, you can buy airtime, data and withdraw to any bank account with your savings</p>
+				</div>
+
+				<div class="col s12 m12 l12 white" style="font-size: .9em; margin: 0;">
+					<label style="color: rgba(0, 0, 0, 0.6) !important;" class="center">
+						<span style="font-weight: bold;">Code : {{ code }}</span><br>
+						B/N : {{ code.code_group }}	S/N : {{ code.get_serial_number }}
+					</label>
+				</div>
+			</div>
+		</div>
+	</div>
+{% endblock %}

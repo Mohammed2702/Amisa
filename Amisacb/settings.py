@@ -28,7 +28,8 @@ with open(CONFIG_FILE, 'r') as config:
 SECRET_KEY = config['SECRET_KEY']
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = config['DEBUG']
+DEBUG = True
+# DEBUG = False
 
 ALLOWED_HOSTS = config['ALLOWED_HOSTS']
 
@@ -44,14 +45,14 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
-    'Home.apps.HomeConfig'
+    'home.apps.HomeConfig',
+    'blog.apps.BlogConfig'
 ]
 
 SITE_ID = 1
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
-    'whitenoise.middleware.WhiteNoiseMiddleware', # whitenoise
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -60,13 +61,18 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
+if not DEBUG:
+    MIDDLEWARE += [
+        'whitenoise.middleware.WhiteNoiseMiddleware', # whitenoise
+    ]
+
 ROOT_URLCONF = 'Amisacb.urls'
 
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
         'DIRS': [
-            os.path.join(BASE_DIR, 'templates')
+            os.path.join(BASE_DIR, 'src/views')
         ],
         'APP_DIRS': True,
         'OPTIONS': {
@@ -93,6 +99,7 @@ DATABASES = {
     }
 }
 
+AUTH_USER_MODEL = 'home.User'
 
 # Password validation
 # https://docs.djangoproject.com/en/3.0/ref/settings/#auth-password-validators
@@ -140,14 +147,11 @@ EMAIL_PORT = config['EMAIL_PORT']
 EMAIL_USE_TLS = config['EMAIL_USE_TLS']
 EMAIL_HOST_PASSWORD = config['EMAIL_HOST_PASSWORD']
 
-STATIC_ROOT = os.path.join(BASE_DIR, 'static')
-STATIC_URL = '/static/'
+# STATIC_ROOT = os.path.join(BASE_DIR, 'src/static')
+STATIC_URL = '/assets/'
 STATICFILES_DIRS = [
-   os.path.join(STATIC_ROOT, 'admin'),
-   os.path.join(STATIC_ROOT, 'dist'),
-   os.path.join(STATIC_ROOT, 'plugins'),
-   os.path.join(STATIC_ROOT, 'img'),
+   os.path.join(BASE_DIR, 'src/assets')
 ]
 
-MEDIA_ROOT = os.path.join(BASE_DIR, 'Media')
+MEDIA_ROOT = os.path.join(BASE_DIR, 'src/media')
 MEDIA_URL = '/media/'

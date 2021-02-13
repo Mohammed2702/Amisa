@@ -1,0 +1,42 @@
+.pama-0 {
+	padding: 0 !important;
+	margin: 0 !important;
+}
+
+.font-1 {
+	font-size: 1em;
+}
+
+.font-2 {
+	font-size: 2em;
+}
+
+.font-3 {
+	font-size: 3em;
+}
+
+.font-4 {
+	font-size: 4em;
+}
+
+.font-5 {
+	font-size: 5em;
+}
+
+.img-max-200 img {
+	max-width: 400px !important;
+	max-height: 260px !important;
+}
+
+.card-container {
+	padding: .1em;
+	padding-bottom: .2em;
+}
+
+.card-container .card-panel {
+	margin: .4em !important;
+}
+
+.card-container h5 {
+	margin: .4em !important;
+}

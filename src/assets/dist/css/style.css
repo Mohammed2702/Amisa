@@ -1,0 +1,10 @@
+:root {
+	--nav-height: 60vh;
+};
+
+nav.custom-navbar,
+{}
+
+nav.custom-navbar .nav-wrapper {
+	height: var(--nav-height) !important;
+}
