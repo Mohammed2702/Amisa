@@ -23,13 +23,13 @@ from home.forms import (
     LocatorForm,
     SiteSettingForm
 )
-from services.forms import (
-    NetworkForm,
-    BankForm
-)
 from home.models import (
     History,
     SiteSetting
+)
+from services.forms import (
+    NetworkForm,
+    BankForm
 )
 from services.models import (
     Order,
@@ -127,7 +127,9 @@ def site_settings(request):
 
             elif settings_form.is_valid():
                 customer_rate = settings_form.cleaned_data.get('customer_rate')
-                services_note = settings_form.cleaned_data.get('services_note')
+                data_note = settings_form.cleaned_data.get('data_note')
+                airtime_note = settings_form.cleaned_data.get('airtime_note')
+                withdrawal_note = settings_form.cleaned_data.get('withdrawal_note')
                 minimum_withdrawal = settings_form.cleaned_data.get('minimum_withdrawal')
                 minimum_airtime = settings_form.cleaned_data.get('minimum_airtime')
                 minimum_data = settings_form.cleaned_data.get('minimum_data')
@@ -138,10 +140,11 @@ def site_settings(request):
                 how_to = settings_form.cleaned_data.get('how_to')
                 about_us = settings_form.cleaned_data.get('about_us')
                 terms_of_use = settings_form.cleaned_data.get('terms_of_use')
-                faq = settings_form.cleaned_data.get('faq')
 
                 get_setting.customer_rate = customer_rate
-                get_setting.services_note = services_note
+                get_setting.data_note = data_note
+                get_setting.airtime_note = airtime_note
+                get_setting.withdrawal_note = withdrawal_note
                 get_setting.minimum_withdrawal = minimum_withdrawal
                 get_setting.minimum_airtime = minimum_airtime
                 get_setting.minimum_data = minimum_data
@@ -152,7 +155,6 @@ def site_settings(request):
                 get_setting.how_to = how_to
                 get_setting.about_us = about_us
                 get_setting.terms_of_use = terms_of_use
-                get_setting.faq = faq
 
                 get_setting.save()
 

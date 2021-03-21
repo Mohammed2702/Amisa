@@ -192,18 +192,96 @@
 								</div>
 							</div>
 						</div>
-						
-						<div class="row border-bottom" style="padding-top: 1rem;">
-							<div class="col-sm">
-								<label>Services Note</label>
-								<div class="input-group mb-3">
-									<div class="input-group-prepend">
-										<span class="input-group-text"><i class="fas fa-book"></i></span>
-									</div>
-									<textarea name="services_note" class="form-control" placeholder="Services Note" required>{{get_setting.services_note}}</textarea>
-								</div>
-							</div>
-						</div>
+
+						<div class="row border-bottom">
+					        <div class="col-md-12">
+					          <div class="card card-outline card-info">
+					            <div class="card-header">
+					              <h3 class="card-title">
+					                Airtime note
+					              </h3>
+					              <!-- tools box -->
+					              <div class="card-tools">
+					                <button type="button" class="btn btn-tool btn-sm" data-card-widget="collapse" data-toggle="tooltip"
+					                        title="Collapse">
+					                  <i class="fas fa-minus"></i></button>
+					                <button type="button" class="btn btn-tool btn-sm" data-card-widget="remove" data-toggle="tooltip"
+					                        title="Remove">
+					                  <i class="fas fa-times"></i></button>
+					              </div>
+					              <!-- /. tools -->
+					            </div>
+					            <!-- /.card-header -->
+					            <div class="card-body pad">
+					              	<div class="mb-3">
+					                	<textarea class="textarea" placeholder="Place some text here" style="width: 100%; height: 200px; font-size: 14px; line-height: 18px; border: 1px solid #dddddd; padding: 10px;" name="airtime_note">
+					                		{{get_setting.airtime_note|safe}}
+					                	</textarea>
+					              	</div>
+					            </div>
+					          </div>
+					        </div>
+					    </div>
+
+						<div class="row border-bottom">
+					        <div class="col-md-12">
+					          <div class="card card-outline card-info">
+					            <div class="card-header">
+					              <h3 class="card-title">
+					                Data note
+					              </h3>
+					              <!-- tools box -->
+					              <div class="card-tools">
+					                <button type="button" class="btn btn-tool btn-sm" data-card-widget="collapse" data-toggle="tooltip"
+					                        title="Collapse">
+					                  <i class="fas fa-minus"></i></button>
+					                <button type="button" class="btn btn-tool btn-sm" data-card-widget="remove" data-toggle="tooltip"
+					                        title="Remove">
+					                  <i class="fas fa-times"></i></button>
+					              </div>
+					              <!-- /. tools -->
+					            </div>
+					            <!-- /.card-header -->
+					            <div class="card-body pad">
+					              	<div class="mb-3">
+					                	<textarea class="textarea" placeholder="Place some text here" style="width: 100%; height: 200px; font-size: 14px; line-height: 18px; border: 1px solid #dddddd; padding: 10px;" name="data_note">
+					                		{{get_setting.data_note|safe}}
+					                	</textarea>
+					              	</div>
+					            </div>
+					          </div>
+					        </div>
+					    </div>
+
+						<div class="row border-bottom">
+					        <div class="col-md-12">
+					          <div class="card card-outline card-info">
+					            <div class="card-header">
+					              <h3 class="card-title">
+					                Withdrawal note
+					              </h3>
+					              <!-- tools box -->
+					              <div class="card-tools">
+					                <button type="button" class="btn btn-tool btn-sm" data-card-widget="collapse" data-toggle="tooltip"
+					                        title="Collapse">
+					                  <i class="fas fa-minus"></i></button>
+					                <button type="button" class="btn btn-tool btn-sm" data-card-widget="remove" data-toggle="tooltip"
+					                        title="Remove">
+					                  <i class="fas fa-times"></i></button>
+					              </div>
+					              <!-- /. tools -->
+					            </div>
+					            <!-- /.card-header -->
+					            <div class="card-body pad">
+					              	<div class="mb-3">
+					                	<textarea class="textarea" placeholder="Place some text here" style="width: 100%; height: 200px; font-size: 14px; line-height: 18px; border: 1px solid #dddddd; padding: 10px;" name="withdrawal_note">
+					                		{{get_setting.withdrawal_note|safe}}
+					                	</textarea>
+					              	</div>
+					            </div>
+					          </div>
+					        </div>
+					    </div>
 
 						<div class="row">
 					        <div class="col-md-12">
@@ -225,15 +303,11 @@
 					            </div>
 					            <!-- /.card-header -->
 					            <div class="card-body pad">
-					              <div class="mb-3">
-					                <textarea
-					                	class="textarea"
-					                	placeholder="Place some text here"
-					                    style="width: 100%; height: 200px; font-size: 14px; line-height: 18px; border: 1px solid #dddddd; padding: 10px;"
-					                    name="how_to">
+					              	<div class="mb-3">
+					                	<textarea class="textarea" placeholder="Place some text here" style="width: 100%; height: 200px; font-size: 14px; line-height: 18px; border: 1px solid #dddddd; padding: 10px;" name="how_to">
 					                		{{get_setting.how_to|safe}}
-					                </textarea>
-					              </div>
+					                	</textarea>
+					              	</div>
 					            </div>
 					          </div>
 					        </div>
@@ -246,7 +320,6 @@
 					                <h3 class="card-title">
 					    				Terms of Use
 					                </h3>
-					                <!-- tools box -->
 					                <div class="card-tools">
 					                  <button type="button" class="btn btn-tool btn-sm" data-card-widget="collapse" data-toggle="tooltip"
 					                          title="Collapse">
@@ -255,9 +328,8 @@
 					                          title="Remove">
 					                    <i class="fas fa-times"></i></button>
 					                </div>
-					                <!-- /. tools -->
 					              </div>
-					              <!-- /.card-header -->
+
 					              <div class="card-body pad">
 					                <div class="mb-3">
 					                  <textarea class="textarea" placeholder="Place some text here"
@@ -268,35 +340,6 @@
 					          </div>
 				      	</div>
 
-	      	     		<div class="row">
-	      		          	<div class="col-md-12">
-	      			            <div class="card card-outline card-info">
-	      			              <div class="card-header">
-	      			                <h3 class="card-title">
-	      			    				FAQ
-	      			                </h3>
-	      			                <!-- tools box -->
-	      			                <div class="card-tools">
-	      			                  <button type="button" class="btn btn-tool btn-sm" data-card-widget="collapse" data-toggle="tooltip"
-	      			                          title="Collapse">
-	      			                    <i class="fas fa-minus"></i></button>
-	      			                  <button type="button" class="btn btn-tool btn-sm" data-card-widget="remove" data-toggle="tooltip"
-	      			                          title="Remove">
-	      			                    <i class="fas fa-times"></i></button>
-	      			                </div>
-	      			                <!-- /. tools -->
-	      			              </div>
-	      			              <!-- /.card-header -->
-	      			              <div class="card-body pad">
-	      			                <div class="mb-3">
-	      			                  <textarea class="textarea" placeholder="Place some text here"
-	      			                            style="width: 100%; height: 200px; font-size: 14px; line-height: 18px; border: 1px solid #dddddd; padding: 10px;" name="faq">{{get_setting.faq|safe}}</textarea>
-	      			                </div>
-	      			              </div>
-	      			            </div>
-	      			          </div>
-	      		      	</div>
-					    
 					    <div class="row">
 					        <div class="col-md-12">
 					          <div class="card card-outline card-info">

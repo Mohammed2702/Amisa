@@ -24,10 +24,9 @@ class History(models.Model):
 class SiteSetting(models.Model):
     site_setting = models.CharField(max_length=100, default='Setting_1', blank=True)
     customer_rate = models.FloatField(blank=True, default=15)
-    services_note = models.TextField(blank=True, default='services note')
-    withdrawal_note = models.TextField(blank=True)
-    airtime_note = models.TextField(blank=True)
-    data_note = models.TextField(blank=True)
+    withdrawal_note = models.TextField(blank=True, default='withdrawal note', null=True)
+    airtime_note = models.TextField(blank=True, default='airtime note', null=True)
+    data_note = models.TextField(blank=True, default='data note', null=True)
     reservation_amount = models.PositiveIntegerField(blank=True, default=50)
     minimum_withdrawal = models.PositiveIntegerField(blank=True, default=100)
     minimum_airtime = models.PositiveIntegerField(blank=True, default=100)
@@ -37,7 +36,6 @@ class SiteSetting(models.Model):
     email_contact = models.EmailField(blank=True)
     how_to = models.TextField(blank=True)
     terms_of_use = models.TextField(blank=True)
-    faq = models.TextField(blank=True)
     about_us = models.TextField(blank=True)
 
     def __str__(self):

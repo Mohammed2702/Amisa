@@ -92,7 +92,6 @@ def external_context():
         'all_customers': len(list(Profile.objects.order_by('-date_joined'))),
         'all_codes': [i for i in reversed(Code.objects.all())],
         'code_groups': [i for i in reversed(list(CodeGroup.objects.all()))],
-        'notice_notes': SiteSetting.objects.get_or_create(pk=1)[0].services_note,
         'all_networks': Network.objects.all(),
         'get_settings': SiteSetting.objects.get_or_create(pk=1)[0],
         'all_banks': Bank.objects.all(),
