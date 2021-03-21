@@ -8,7 +8,7 @@
 	"EMAIL_PORT" : "587",
 	"EMAIL_USE_TLS" : true,
 	"EMAIL_HOST_USER" : "amisatechnologies@gmail.com",
-	"EMAIL_HOST_PASSWORD" : "amisatechnologies12",
+	"EMAIL_HOST_PASSWORD" : "@misatechnologies12",
 
 	"TIME_ZONE" : "Africa/Lagos"
 }

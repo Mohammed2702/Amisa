@@ -1,0 +1,136 @@
+{% extends 'Home/base.html' %}
+
+{% load static %}
+
+
+{% block title %}
+	<title>Dashboard</title>
+{% endblock %}
+
+
+{% block main_content %}
+	<div class="row">
+            <div class="col-lg-3 col-6">
+              <!-- small box -->
+              <div class="small-box bg-info">
+                  <div class="inner">
+                      <h3>{{all_codes_count}}</h3>
+                      <p>Codes</p>
+                  </div>
+                <div class="icon">
+                  <i class="ion fas fa-gifts"></i>
+                </div>
+                <a href="{% url 'codes:account_code' %}" class="small-box-footer">More info<i class="fas fa-arrow-circle-right"></i></a>
+              </div>
+            </div>
+            <!-- ./col -->
+            <div class="col-lg-3 col-6">
+              <!-- small box -->
+              <div class="small-box bg-success">
+                <div class="inner">
+                  <h3>&#8358; {{total_amount}}</h3>
+                  <p>Total Balance</p>
+                </div>
+                <div class="icon">
+                  <i class="ion fas fa-wallet"></i>
+                </div>
+                <a href="{% url 'accounts:account_users_wallet' %}" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+              </div>
+            </div>
+            <!-- ./col -->
+            <div class="col-lg-3 col-12">
+              <!-- small box -->
+              <div class="small-box bg-warning">
+                <div class="inner">
+                  <h3>{{all_customers}}</h3>
+                  <p>Customers</p>
+                </div>
+                <div class="icon">
+                  <i class="ion fas fa-user"></i>
+                </div>
+                <a href="{% url 'accounts:account_users_list' 'customers' %}" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+              </div>
+            </div>
+          </div>
+
+{% endblock %}
+
+
+{% block content %}
+	<div class="row">
+		<div class="col-12">
+			<div class="card">
+				<div class="card-header border-transparent">
+			        <h3 class="card-title">Code Batch</h3>
+
+			        <div class="card-tools">
+						<button type="button" class="btn btn-tool" data-card-widget="collapse">
+			            	<i class="fas fa-minus"></i>
+			          	</button>
+			            <button type="button" class="btn btn-tool" data-card-widget="remove">
+			            	<i class="fas fa-times"></i>
+			        	</button>
+			        </div>
+			  	</div>
+
+			    <div class="card-body p-0">
+				    <div class="table-responsive">
+			    		<table class="table m-0">
+			        		<thead>
+					            <tr>
+					            	<th>ID</th>
+					            	<th>Batch number</th>
+					            	<th>Toggle</th>
+					            	<th>Status</th>
+					            	<th>Delete</th>
+					            	<th>Date Created</th>
+					            </tr>
+				            </thead>
+				            <tbody>
+				            	{% if code_groups %}
+				            		{% for code in code_groups %}
+							            <tr>
+							            	<td>{{forloop.counter}}</td>
+							            	<td><a href="{% url 'Home:code_group_codes' code.slug %}">{{code}}</a></td>
+							            	{% if code.status %}
+								            	<td>
+								            		<span class="badge badge-success">
+								            			Available
+								            		</span>
+								            	</td>
+								            {% else %}
+							            		<td>
+							            			<span class="badge badge-danger">
+							            				N/A
+							            			</span>
+							            		</td>
+							            	{% endif %}
+							            	{% if code.status %}
+								            	<td>
+								            		<a href="{% url 'codes:account_code_group' 'toggle' code.slug %}" class="btn btn-primary btn-sm btn-danger">Disable</a>
+								            	</td>
+								            {% else %}
+							            		<td>
+							            			<a href="{% url 'codes:account_code_group' 'toggle' code.slug %}" class="btn btn-primary btn-sm btn-succes">Enable</a>
+							            		</td>
+							            	{% endif %}
+							            	<td>
+						            			<a href="{% url 'codes:account_code_group' 'delete' code.slug %}" class="btn btn-primary btn-sm btn-danger">Delete</a>
+						            		</td>
+							            	<td>{{code.date_created}}</td>
+							            </tr>
+							        {% endfor %}
+						        {% endif %}
+				            </tbody>
+			        	</table>
+				    </div>
+			    </div>
+
+			    <div class="card-footer clearfix">
+			        <a href="{% url 'codes:account_code_request' %}" class="btn btn-sm btn-info float-left">New Batch</a>
+			        <a href="#" class="btn btn-sm btn-secondary float-right">All Batches</a>
+			    </div>
+			</div>
+		</div>
+	</div>
+{% endblock %}

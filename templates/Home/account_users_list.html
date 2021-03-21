@@ -1,0 +1,161 @@
+{% extends 'Home/base.html' %}
+
+{% load static %}
+
+
+{% block title %}
+  {% if user_type %}
+  	<title>Customers</title>
+  {% else %}
+    <title>Agents</title>
+  {% endif %}
+{% endblock %}
+
+
+{% block page_header %}
+  {% if user_type %}
+    <div class="content-wrapper">
+      <!-- Content Header (Page header) -->
+      <div class="content-header">
+        <div class="container-fluid">
+          <div class="row mb-2">
+            <div class="col-sm-6">
+              <h1 class="m-0 text-dark">Customers</h1>
+            </div><!-- /.col -->
+            <div class="col-sm-6">
+              <ol class="breadcrumb float-sm-right">
+                <li class="breadcrumb-item"><a href="{% url 'accounts:account_users_list' 'customers' %}">Customers</a></li>
+                <li class="breadcrumb-item active">Customers</li>
+              </ol>
+            </div><!-- /.col -->
+          </div><!-- /.row -->
+        </div><!-- /.container-fluid -->
+      </div>
+      <!-- /.content-header -->
+  {% else %}
+    <div class="content-wrapper">
+      <!-- Content Header (Page header) -->
+      <div class="content-header">
+        <div class="container-fluid">
+          <div class="row mb-2">
+            <div class="col-sm-6">
+              <h1 class="m-0 text-dark">Agents</h1>
+            </div><!-- /.col -->
+            <div class="col-sm-6">
+              <ol class="breadcrumb float-sm-right">
+                <li class="breadcrumb-item"><a href="{% url 'accounts:account_users_list' 'agents' %}">Agents</a></li>
+                <li class="breadcrumb-item active">Agents</li>
+              </ol>
+            </div><!-- /.col -->
+          </div><!-- /.row -->
+        </div><!-- /.container-fluid -->
+      </div>
+      <!-- /.content-header -->
+    {% endif %}
+{% endblock %}
+
+
+{% block main_content %}
+
+{% endblock %}
+
+
+{% block content %}
+
+  {% if user_type %}
+  	
+    <div class="row">
+      <div class="col-md">
+        <div class="card callout callout-info">
+          <div class="card-header">
+            <h3 class="card-title">
+              <i class="fas fa-user"></i>
+              Customers
+            </h3>
+          </div>
+          <div class="card-body table-responsive p-0" style="height: 21rem;">
+            <table class="table table-head-fixed text-nowrap">
+              <thead>
+                <tr>
+                  <th>s/n</th>
+                  <th>Referrence ID</th>
+                  <th>Full name</th>
+                  <th>Username</th>
+                  <th>E-Mail</th>
+                  <th>Phone Number</th>
+                  <th>Location</th>
+                  <th>Date Joined</th>
+                  <th>Wallet Balance</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for user in users %}
+                  <tr>
+                    <td>{{forloop.counter}}</td>
+                    <td>{{user.reference_id}}</td>
+                    <td>{{user.user.get_full_name}}</td>
+                    <td>{{user.user.username}}</td>
+                    <td>{{user.user.email}}</td>
+                    <td>{{user.phone_number}}</td>
+                    <td>{{user.state}}</td>
+                    <td>{{user.user.date_joined}}</td>
+                    <td>&#8358; {{user.user.wallet.wallet_balance}}</td>
+                  </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  {% else %}
+
+    <div class="row">
+      <div class="col-md">
+        <div class="card callout callout-info">
+          <div class="card-header">
+            <h3 class="card-title">
+              <i class="fas fa-user-tie"></i>
+              Agents
+            </h3>
+          </div>
+          <div class="card-body table-responsive p-0" style="height: 21rem;">
+            <table class="table table-head-fixed text-nowrap">
+              <thead>
+                <tr>
+                  <th>s/n</th>
+                  <th>Referrence ID</th>
+                  <th>Full name</th>
+                  <th>Username</th>
+                  <th>E-Mail</th>
+                  <th>Phone Number</th>
+                  <th>Location</th>
+                  <th>Date Joined</th>
+                  <th>Wallet Balance</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for user in users %}
+                  <tr>
+                    <td>{{forloop.counter}}</td>
+                    <td>{{user.reference_id}}</td>
+                    <td>{{user.user.get_full_name}}</td>
+                    <td>{{user.user.username}}</td>
+                    <td>{{user.user.email}}</td>
+                    <td>{{user.phone_number}}</td>
+                    <td>{{user.state}}</td>
+                    <td>{{user.user.date_joined}}</td>
+                    <td>&#8358; {{user.user.wallet.wallet_balance}}</td>
+                  </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  {% endif %}
+
+{% endblock %}

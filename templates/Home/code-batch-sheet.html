@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+	<html>
+		{% load static %}
+
+	  	<head>
+		    <meta charset="utf-8">
+		    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+		    <link rel="icon" type="image/x-icon" href="{% static 'img/logo.png' %}">
+
+	        <title>Batch | {{ code_batch }}</title>
+		    <!-- Tell the browser to be responsive to screen width -->
+		    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+		    <link rel="stylesheet" type="text/css" href="{% static 'dist/css/materialize.css' %}">
+			<link rel="stylesheet" type="text/css" href="{% static 'dist/css/all.css' %}">
+			<link rel="stylesheet" type="text/css" href="{% static 'dist/css/index.css' %}">
+			<link rel="stylesheet" type="text/css" href="{% static 'dist/css/layout.css' %}">
+	  	</head>
+	<body>
+		<div class="card-container">
+			<div class="divider"></div>
+			<h5>Front faces</h5>
+			<div class="divider"></div>
+			<div class="row">
+				{% for code in codes %}
+					<div class="col m3 s3 l3">
+						{% include 'components/amisa-card-front.html' %}
+					</div>
+				{% endfor %}
+				<div class="col m3 s3 l3 center">
+					<p style="padding-top: 1em; font-size: 2em;">
+						<label>Powered By</label><br>Amisa360 LTD
+					</p>
+				</div>
+
+				<div class="col m3 s3 l3 center">
+					<p style="padding-top: 1em; font-size: 2em;">
+						<label>Powered By</label><br>Amisa360 LTD
+					</p>
+				</div>
+			</div>
+			<div class="divider"></div>
+		</div>
+
+		<div class="card-container">
+			<div class="divider"></div>
+			<h5>Back faces</h5>
+			<div class="divider"></div>
+			<div class="row">
+				{% for code in codes %}
+					<div class="col m3 s3 l3">
+						{% include 'components/amisa-card-back.html' %}
+					</div>
+				{% endfor %}
+				<div class="col m3 s3 l3 center">
+					<p style="padding-top: 1em; font-size: 2em;">
+						<label>Powered By</label><br>Amisa360 LTD
+					</p>
+				</div>
+
+				<div class="col m3 s3 l3 center">
+					<p style="padding-top: 1em; font-size: 2em;">
+						<label>Powered By</label><br>Amisa360 LTD
+					</p>
+				</div>
+			</div>
+			<div class="divider"></div>
+		</div>
+	</body>
+</html>

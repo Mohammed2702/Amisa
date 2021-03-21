@@ -1,0 +1,221 @@
+{% extends 'Home/base.html' %}
+
+{% load static %}
+
+
+{% block title %}
+  <title>Withdrawal</title>
+{% endblock %}
+
+
+{% block page_header %}
+  <div class="content-wrapper">
+    <div class="content-header">
+      <div class="container-fluid">
+        <div class="row mb-2">
+          <div class="col-sm-6">
+            <h1 class="m-0 text-dark">Withdrawal</h1>
+          </div>
+          <div class="col-sm-6">
+            <ol class="breadcrumb float-sm-right">
+              <li class="breadcrumb-item"><a href="{% url 'services:account_user_withdrawal' %}">Withdrawal</a></li>
+              <li class="breadcrumb-item active">Withdrawal</li>
+            </ol>
+          </div>
+        </div>
+      </div>
+    </div>
+{% endblock %}
+
+
+{% block main_content %}
+  <div class="row">
+    <div class="col-lg-3 col-6">
+      <!-- small box -->
+      <div class="small-box bg-info">
+          <div class="inner">
+              <h3>0</h3>
+              <p>My Codes</p>
+          </div>
+        <div class="icon">
+          <i class="ion fas fa-gifts"></i>
+        </div>
+        <a href="{% url 'codes:account_code' %}" class="small-box-footer">More info<i class="fas fa-arrow-circle-right"></i></a>
+      </div>
+    </div>
+    <div class="col-lg-3 col-6">
+      <!-- small box -->
+      <div class="small-box bg-success">
+        <div class="inner">
+          <h3>&#8358; {{user_wallet.wallet_balance}}</h3>
+          <p>Wallet Balance</p>
+        </div>
+        <div class="icon">
+          <i class="ion fas fa-wallet"></i>
+        </div>
+        <a href="{% url 'accounts:account_users_wallet' %}" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+      </div>
+    </div>
+    <div class="col-lg-6 col-12">
+      <div class="card callout callout-info">
+          <!-- /.card-header -->
+          <div class="card-header">
+            <small class="card-title">Notice</small>
+          </div>
+        <div class="card-body">
+            <p class="card-text">
+            {{notice_notes}}
+            </p>
+          </div>
+      </div>
+    </div>
+  </div>
+{% endblock %}
+
+
+{% block content %}
+
+
+<section class="content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md connectedSortable">
+                {% for message in messages %}
+                    <div class="alert alert-warning">
+                        <button class="close" data-dismiss="alert">×</button>
+                        {{ message }}
+                    </div>
+                {% endfor %}
+              
+                <div class="card card-primary">
+                    <div class="card-header">
+                        <h3 class="card-title">Withdraw</h3>
+                    </div>
+
+                    <form role="form" method='POST'>
+                        {% csrf_token %}
+
+                    <div class="card-body">
+
+                      <div class="form-group">
+                          <label>Account number</label>
+                          <div class="input-group">
+                            <div class="input-group-prepend">
+                              <span class="input-group-text"><i class="fas fa-phone"></i></span>
+                            </div>
+                            <input type="number" class="form-control bfh-number"name="account_number" required id="account-number">
+                          </div>
+                      </div>
+
+                      <div class="form-group">
+                          <label>Account name</label>
+                          <div class="input-group">
+                            <div class="input-group-prepend">
+                              <span class="input-group-text"><i class="fas fa-user"></i></span>
+                            </div>
+                            <input type="text" class="form-control bfh-phone"name="account_name" required id="account-name">
+                          </div>
+                      </div>
+
+                      <div class="form-group">
+                            <label for="id_code_group">Bank</label></th><td>
+                          <select name="bank" required id="id_code_group" class="form-control">
+                                  <option value="">-- Bank --</option>
+                                  {% for bank in all_banks %}
+                                      <option value="{{bank.bank}}">{{bank.bank}}</option>
+                                {% endfor %}
+                                </select>
+                            </label>
+                      </div>
+
+                      <div class="form-group">
+                          <label>Amount</label>
+                          <div class="input-group">
+                            <div class="input-group-prepend">
+                              <span class="input-group-text"><i class="fas fa-money">&#8358; </i></span>
+                            </div>
+                            <input type="number" class="form-control bfh-phone"name="amount" required id="amount-number">
+                          </div>
+                      </div>
+                    </div>
+
+                  <div class="card-footer" style="text-align: center;">
+                      <button type="submit" class="btn btn-primary">Withdraw</button>
+                    </div>
+                </form>
+              </div>
+              <!-- /.card -->
+        </div>
+    </div>
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md connectedSortable">
+              <div class="row">
+          <div class="col connectedSortable">
+            <div class="card">
+              <div class="card-header border-transparent">
+                    <h3 class="card-title">Account History</h3>
+
+                    <div class="card-tools">
+                  <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                          <i class="fas fa-minus"></i>
+                        </button>
+                        <button type="button" class="btn btn-tool" data-card-widget="remove">
+                          <i class="fas fa-times"></i>
+                      </button>
+                    </div>
+                </div>
+
+                <div class="card-body p-0">
+                  <div class="table-responsive">
+                    <table class="table m-0">
+                        <thead>
+                            <tr>
+                              <th>ID</th>
+                              <th>Description</th>
+                              <th>Amount</th>
+                              <th>Charges</th>
+                              <th>Status</th>
+                              <th>Date</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            <!-- Account History -->
+                            {% if user_history_truncate %}
+                              {% for history in user_history_truncate %}
+                          <tr>
+                            <td>{{forloop.counter}}</td>
+                            <td>{{history.description}}</td>
+                            <td>{{history.amount}}</td>
+                            <td>{{history.charges}}</td>
+                            {% if history.status %}
+                              <td>
+                                <span class="badge badge-success">
+                                        Approved
+                                      </span>
+                                    </td>
+                            {% else %}
+                              <td>
+                                <span class="badge badge-danger">
+                                        Declined
+                                      </span>
+                                    </td>
+                            {% endif %}
+                            <td>{{history.date}}</td>
+                          </tr>
+                              {% endfor %}
+                            {% endif %}
+                          </tbody>
+                      </table>
+                  </div>
+                </div>
+                  </div>
+              </div>
+          </div>
+        </div>
+    </div>
+    </div>
+</section>
+
+
+{% endblock %}

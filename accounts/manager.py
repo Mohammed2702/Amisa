@@ -23,3 +23,8 @@ class UserManager(BaseUserManager):
         extra_fields.setdefault('is_superuser', True)
 
         return self._create_user(username, password, **extra_fields)
+
+
+class CodeGroupManager(models.Manager):
+    def create(self, *args, **kwargs):
+        return super().create(*args, **kwargs)

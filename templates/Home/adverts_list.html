@@ -1,0 +1,64 @@
+{% extends 'Home/base.html' %}
+
+{% load static %}
+
+
+{% block title %}
+	<title>Adverts</title>
+{% endblock %}
+
+{% block extra_styles %}
+{% endblock %}
+
+{% block page_header %}
+  <div class="content-wrapper">
+    <div class="content-header">
+      <div class="container-fluid">
+        <div class="row mb-2">
+          <div class="col-sm-6">
+            <h1 class="m-0 text-dark">Adverts</h1>
+          </div><!-- /.col -->
+          <div class="col-sm-6">
+            <ol class="breadcrumb float-sm-right">
+              <li class="breadcrumb-item"><a href="{% url 'services:adverts' %}">Adverts</a></li>
+              <li class="breadcrumb-item active">Adverts</li>
+            </ol>
+          </div><!-- /.col -->
+        </div><!-- /.row -->
+      </div><!-- /.container-fluid -->
+    </div>
+{% endblock %}
+
+{% block main_content %}
+{% endblock %}
+
+{% block content %}
+	<div class="card-body table-responsive p-0" style="height: 21rem;">
+	  <table class="table table-head-fixed text-nowrap">
+	    <thead>
+	      <tr>
+	        <th>s/n</th>
+	        <th>Full name</th>
+	        <th>Priority</th>
+	        <th>Date Joined</th>
+	        <th>Last updated</th>
+	      </tr>
+	    </thead>
+	    <tbody>
+	      {% for client in clients %}
+	        <tr>
+	          <td>{{forloop.counter}}</td>
+	          <td>{{client.client_fullname}}</td>
+	          <td>{{client.priority}}</td>
+	          <td>{{client.date}}</td>
+	          <td>{{client.updated}}</td>
+	        </tr>
+	      {% endfor %}
+	    </tbody>
+	  </table>
+	</div>
+{% endblock %}
+
+
+{% block extra_scripts %}
+{% endblock %}

@@ -46,7 +46,10 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 
     'home.apps.HomeConfig',
-    'blog.apps.BlogConfig'
+    'accounts.apps.AccountsConfig',
+    'codes.apps.CodesConfig',
+    'services.apps.ServicesConfig',
+    'blog.apps.BlogConfig',
 ]
 
 SITE_ID = 1
@@ -72,7 +75,7 @@ TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
         'DIRS': [
-            os.path.join(BASE_DIR, 'src/views')
+            os.path.join(BASE_DIR, 'templates')
         ],
         'APP_DIRS': True,
         'OPTIONS': {
@@ -99,7 +102,7 @@ DATABASES = {
     }
 }
 
-AUTH_USER_MODEL = 'home.User'
+AUTH_USER_MODEL = 'accounts.User'
 
 # Password validation
 # https://docs.djangoproject.com/en/3.0/ref/settings/#auth-password-validators
@@ -136,7 +139,7 @@ USE_TZ = True
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.0/howto/static-files/
-LOGIN_REDIRECT_URL = 'Home:account_signin'
+LOGIN_REDIRECT_URL = 'accounts:account_signin'
 
 ADMIN_EMAIL = config['ADMIN_EMAIL']
 
@@ -148,10 +151,10 @@ EMAIL_USE_TLS = config['EMAIL_USE_TLS']
 EMAIL_HOST_PASSWORD = config['EMAIL_HOST_PASSWORD']
 
 # STATIC_ROOT = os.path.join(BASE_DIR, 'src/static')
-STATIC_URL = '/assets/'
+STATIC_URL = '/static/'
 STATICFILES_DIRS = [
-   os.path.join(BASE_DIR, 'src/assets')
+   os.path.join(BASE_DIR, 'static')
 ]
 
-MEDIA_ROOT = os.path.join(BASE_DIR, 'src/media')
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 MEDIA_URL = '/media/'

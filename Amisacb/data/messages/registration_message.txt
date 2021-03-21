@@ -1,0 +1,14 @@
+Registration Successful!!!
+
+Welcome to AMISA TECHNOLOGIES. Please read carefully.
+
+Full name:      {}
+Username:       {}
+E-Mail:         {}
+Account Type:   {}
+Referrence ID:  {}
+
+WhatsApp  - +234 8029110788
+Call      - +234 9066565796
+
+Thanks for being part of AMISA community.
