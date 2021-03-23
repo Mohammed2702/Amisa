@@ -53,3 +53,12 @@ class PasswordResetForm(forms.Form):
 	old_password = forms.CharField(required=True)
 	new_password = forms.CharField(required=True)
 	confirm_password = forms.CharField(required=True)
+
+
+class PermissionsForm(forms.Form):
+	username = forms.CharField(required=True, widget=forms.TextInput())
+	blog = forms.BooleanField(required=False)
+	home = forms.BooleanField(required=False)
+	services = forms.BooleanField(required=False)
+	codes = forms.BooleanField(required=False)
+	account = forms.BooleanField(required=False)

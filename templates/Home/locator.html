@@ -50,7 +50,7 @@
                             </div>
                         {% endfor %}
                         <div class="card-body">
-                            <table id="example1" class="table table-bordered table-striped">
+                            <table id="locator_table" class="table table-bordered table-striped">
                                 <thead>
                                     <tr>
                                         <th>s/n</th>
@@ -123,7 +123,7 @@
                             </table>
                         </div>
                         <div class="card-footer">
-                            {% if user.is_staff %}
+                            {% if user.is_home %}
                                 <div class="modal fade" id="add-location">
                                     <div class="modal-dialog">
                                         <div class="modal-content">
@@ -162,7 +162,9 @@
                                         </div>
                                     </div>
                                 </div>
+                                {% if user.is_home %}
                                     <button class="btn btn-sm btn-primary" data-toggle="modal" data-target="#add-location">Add Location</button>
+                                {% endif %}
                             {% endif %}
                         </div>
                     </div>
@@ -179,12 +181,11 @@
     <script src="{% static 'plugins/datatables/jquery.dataTables.min.js' %}"></script>
     <script src="{% static 'plugins/datatables-bs4/js/dataTables.bootstrap4.min.js' %}"></script>
     <script src="{% static 'plugins/datatables-responsive/js/dataTables.responsive.min.js' %}"></script>
-    <script src="{% static 'plugins/sparklines/sparkline.js' %}"></script>
     <script src="{% static 'plugins/datatables-responsive/js/responsive.bootstrap4.min.js' %}"></script>
     <script src="{% static 'dist/js/adminlte.min.js' %}"></script>
     <script>
         $(function () {
-            $("#example1").DataTable({
+            $("#locator_table").DataTable({
                 "responsive": true,
                 "autoWidth": false,
                 "bDestroy": true

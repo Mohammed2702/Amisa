@@ -1,13 +1,10 @@
 {% extends 'Home/base.html' %}
 
 {% load static %}
+{% load humanize %}
 
 {% block title %}
-  {% if user.is_staff %}
-    <title>Users</title>
-  {% else %}
-    <title>User</title>
-  {% endif %}
+  <title>Users</title>
 {% endblock %}
 
 {% block page_header %}
@@ -53,114 +50,89 @@
 
 {% block content %}
   <div class="container">
-    {% if user.is_staff %}
-      <div class="row">
-        <div class="col-md">
-          <div class="card callout callout-info">
-            <div class="card-header">
-              <h3 class="card-title">
-                <i class="fas fa-user"></i>
-                Users
-              </h3>
-            </div>
-            <div class="card">
-              <!-- /.card-header -->
-              <div class="card-body">
-                <table id="example1" class="table table-bordered table-striped">
-                  <thead>
-                  <tr>
-                    <th>s/n</th>
-                    <th>Referrence ID</th>
-                    <th>Full name</th>
-                    <th>Username</th>
-                    <th>E-Mail</th>
-                    <th>Location</th>
-                    {% if user.is_superuser %}
-                        <th>Permission</th>
-                    {% endif %}
-                    <th>Date Joined</th>
-                    <th>Wallet Balance</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {% for a_user in users %}
-                    <tr>
-                        <td>{{forloop.counter}}</td>
-                        <td>{{a_user.profile.reference_id}}</td>
-                        <td>{{a_user.get_full_name}}</td>
-                        <td>{{a_user.username}}</td>
-                        <td>{{a_user.email}}</td>
-                        <td>{{a_user.profile.state}}</td>
-                        {% if user.is_superuser %}
-                            <td>
-                                {% if a_user.is_staff %}
-                                    <a href="{% url 'Home:toggle_permission' a_user.id %}"><button class="btn btn-sm btn-danger">Restrict</button></a>
-                                {% else %}
-                                    <a href="{% url 'Home:toggle_permission' a_user.id %}"><button class="btn btn-sm btn-info">Authorize</button></a>
-                                {% endif %}
-                            </td>
-                        {% endif %}
-                        <td>{{a_user.date_joined}}</td>
-                        <td>&#8358; {{a_user.wallet.wallet_balance}}</td>
-                    </tr>
-                  {% endfor %}
-                </tbody>
-                </table>
-                <div class="row">
-                    <div class="col-md-12 float-sm-right">
-                        <label class="float-sm-right">Total Balance <b>&#8358; {{total_amount}}</b></label>
-                    </div>
+    <div class="row">
+      <div class="col-md">
+        <div class="card callout callout-info">
+          <div class="card-header">
+            <h3 class="card-title">
+              <i class="fas fa-user"></i>
+              Users
+            </h3>
+          </div>
+          <div class="card">
+            <!-- /.card-header -->
+            <div class="card-body">
+              {% for message in messages %}
+                <div class="alert alert-success">
+                  <button class="close" data-dismiss="alert">×</button>
+                  {{ message }}
                 </div>
-              </div>
-              <!-- /.card-body -->
-            </div>
-          </div>
-        </div>
-      </div>
-    {% else %}
-      <div class="row">
-        <div class="col-md">
-          <div class="card callout callout-info">
-            <div class="card-header">
-              <h3 class="card-title">
-                <i class="fas fa-user"></i>
-                User
-              </h3>
-            </div>
-            <div class="card-body table-responsive p-0" style="height: 21rem;">
-              <table class="table table-head-fixed text-wrap">
+              {% endfor %}
+              <table id="user_table" class="table table-bordered table-striped">
                 <thead>
+                <tr>
+                  <th>S/N</th>
+                  <th>Referrence ID</th>
+                  <th>Username</th>
+                  <th>Balance</th>
+                  <th>Last updated</th>
+                  <th>HM</th>
+                  <th>BG</th>
+                  <th>SV</th>
+                  <th>CS</th>
+                  <th>AC</th>
+                  <th>#</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for a_user in users %}
                   <tr>
-                    <th>s/n</th>
-                    <th>Referrence ID</th>
-                    <th>Full name</th>
-                    <th>Username</th>
-                    <th>E-Mail</th>
-                    <th>Location</th>
-                    <th>Date Joined</th>
-                    <th>Wallet Balance</th>
+                    <td>{{forloop.counter}}</td>
+                    <td>{{a_user.profile.reference_id}}</td>
+                    <td>{{a_user.username}}</td>
+                    <td>&#8358; {{ a_user.wallet.wallet_balance }}</td>
+                    <td>{{a_user.last_updated | naturaltime}}</td>
+                    <form method="post">
+                      {% csrf_token %}
+                      <td>
+                        <input type="checkbox" {% if a_user.is_home %} checked {% endif %} name="home">
+                      </td>
+                      <td>
+                        <input type="checkbox" {% if a_user.is_blog %} checked {% endif %} name="blog">
+                      </td>
+                      <td>
+                        <input type="checkbox" {% if a_user.is_services %} checked {% endif %} name="services">
+                      </td>
+                      <td>
+                        <input type="checkbox" {% if a_user.is_codes %} checked {% endif %} name="codes">
+                      </td>
+                      <td>
+                        <input type="checkbox" {% if a_user.is_account %} checked {% endif %} name="account">
+                      </td>
+                      <td>
+                        <button type="submit" class="btn btn-primary btn-sm">
+                          <i class="fas fa-save"></i>
+                        </button>
+                      </td>
+                      <td style="display: none;">
+                        <input type="text" name="username" value="{{a_user.username}}">
+                      </td>
+                    </form>
                   </tr>
-                </thead>
-                <tbody>
-                  {% for user in users %}
-                    <tr>
-                      <td>{{forloop.counter}}</td>
-                      <td>{{user.profile.reference_id}}</td>
-                      <td>{{user.get_full_name}}</td>
-                      <td>{{user.username}}</td>
-                      <td>{{user.email}}</td>
-                      <td>{{user.profile.state}}</td>
-                      <td>{{user.date_joined}}</td>
-                      <td>&#8358; {{user.wallet.wallet_balance}}</td>
-                    </tr>
-                  {% endfor %}
-                </tbody>
+                {% endfor %}
+              </tbody>
               </table>
+              <div class="row">
+                  <div class="col-md-12 float-sm-right">
+                      <label class="float-sm-right">Total Balance <b>&#8358; {{total_amount}}</b></label>
+                  </div>
+              </div>
             </div>
+            <!-- /.card-body -->
           </div>
         </div>
       </div>
-    {% endif %}
+    </div>
   </div>
 {% endblock %}
 
@@ -170,10 +142,9 @@
     <script src="{% static 'plugins/datatables-bs4/js/dataTables.bootstrap4.min.js' %}"></script>
     <script src="{% static 'plugins/datatables-responsive/js/dataTables.responsive.min.js' %}"></script>
     <script src="{% static 'plugins/datatables-responsive/js/responsive.bootstrap4.min.js' %}"></script>
-    <script src="{% static 'plugins/sparklines/sparkline.js' %}"></script>
     <script>
         $(function () {
-            $("#example1").DataTable({
+            $("#user_table").DataTable({
                 "responsive": true,
                 "autoWidth": false,
                 "bDestroy": true

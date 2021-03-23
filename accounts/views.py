@@ -12,7 +12,8 @@ from accounts.forms import (
 	ForgotPasswordForm,
 	PasswordResetForm,
 	ProfileForm,
-    UserUpdateForm
+    UserUpdateForm,
+    PermissionsForm
 )
 from accounts.models import (
 	PasswordReset
@@ -27,7 +28,7 @@ from Amisacb.utils import (
 
 from Amisacb.context import checker, external_context, user_features
 from Amisacb import utils
-
+from Amisacb.decorators import accounts_required
 
 User = get_user_model()
 
@@ -235,8 +236,6 @@ def account_dashboard(request):
         context = user_features(request.user.id)
         template_name = 'Home/account_dashboard.html'
         context = utils.dict_merge(external_context(), context)
-
-        # return render(request, template_name, context)
     else:
         context = user_features(request.user.id)
         template_name = 'Home/account_user_dashboard.html'
@@ -245,41 +244,43 @@ def account_dashboard(request):
     return render(request, template_name, context)
 
 
-@login_required(login_url='accounts:account_signin')
-def account_users_list(request, user_type):
-    try:
-        user_type = True
-        users = Profile.objects.order_by('-date_joined')
-
-        template_name = 'Home/account_users_list.html'
-        user_details = user_features(request.user.id)
-        context = utils.dict_merge(external_context(), user_details)
-        context = utils.dict_merge(
-            context, {'user_type': user_type, 'users': users})
-
-        return render(request, template_name, context)
-    except Exception as e:
-        print('account_users_list', e)
-
-
+@accounts_required
 @login_required(login_url='accounts:account_signin')
 def account_users_wallet(request):
     template_name = 'Home/account_users_wallet.html'
     user_details = user_features(request.user.id)
     context = utils.dict_merge(external_context(), user_details)
 
-    if request.user.is_staff:
-        users = User.objects.all()
-        context = utils.dict_merge(context, {'users': users})
+    users = User.objects.order_by('-last_updated')
+    context = utils.dict_merge(context, {'users': users})
 
-        return render(request, template_name, context)
+    if request.method == 'POST':
+        permission_form = PermissionsForm(request.POST)
+        if permission_form.is_valid():
+            username = permission_form.cleaned_data.get('username')
+            home = permission_form.cleaned_data.get('home')
+            blog = permission_form.cleaned_data.get('blog')
+            services = permission_form.cleaned_data.get('services')
+            codes = permission_form.cleaned_data.get('codes')
+            account = permission_form.cleaned_data.get('account')
+
+            get_user = User.objects.get(username=username)
+            get_user.is_home = home
+            get_user.is_blog = blog
+            get_user.is_services = services
+            get_user.is_codes = codes
+            get_user.is_account = account
+
+            get_user.save()
+
+            message = f'Permissions for {username} was updated'
+            messages.info(request, message)
+        # else:
+        #     print(permission_form.errors)
     else:
-        context = {
-            'users': User.objects.all().filter(id=request.user.id)
-        }
-        context = utils.dict_merge(external_context(), context)
+        permission_form = PermissionsForm()
 
-        return render(request, template_name, context)
+    return render(request, template_name, context)
 
 
 # Profile
@@ -442,6 +443,7 @@ def account_profile(request):
     return render(request, template_name, context)
 
 
+@accounts_required
 @login_required(login_url='accounts:account_signin')
 def toggle_permission(request, username):
     try:
@@ -453,7 +455,7 @@ def toggle_permission(request, username):
                 user.is_staff = True
 
             user.save()
-            return redirect('Home:account_users_wallet')
+            return redirect('accounts:account_users_wallet')
         else:
             return render(request, 'Home/404Error.html')
     except User.DoesNotExist:

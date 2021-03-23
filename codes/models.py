@@ -61,7 +61,7 @@ class Code(models.Model):
         blank=False,
         unique=True,
     )
-    amount = models.FloatField(default=100.00, blank=False)
+    amount = models.PositiveIntegerField(default=100, blank=False)
     status = models.BooleanField(default=True)
     slug = models.SlugField(max_length=20, unique=True, blank=True)
     date_created = models.DateTimeField(auto_now_add=True)

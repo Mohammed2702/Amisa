@@ -21,8 +21,16 @@ class User(AbstractBaseUser, PermissionsMixin):
     is_active = models.BooleanField(default=True)
     is_superuser = models.BooleanField(default=False)
     is_staff = models.BooleanField(default=False)
-    date_joined = models.DateTimeField(auto_now=True)
-    last_updated = models.DateField(auto_now_add=True)
+    date_joined = models.DateTimeField(auto_now_add=True)
+    last_updated = models.DateTimeField(auto_now=True)
+
+    # app permissions
+
+    is_home = models.BooleanField(default=False)
+    is_blog = models.BooleanField(default=False)
+    is_services = models.BooleanField(default=False)
+    is_codes = models.BooleanField(default=False)
+    is_account = models.BooleanField(default=False)
 
     REQUIRED_FIELDS = ['email']
     USERNAME_FIELD = 'username'

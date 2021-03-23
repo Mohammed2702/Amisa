@@ -22,6 +22,7 @@ from services.forms import (
 from home.forms import SiteSettingForm
 from Amisacb import utils
 from Amisacb.context import external_context, user_features
+from Amisacb.decorators import services_required, home_required
 
 
 message_dir = os.path.join(settings.BASE_DIR, 'Amisacb/data/messages')
@@ -268,6 +269,7 @@ def account_user_airtime(request):
     return render(request, template_name, context)
 
 
+@services_required
 @login_required(login_url='accounts:account_signin')
 def show_all_orders(request):
     template_name = 'Home/show_all_orders.html'
@@ -291,6 +293,7 @@ def show_all_orders(request):
     return render(request, template_name, context)
 
 
+@services_required
 @login_required(login_url='accounts:account_signin')
 def toggle_order(request, order_slug):
     if request.user.is_staff:
@@ -326,6 +329,7 @@ def toggle_order(request, order_slug):
         return render(request, template_name)
 
 
+@home_required
 @login_required(login_url='accounts:account_signin')
 def adverts(request):
     template_name = 'Home/adverts.html'

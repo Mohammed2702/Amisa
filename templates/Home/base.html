@@ -65,7 +65,6 @@
           {% for order in orders %}
             <a href="{% url 'services:show_all_orders' %}#{{order.slug}}" class="dropdown-item" style="height: 3rem;">
               <small class="text-truncate">{{order.transaction}}</small>
-              {# <span class="float-right text-muted text-sm">{{order.date}}</span> #}
             </a>
             <div class="dropdown-divider"></div>
           {% endfor %}

@@ -2,26 +2,49 @@
 {% load static %}
 
 {% block card_content %}
-	<div class="row">
-		<div class="col s4 m4 l4">
-			<img src="{% static 'img/logo-2.png' %}">
+	<div class="row pama-bt-0">
+		<div class="col s6 m6 l6 left">
+			<img class="responsive-img" src="{% static 'img/logo-2.png' %}">
 		</div>
 
-		<div class="col s8 m8 l8">
-			<p class="amount">&#8358; 20</p>
+		<div class="col s6 m6 l6 right">
+			<p class="amount">&#8358;{{ code.amount }}</p>
 		</div>
-		
+
 		<div class="col s12 m12 l12">
 			<div class="center">
 				<p class="title">
 					AMISACARD
-					<p class="description">The CashCard Scheme</p>
 				</p>
+
+				<p class="code-container">
+					<label>{{ code }}</label>
+				</p>
+
+				<div class="code-extra">
+					<span>Expiry  {{ code.expiry_date | date:"d/m/y" }}</span>
+					<span>B/N  {{ code_batch }}</span>
+					<span>S/N  {{ code.get_serial_number }}</span>
+				</div>
 			</div>
 		</div>
 
-		<div class="col s12 m12 l12 white blue-text text-darken-4 center">
-			<p>Online Redemption is Required</p>
+		<div class="col s12 m12 l12">
+			<div class="card-message">
+				<p>
+					visit <a href="#">amisa360.com.ng</a> to get your card redeemed
+				</p>
+
+				<p class="disp-flex-col">
+					<p>
+						Whatsapp : {{ get_settings.whatsapp_contact }}
+					</p>
+
+					<p>
+						Call : {{ get_settings.call_contact }}
+					</p>
+				</p>
+			</div>
 		</div>
 	</div>
 {% endblock %}

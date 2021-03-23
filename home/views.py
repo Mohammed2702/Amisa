@@ -43,6 +43,7 @@ from codes.models import (
 )
 from Amisacb import utils
 from Amisacb.context import user_features, external_context
+from Amisacb .decorators import home_required
 
 # ENV
 HOST_HEADER = 'https://'
@@ -84,6 +85,7 @@ def code_group_codes(request, group_slug):
         return render(request, 'Home/404Error.html')
 
 
+@home_required
 @login_required(login_url='accounts:account_signin')
 def site_settings(request):
     if request.user.is_superuser:
@@ -175,136 +177,49 @@ def site_settings(request):
     return redirect('Home:site_settings')
 
 
-def all_posts(request):
-    try:
-        get_all_posts = [i for i in reversed(list(Post.objects.all()))]
-
-        user_context = {
-            'all_posts': get_all_posts,
-
-        }
-        context = utils.dict_merge(
-            user_context, user_features(request.user.id))
-
-        template_name = 'Home/posts.html'
-
-        if request.method == 'POST':
-            if request.user.is_staff:
-                post_form = PostForm(request.POST)
-                context = utils.dict_merge(context, {'post_form': post_form})
-                if post_form.is_valid():
-                    post_title = post_form.cleaned_data.get('post_title')
-                    post_content = post_form.cleaned_data.get('post_content')
-
-                    create_post = Post.objects.create(
-                        author=request.user,
-                        title=post_title,
-                        content=post_content,
-                    )
-
-                    if create_post:
-                        create_post.save()
-
-                        messages.info(request, 'Post was successfully created.')
-
-                        return redirect('Home:posts')
-                    else:
-                        messages.info(request, 'Post could not be created.')
-
-                        return redirect('Home:posts')
-            else:
-                return render(request, 'Home/404Error.html')
-        else:
-            post_form = PostForm()
-            context = utils.dict_merge(context, {'post_form': post_form})
-
-        context = utils.dict_merge(external_context(), context)
-
-        return render(request, template_name, context)
-    except Exception as e:
-        print('all_posts', e)
-
-
-def post_detail(request, post_id):
-    try:
-        pass
-    except Exception as e:
-        print('post_detail', e)
-
-
-@login_required(login_url='accounts:account_signin')
-def post_edit(request, post_id):
-    try:
-        pass
-    except Exception as e:
-        print('post_edit', e)
-
-
-@login_required(login_url='accounts:account_signin')
-def post_delete(request, post_id):
-    try:
-        if request.user.is_staff:
-            post = Post.objects.get(pk=post_id)
-            post.delete()
-
-            messages.info(request, 'Post was successfully deleted :)')
-
-            return redirect('Home:posts')
-        else:
-            return render(request, 'Home/404Error.html')
-    except Post.DoesNotExist:
-        return render(request, 'Home/404Error.html')
-    except Exception as e:
-        print('post_delete', e)
-
-
 # Extras
 
 
 def charges_and_pricing(request):
-    try:
-        if str(request.user) != 'AnonymousUser':
-            user_orders = [i for i in reversed(
-                list(Order.objects.all().filter(user=request.user)))]
-            user_orders_truncate = [i for i in reversed(
-                list(Order.objects.all().filter(user=request.user))[:5])]
-            admin_orders = [i for i in reversed(
-                list(Order.objects.all()))]
-            admin_orders_truncate = [i for i in reversed(
-                list(Order.objects.all()))][:5]
+    if str(request.user) != 'AnonymousUser':
+        user_orders = [i for i in reversed(
+            list(Order.objects.all().filter(user=request.user)))]
+        user_orders_truncate = [i for i in reversed(
+            list(Order.objects.all().filter(user=request.user))[:5])]
+        admin_orders = [i for i in reversed(
+            list(Order.objects.all()))]
+        admin_orders_truncate = [i for i in reversed(
+            list(Order.objects.all()))][:5]
 
-            user_context = {
-                'user_orders': user_orders,
-                'user_orders_truncate': user_orders_truncate,
-                'admin_orders': admin_orders,
-                'admin_orders_truncate': admin_orders_truncate,
+        user_context = {
+            'user_orders': user_orders,
+            'user_orders_truncate': user_orders_truncate,
+            'admin_orders': admin_orders,
+            'admin_orders_truncate': admin_orders_truncate,
 
-            }
-            context = user_context
-            context = utils.dict_merge(external_context(), context)
+        }
+        context = user_context
+        context = utils.dict_merge(external_context(), context)
 
-            user_details = utils.dict_merge(
-                user_features(request.user.id), context)
-            context = utils.dict_merge(external_context(), user_details)
+        user_details = utils.dict_merge(
+            user_features(request.user.id), context)
+        context = utils.dict_merge(external_context(), user_details)
 
-            template_name = 'Home/charges_and_pricing.html'
+        template_name = 'Home/charges_and_pricing.html'
 
-            return render(request, template_name, context)
-        else:
-            user_context = {
-            }
-            context = user_context
+        return render(request, template_name, context)
+    else:
+        user_context = {
+        }
+        context = user_context
 
-            template_name = 'Home/charges_and_pricing.html'
+        template_name = 'Home/charges_and_pricing.html'
 
-            return render(request, template_name, context)
-    except Exception as e:
-        print('charges_and_pricing', e)
+        return render(request, template_name, context)
 
 
 def terms_of_use(request):
     if str(request.user) != 'AnonymousUser':
-        print(type(request.user), 'True')
         user_orders = [i for i in reversed(
             list(Order.objects.all().filter(user=request.user)))]
         user_orders_truncate = [i for i in reversed(
@@ -332,7 +247,6 @@ def terms_of_use(request):
 
         return render(request, template_name, context)
     else:
-        print(request.user)
         user_context = {
 
         }
@@ -341,7 +255,6 @@ def terms_of_use(request):
         template_name = 'Home/terms_of_use.html'
 
         return render(request, template_name, context)
-
 
 
 @login_required(login_url='accounts:account_signin')
@@ -355,38 +268,39 @@ def locator(request):
     locator_form = LocatorForm(request.POST)
 
     if request.method == 'POST':
-        if locator_form.is_valid():
-            if 'add-new' in locator_form.data:
-                location = locator_form.cleaned_data.get('location')
-                information = locator_form.cleaned_data.get('information')
+        if request.user.is_home:
+            if locator_form.is_valid():
+                if 'add-new' in locator_form.data:
+                    location = locator_form.cleaned_data.get('location')
+                    information = locator_form.cleaned_data.get('information')
 
-                locator = Locator.objects.create(
-                    location=location,
-                    information=information
-                )
+                    locator = Locator.objects.create(
+                        location=location,
+                        information=information
+                    )
 
-                locator.save()
+                    locator.save()
 
-                messages.success(request, 'New Location added :)')
-            if 'edit-locator' in locator_form.data:
-                id_ = locator_form.cleaned_data.get('id_')
-                location = locator_form.cleaned_data.get('location')
-                information = locator_form.cleaned_data.get('information')
+                    messages.success(request, 'New Location added :)')
+                if 'edit-locator' in locator_form.data:
+                    id_ = locator_form.cleaned_data.get('id_')
+                    location = locator_form.cleaned_data.get('location')
+                    information = locator_form.cleaned_data.get('information')
 
-                locator = Locator.objects.get(pk=id_)
-                locator.location = location
-                locator.information = information
+                    locator = Locator.objects.get(pk=id_)
+                    locator.location = location
+                    locator.information = information
 
-                locator.save()
+                    locator.save()
 
-                messages.info(request, 'Location updated :)')
-            if 'delete-locator' in locator_form.data:
-                id_ = locator_form.cleaned_data.get('id_')
+                    messages.info(request, 'Location updated :)')
+                if 'delete-locator' in locator_form.data:
+                    id_ = locator_form.cleaned_data.get('id_')
 
-                locator = Locator.objects.get(pk=id_)
-                locator.delete()
+                    locator = Locator.objects.get(pk=id_)
+                    locator.delete()
 
-                messages.info(request, 'Location deleted :)')
+                    messages.info(request, 'Location deleted :)')
 
         return redirect('Home:locator')
     else:

@@ -7,6 +7,7 @@ from django.template.loader import render_to_string
 from django.http import HttpResponse
 
 from weasyprint import HTML
+import datetime
 
 from Amisacb import utils
 from Amisacb.context import user_features, external_context
@@ -17,8 +18,7 @@ from home.models import (
 	SiteSetting,
 	History
 )
-
-import datetime
+from Amisacb.decorators import codes_required
 
 
 @login_required(login_url='accounts:account_signin')
@@ -100,6 +100,7 @@ def account_code(request):
     return render(request, template_name, context)
 
 
+@codes_required
 @login_required(login_url='accounts:account_signin')
 def account_code_group(request, action_type, group_slug):
     if request.user.is_staff:
@@ -145,6 +146,7 @@ def account_code_details(request, code_slug):
         return render(request, template_name, context)
 
 
+@codes_required
 @login_required(login_url='accounts:account_signin')
 def account_code_delete(request, code_slug):
     if request.user.is_active:
@@ -173,6 +175,7 @@ def account_code_delete(request, code_slug):
         return render(request, template_name, context)
 
 
+@codes_required
 @login_required(login_url='accounts:account_signin')
 def account_code_toggle(request, code_slug):
     if request.user.is_staff:
@@ -211,6 +214,7 @@ def account_code_toggle(request, code_slug):
         return render(request, template_name, context)
 
 
+@codes_required
 @login_required(login_url='accounts:account_signin')
 def account_code_request(request):
     template_name = 'Home/account_code_requests.html'
@@ -280,6 +284,8 @@ def html_to_pdf_view(request, page):
     return response
 
 
+@codes_required
+@login_required
 def code_batch_sheet(request, slug):
     code_batch = get_object_or_404(CodeGroup, slug=slug)
     code = Code.objects.filter(code_group=code_batch)
