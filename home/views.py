@@ -65,26 +65,6 @@ def index(request):
     return render(request, template_name, context)
 
 
-@login_required(login_url='accounts:account_signin')
-def code_group_codes(request, group_slug):
-    if request.user.is_staff:
-        template_name = 'Home/code_group_codes.html'
-
-        group = CodeGroup.objects.get(slug=group_slug)
-        code_group_children = list(Code.objects.all().filter(code_group=group))
-
-        init_context = {
-            'group': group,
-            'code_group_children': code_group_children,
-        }
-        context = utils.dict_merge(external_context(), user_features(request.user.id))
-        context = utils.dict_merge(init_context, context)
-
-        return render(request, template_name, context)
-    else:
-        return render(request, 'Home/404Error.html')
-
-
 @home_required
 @login_required(login_url='accounts:account_signin')
 def site_settings(request):

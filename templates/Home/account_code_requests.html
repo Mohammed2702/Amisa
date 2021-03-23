@@ -67,7 +67,7 @@
 						                  	<div class="form-group">
 							                  	<label>Expiry Date</label>
 							                    <div class="input-group date" id="expiryDate" data-target-input="nearest">
-							                        <input type="text" class="form-control datetimepicker-input" id="id_expiry_date" name="expiry_date" data-target="#expiryDate" required/>
+							                        <input type="datetime" class="form-control datetimepicker-input" id="id_expiry_date" name="expiry_date" data-target="#expiryDate" required/>
 							                        <div class="input-group-append" data-target="#expiryDate" data-toggle="datetimepicker">
 							                            <div class="input-group-text"><i class="fa fa-calendar"></i></div>
 							                        </div>
@@ -111,7 +111,7 @@
 					            	{% for group in all_code_groups %}
 							            <tr>
 							            	<td>{{forloop.counter}}</td>
-							            	<td><a href="#">{{group}}</a></td>
+							            	<td><a href="{% url 'codes:code_group_codes' group.slug %}">{{group}}</a></td>
 							            	<td>{{group.date_created}}</td>
 							            	<td>
 							            		<a href="{% url 'codes:batch_sheet_download' group.slug %}">

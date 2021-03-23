@@ -1,10 +1,6 @@
 {% extends 'Home/base.html' %}
 
-
 {% load static %}
-
-<link rel="icon" type="image/x-icon" href="{% static 'img/logo.png' %}">
-
 
 {% block title %}
 	<title>Codes</title>
@@ -21,7 +17,7 @@
           </div>
           <div class="col-sm-6">
             <ol class="breadcrumb float-sm-right">
-              <li class="breadcrumb-item"><a href="{% url 'Home:code_group_codes' group.id %}">Codes</a></li>
+              <li class="breadcrumb-item"><a href="{% url 'codes:code_group_codes' group.slug %}">Codes</a></li>
               <li class="breadcrumb-item active">Codes</li>
             </ol>
           </div>
@@ -35,7 +31,7 @@
   <div class="row">
     <div class="col-12 connectedSortable">
       <a href="{% url "codes:code_batch_sheet" group.slug %}">
-        <button class="btn btn btn-primary">
+        <button class="btn btn btn-primary" style="margin-bottom: 1em !important;">
           <i class="fas fa-file"></i>
           Check PDF
         </button>
@@ -111,8 +107,8 @@
           </div>
 
           <div class="card-footer clearfix">
-              <a href="{% url 'codes:account_code_request' %}" class="btn btn-sm btn-info float-left">Generate New Code</a>
-              <a href="{% url 'codes:account_code' %}" class="btn btn-sm btn-secondary float-right">View All Codes</a>
+            <a href="{% url 'codes:account_code_request' %}" class="btn btn-sm btn-info float-left">Generate New Code</a>
+            <a href="{% url 'codes:account_code' %}" class="btn btn-sm btn-secondary float-right">View All Codes</a>
           </div>
       </div>
     </div>

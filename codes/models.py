@@ -35,15 +35,34 @@ class CodeGroup(models.Model):
         batch_number = CodeGroup.objects.get(code_batch_number=kwargs['code_batch_number'])
         number_of_codes = kwargs['number_of_codes']
         amount_per_code = kwargs['amount_per_code']
-        expiry_date = datetime.datetime(
-            year=2022,
-            month=10,
-            day=10,
-            hour=12,
-            minute=0
-        )
+        expiry_date = kwargs['expiry_date']
+        date = expiry_date.split(' ')[0].split('/')
+        day = int(date[1])
+        month = int(date[0])
+        year = int(date[2])
+        time = expiry_date.split(' ')[1].split(' ')[0].split(':')
+        hour = int(time[0])
+        minute = int(time[1])
 
-        for i in range(int(number_of_codes)):
+        meridian = expiry_date.split(' ')[1]
+
+        if meridian == 'PM':
+            if hour >= 12:
+                hour += 12
+
+            if hour == 24:
+                hour = 0
+
+        expiry_date = datetime.datetime(
+            year=year,
+            month=month,
+            day=day,
+            hour=hour,
+            minute=minute
+        )
+        print(expiry_date)
+
+        for _ in range(int(number_of_codes)):
             code = utils.generate_code(EXISTING_CODES)
             new_code = Code.objects.create(
                 code_group=batch_number,
@@ -52,6 +71,7 @@ class CodeGroup(models.Model):
                 expiry_date=expiry_date
             )
             new_code.save()
+            print(f'code => {code}')
 
 
 class Code(models.Model):
@@ -63,6 +83,7 @@ class Code(models.Model):
     )
     amount = models.PositiveIntegerField(default=100, blank=False)
     status = models.BooleanField(default=True)
+    used_by = models.CharField(max_length=255, blank=True)
     slug = models.SlugField(max_length=20, unique=True, blank=True)
     date_created = models.DateTimeField(auto_now_add=True)
     expiry_date = models.DateTimeField()
@@ -82,6 +103,15 @@ class Code(models.Model):
 
     def get_serial_number(self):
         return f'AC-{self.id}'
+
+    def get_used_by(self):
+        user = None
+
+        if not self.status:
+            if len(self.used_by) > 0:
+                user = User.objects.get(username=self.used_by)
+
+        return user
 
     def save(self, *args, **kwargs):
         if not self.slug:

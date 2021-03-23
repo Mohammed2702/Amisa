@@ -14,6 +14,5 @@ urlpatterns = [
 	path('locator/', views.locator, name='locator'),
 
 	# Tools
-	path('code_group/<slug:group_slug>/', views.code_group_codes, name='code_group_codes'),
 	path('settings/', views.site_settings, name='site_settings'),
 ]

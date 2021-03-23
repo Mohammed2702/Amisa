@@ -1,6 +1,5 @@
 {% extends 'Home/base.html' %}
 
-
 {% block title %}
 	<title>Codes</title>
 {% endblock %}
@@ -50,6 +49,7 @@
 					            	<th>Code</th>
 					            	<th>Amount</th>
 					            	<th>Status</th>
+					            	<th>Used by</th>
 					            	<th>Date Issued</th>
 					            	<th>Expiry Date</th>
 					            	<th>Toggle</th>
@@ -76,6 +76,7 @@
 							            			</span>
 							            		</td>
 							            	{% endif %}
+							            	<td>{% if code.get_used_by %} {{ code.get_used_by }} {% else %} Unused {% endif %}</td>
 							            	<td>{{code.date_created}}</td>
 							            	<td>{{code.expiry_date}}</td>
 							            	{% if code.status %}

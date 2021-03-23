@@ -15,8 +15,8 @@ from codes.forms import CodeRedeemForm, CodeGroupForm
 from codes.models import CodeGroup, Code
 from accounts.models import Wallet
 from home.models import (
-	SiteSetting,
-	History
+    SiteSetting,
+    History
 )
 from Amisacb.decorators import codes_required
 
@@ -28,74 +28,76 @@ def account_code(request):
     if request.user.is_staff:
         template_name = 'Home/account_code.html'
         context = utils.dict_merge(
-            external_context(), user_features(request.user.id))
+            external_context(),
+            user_features(request.user.id)
+        )
     else:
         context = {}
         rate = SiteSetting.objects.get(pk=1).customer_rate
 
-        if rate:
-            rate /= 100
-            
-            if request.method == 'POST':
-                if code_redeem_form.is_valid():
-                    code_redeem = code_redeem_form.cleaned_data.get('code')
-                    context = {'code_redeem': code_redeem}
+        rate /= 100
 
-                    try:
-                        user_code = Code.objects.get(code=code_redeem)
-                        if user_code.code_group.status:
-                            code_amount = user_code.amount
-                            description = 'Code Redemption'
-                            if user_code.status:
-                                user_wallet = Wallet.objects.get(user=request.user)
-                                code_recharge = code_amount - (rate * code_amount)
-                                user_wallet.wallet_balance += code_recharge
-                                user_wallet.save()
+        if request.method == 'POST':
+            if code_redeem_form.is_valid():
+                code_redeem = code_redeem_form.cleaned_data.get('code')
+                context = {'code_redeem': code_redeem}
 
-                                log_history = History.objects.create(
-                                    user=request.user,
-                                    description=description,
-                                    amount=code_amount,
-                                    charges=rate,
-                                    status=True
-                                )
+                try:
+                    user_code = Code.objects.get(code=code_redeem)
+                    if user_code.code_group.status:
+                        code_amount = user_code.amount
+                        description = 'Code Redemption'
+                        if user_code.status:
+                            user_wallet = Wallet.objects.get(user=request.user)
+                            code_recharge = code_amount - (rate * code_amount)
+                            user_wallet.wallet_balance += code_recharge
+                            user_wallet.save()
 
-                                log_history.save()
+                            log_history = History.objects.create(
+                                user=request.user,
+                                description=description,
+                                amount=code_amount,
+                                charges=rate,
+                                status=True
+                            )
 
-                                user_code.code += '/Used'
-                                user_code.status = False
+                            log_history.save()
 
-                                user_code.save()
+                            user_code.code += '/Used'
+                            user_code.used_by = str(request.user.username)
+                            user_code.status = False
 
-                                messages.info(
-                                    request,
-                                    f'{code_redeem} has been redeemed\
-                                    successfully, your new Wallet Balance is\
-                                     {request.user.wallet.wallet_balance}'
-                                    )
+                            user_code.save()
 
-                                return redirect('codes:account_code')
-                            else:
-                                messages.info(request, f'{code_redeem} has expired')
-
-                                return redirect('codes:account_code')
-                        else:
-                            messages.info(request, f'{code_redeem} has been disabled')
+                            messages.info(
+                                request,
+                                f'{code_redeem} has been redeemed\
+                                successfully, your new Wallet Balance is\
+                                 {request.user.wallet.wallet_balance}'
+                            )
 
                             return redirect('codes:account_code')
-                    except Code.DoesNotExist:
-                        messages.info(request, f'{code_redeem} does not exist')
+                        else:
+                            messages.info(request, f'{code_redeem} has expired')
+
+                            return redirect('codes:account_code')
+                    else:
+                        messages.info(request, f'{code_redeem} has been disabled')
 
                         return redirect('codes:account_code')
-                    except Exception as e:
-                        print(f'account_code {e}')
-            else:
-                code_redeem_form = CodeRedeemForm()
-        messages.warning(request, 'Account type not specified. Please complete update your profile to continue.')
+                except Code.DoesNotExist:
+                    messages.info(request, f'{code_redeem} does not exist or has been used')
 
-        context = utils.dict_merge(context, {'code_redeem_form': code_redeem_form})
-        context = utils.dict_merge(external_context(), context)
-        context = utils.dict_merge(context, user_features(request.user.id))
+            return redirect('codes:account_code')
+        else:
+            code_redeem_form = CodeRedeemForm()
+
+        context = utils.dict_merge(
+            context,
+            {'code_redeem_form': code_redeem_form},
+            external_context(),
+            user_features(request.user.id)
+        )
 
     return render(request, template_name, context)
 
@@ -301,3 +303,23 @@ def code_batch_sheet(request, slug):
     )
 
     return render(request, template_name, context)
+
+
+@login_required
+def code_group_codes(request, group_slug):
+    if request.user.is_staff:
+        template_name = 'Home/code_group_codes.html'
+
+        group = CodeGroup.objects.get(slug=group_slug)
+        code_group_children = list(Code.objects.all().filter(code_group=group))
+
+        init_context = {
+            'group': group,
+            'code_group_children': code_group_children,
+        }
+        context = utils.dict_merge(external_context(), user_features(request.user.id))
+        context = utils.dict_merge(init_context, context)
+
+        return render(request, template_name, context)
+    else:
+        return render(request, 'Home/404Error.html')

@@ -13,4 +13,5 @@ urlpatterns = [
 	path('code/<slug:code_slug>/toggle/', views.account_code_toggle, name='account_code_toggle'),
 	path('code/batch/<slug:slug>/', views.code_batch_sheet, name='code_batch_sheet'),
 	path('code/batch/<slug:page>/download/', views.html_to_pdf_view, name='batch_sheet_download'),
+	path('code_group/<slug:group_slug>/', views.code_group_codes, name='code_group_codes'),
 ]
