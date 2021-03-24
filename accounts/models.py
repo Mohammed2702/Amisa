@@ -91,7 +91,7 @@ class Profile(models.Model):
 
 class Wallet(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
-    wallet_balance = models.FloatField(blank=True)
+    wallet_balance = models.FloatField(blank=True, default=0)
     wallet_status = models.BooleanField(default=True)
 
     class Meta:
