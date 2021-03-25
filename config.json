@@ -1,6 +1,9 @@
 {
 	"SECRET_KEY" : "v+yju=w%f4@9pe^acef#5_bdgq_=*n_x*t^z1t*6ly!2x)=nvc",
-	"ALLOWED_HOSTS" : "*",
+	"ALLOWED_HOSTS" : [
+		"www.amisa360.com.ng",
+		"amisa360.com.ng"
+	],
 
 	"ADMIN_EMAIL" : "amisatechnologies@gmail.com",
 	"EMAIL_BACKEND" : "django.core.mail.backends.smtp.EmailBackend",
