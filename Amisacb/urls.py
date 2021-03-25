@@ -25,7 +25,7 @@ urlpatterns = [
     path('', include('blog.urls'))
 ]
 
-if not settings.DEBUG:
+if settings.DEBUG:
     urlpatterns += [
         path('ADM-admin/', admin.site.urls)
     ]
