@@ -31,7 +31,7 @@ SECRET_KEY = config['SECRET_KEY']
 DEBUG = True
 # DEBUG = False
 
-ALLOWED_HOSTS = config['ALLOWED_HOSTS']
+ALLOWED_HOSTS = config['ALLOWED_HOSTS'] + ['*']
 
 # Application definition
 
