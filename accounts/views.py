@@ -328,7 +328,6 @@ def account_profile(request):
                 request.user.get_full_name(),
                 request.user.username,
                 request.user.email,
-                request.user.profile.account_type,
                 request.user.profile.reference_id
             )
             recipient = request.user.email
@@ -338,8 +337,6 @@ def account_profile(request):
                 body=body,
                 recipient=recipient
             )
-
-            print(f'E-Mail for {request.user.profile.reference_id} returned {email_success}')
 
             if email_success:
                 messages.info(request, 'Your profile is now up to date :)')
@@ -382,8 +379,6 @@ def account_profile(request):
                     recipient=recipient
                 )
 
-                print(f'E-Mail for {request.user.profile.reference_id} returned {email_success}')
-
                 if email_success:
                     messages.info(request, 'Your profile is now up to date :)')
                 else:
@@ -422,8 +417,6 @@ def account_profile(request):
                         body=body,
                         recipient=recipient
                     )
-
-                    print(f'E-Mail for {request.user.profile.reference_id} returned {email_success}')
 
                     if email_success:
                         messages.info(request, 'Password reset Successfull, check your E-Mail for verfication')
