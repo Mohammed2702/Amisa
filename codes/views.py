@@ -180,40 +180,25 @@ def account_code_delete(request, code_slug):
 @codes_required
 @login_required(login_url='accounts:account_signin')
 def account_code_toggle(request, code_slug):
-    if request.user.is_staff:
-        code = Code.objects.get(slug=code_slug)
-        if code.status:
-            description = 'Order was Declined by Admin.'
-            code.status = False
+    code = Code.objects.get(slug=code_slug)
 
-            log_history = History.objects.create(
-                user=request.user,
-                description=description,
-                amount=code.amount,
-                charges=str(code.status),
-            )
-        else:
-            description = 'Order was Approved by Admin.'
-            code.status = True
-
-            log_history = History.objects.create(
-                user=request.user,
-                description=description,
-                amount=code.amount,
-                charges=str(code.status),
-            )
-
-        code.save()
-        log_history.save()
-
-        return redirect('codes:account_code')
+    if code.status:
+        description = 'Order was Declined by Admin.'
+        code.status = False
     else:
-        template_name = 'Home/404Error.html'
-        context = {}
+        description = 'Order was Approved by Admin.'
+        code.status = True
 
-        context = utils.dict_merge(external_context(), context)
+    log_history = History.objects.create(
+        user=request.user,
+        description=description,
+        amount=code.amount,
+        charges=str(code.status),
+    )
+    code.save()
+    log_history.save()
 
-        return render(request, template_name, context)
+    return redirect('codes:account_code')
 
 
 @codes_required

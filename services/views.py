@@ -104,7 +104,7 @@ def account_user_withdrawal(request):
         context,
         user_features(request.user.id),
         {
-            'notice_notes': SiteSetting.objects.get(pk=1).withdrwal_note
+            'notice_notes': SiteSetting.objects.get(pk=1).withdrawal_note
         }
     )
 
@@ -338,7 +338,7 @@ def adverts(request):
         user_features(request.user.id)
     )
 
-    advert_form = AdvertForm(request.POST)
+    advert_form = AdvertForm(request.POST, request.FILES)
 
     if request.method == 'POST':
         if advert_form.is_valid():

@@ -23,7 +23,8 @@ class CodeGroup(models.Model):
         return self.code_batch_number
 
     def save(self, *args, **kwargs):
-        self.slug = slugify(self.code_batch_number)
+        if not self.slug:
+            self.slug = slugify(self.code_batch_number)
         super().save(*args, **kwargs)
 
     def get_absolute_url(self, *args, **kwargs):
@@ -60,7 +61,6 @@ class CodeGroup(models.Model):
             hour=hour,
             minute=minute
         )
-        print(expiry_date)
 
         for _ in range(int(number_of_codes)):
             code = utils.generate_code(EXISTING_CODES)
@@ -71,7 +71,6 @@ class CodeGroup(models.Model):
                 expiry_date=expiry_date
             )
             new_code.save()
-            print(f'code => {code}')
 
 
 class Code(models.Model):
