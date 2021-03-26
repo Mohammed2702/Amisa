@@ -5,6 +5,7 @@ from django.contrib import messages
 from django.conf import settings
 
 import datetime
+import os
 
 from accounts.forms import (
 	RegistrationForm,
@@ -34,8 +35,8 @@ from Amisacb.decorators import accounts_required
 User = get_user_model()
 
 
-HOST_HEADER = 'https://'
-DOMAIN = f'{HOST_HEADER}amisacb.pythonanywhere.com'
+HOST_HEADER = 'https://www.'
+DOMAIN = f'{HOST_HEADER}amisa360.com.ng'
 password_reset_main = f'{DOMAIN}/forgot_password'
 
 message_dir = os.path.join(settings.BASE_DIR, 'Amisacb/data/messages')
