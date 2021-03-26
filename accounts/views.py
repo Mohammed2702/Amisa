@@ -2,6 +2,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import authenticate, login, logout, get_user_model
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
+from django.conf import settings
 
 import datetime
 
@@ -31,6 +32,13 @@ from Amisacb import utils
 from Amisacb.decorators import accounts_required
 
 User = get_user_model()
+
+
+HOST_HEADER = 'https://'
+DOMAIN = f'{HOST_HEADER}amisacb.pythonanywhere.com'
+password_reset_main = f'{DOMAIN}/forgot_password'
+
+message_dir = os.path.join(settings.BASE_DIR, 'Amisacb/data/messages')
 
 
 def account_signup(request):
