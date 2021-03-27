@@ -24,6 +24,7 @@ class Order(models.Model):
     recipient = models.CharField(max_length=15, default='08012345678')
     description = models.CharField(max_length=100, blank=False, default='Order')
     status = models.CharField(max_length=100, default='processing', choices=ORDER_STATES)
+    transaction_id = models.PositiveIntegerField(blank=False, unique=True, default=537892)
     toggle_count = models.PositiveIntegerField(default=0)
     slug = models.SlugField(max_length=100, unique=True, blank=True)
     date = models.DateTimeField(auto_now_add=True)

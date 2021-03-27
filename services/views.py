@@ -17,8 +17,10 @@ from home.models import SiteSetting
 from services.forms import (
 	WithdrawalForm,
 	DataForm,
+    AirtimeForm,
     AdvertForm
 )
+from services.utils import API
 from home.forms import SiteSettingForm
 from Amisacb import utils
 from Amisacb.context import external_context, user_features
@@ -116,9 +118,13 @@ def account_user_data(request):
     user_orders = [i for i in reversed(list(Order.objects.all()))]
     user_orders_truncate = [i for i in reversed(list(Order.objects.all()))][:5]
 
-    template_name = 'Home/account_user_data.html'
+    api = API()
+
+    networks = api.get_data_pricing()
+
+    template_name = 'services/account_user_data.html'
     context = {
-        'networks': [i.network for i in list(Network.objects.all())],
+        'networks': networks,
         'user_orders': user_orders,
         'user_orders_truncate': user_orders_truncate,
 
@@ -127,16 +133,21 @@ def account_user_data(request):
     if request.method == 'POST':
         data_form = DataForm(request.POST)
         if data_form.is_valid():
-            network = data_form.cleaned_data.get('network')
+            product_code = data_form.cleaned_data.get('product_code')
             user_phone = data_form.cleaned_data.get('phone_number')
-            amount = data_form.cleaned_data.get('amount')
+            amount = int(api.get_product(product_code)['price']) # from data_json
+            network = api.get_product(product_code)['network'] # from data_json
 
             minimum_amount = SiteSetting.objects.get(pk=1).minimum_data
             reservation_amount = SiteSetting.objects.get(pk=1).reservation_amount
+            data_charges = 20
+            amount -= data_charges
 
             if amount >= minimum_amount:
                 if (request.user.wallet.wallet_balance - reservation_amount) >= amount:
                     user_wallet = Wallet.objects.get(user=request.user)
+
+                    transaction_id = api.make_transaction_id()
 
                     description = f'Data/{network}'
                     create_order = Order.objects.create(
@@ -144,15 +155,30 @@ def account_user_data(request):
                         transaction='Data purchase request',
                         amount=amount,
                         recipient=user_phone,
-                        description=description
+                        description=description,
+                        transaction_id=transaction_id
                     )
 
-                    if create_order:
-                        order_mail = utils.deliver_mail_order(
-                            title='',
-                            body=description
-                        )
-                        if order_mail:
+                    payload = {
+                        'product_code': product_code,
+                        'network': network,
+                        'user_details': {
+                            'phone_number': user_phone,
+                            'transaction_id': transaction_id
+                        }
+                    }
+                    api_request = api.buy_data(**payload)
+
+                    if not api_request.get('code'):
+                        if create_order:
+                            threading.Thread(
+                                target=utils.deliver_mail_order,
+                                kwargs={
+                                    'title':'',
+                                    'body':description
+                                }
+                            ).start()
+
                             user_wallet.wallet_balance -= amount
 
                             user_wallet.save()
@@ -160,23 +186,15 @@ def account_user_data(request):
 
                             messages.warning(request, f'''Your order has been placed, keep checking your notifications to track your order(s) :)''')
                         else:
-                            create_order.delete()
-
                             messages.warning(request, f'''Your order couldn't be placed at the moment :(''')
-
-                        return redirect('services:account_user_data')
                     else:
                         messages.warning(request, 'Sorry, your request could not be processed at the moment')
-
-                        return redirect('services:account_user_data')
                 else:
                     messages.warning(request, f'Not sufficient funds, you can only use {request.user.wallet.wallet_balance - reservation_amount} with your current balance')
-
-                    return redirect('services:account_user_data')
             else:
                 messages.warning(request, f'Least amount for Data is {minimum_amount}')
 
-                return redirect('services:account_user_data')
+            return redirect('services:account_user_data')
 
     context = utils.dict_merge(
         external_context(),
@@ -195,19 +213,19 @@ def account_user_airtime(request):
     user_orders = [i for i in reversed(list(Order.objects.all()))]
     user_orders_truncate = [i for i in reversed(list(Order.objects.all()))][:5]
     template_name = 'Home/account_user_airtime.html'
-    context = {
-        'networks': [i.network for i in list(Network.objects.all())],
-        'user_orders': user_orders,
-        'user_orders_truncate': user_orders_truncate,
 
+    context = {
+        'networks': [i for i in Network.objects.order_by('-date')],
+        'user_orders': user_orders,
+        'user_orders_truncate': user_orders_truncate
     }
 
     if request.method == 'POST':
-        data_form = DataForm(request.POST)
-        if data_form.is_valid():
-            network = data_form.cleaned_data.get('network')
-            user_phone = data_form.cleaned_data.get('phone_number')
-            amount = data_form.cleaned_data.get('amount')
+        airtime_form = AirtimeForm(request.POST)
+        if airtime_form.is_valid():
+            network = airtime_form.cleaned_data.get('network')
+            user_phone = airtime_form.cleaned_data.get('phone_number')
+            amount = airtime_form.cleaned_data.get('amount')
 
             minimum_amount = SiteSetting.objects.get(pk=1).minimum_airtime
             reservation_amount = SiteSetting.objects.get(pk=1).reservation_amount
@@ -215,6 +233,10 @@ def account_user_airtime(request):
             if amount >= minimum_amount:
                 if (request.user.wallet.wallet_balance - reservation_amount) >= amount:
                     user_wallet = Wallet.objects.get(user=request.user)
+
+                    api = API()
+
+                    transaction_id = api.make_transaction_id()
 
                     description = f'Airtime/{network}'
                     create_order = Order.objects.create(
@@ -225,37 +247,41 @@ def account_user_airtime(request):
                         description=description
                     )
 
-                    if create_order:
-                        order_mail = utils.deliver_mail_order(
-                            title='',
-                            body=create_order.desc()
-                        )
+                    payload = {
+                        'network': network,
+                        'user_details': {
+                            'phone_number': user_phone,
+                            'transaction_id': transaction_id
+                        },
+                        'price': amount
+                    }
+                    api_request = api.buy_airtime(**payload)
 
-                        if order_mail:
-                            user_wallet.wallet_balance -= amount
+                    if not api_request.get('code'):
+                        if create_order:
+                            threading.Thread(
+                                target=utils.deliver_mail_order,
+                                kwargs={
+                                    'title':'',
+                                    'body':description
+                                }
+                            ).start()
 
                             user_wallet.save()
                             create_order.save()
 
                             messages.warning(request, f'''Your order has been placed, keep checking your notifications to track your order(s) :)''')
                         else:
-                            create_order.delete()
-
                             messages.warning(request, f'''Your order couldn't be placed at the moment :(''')
-
-                        return redirect('services:account_user_airtime')
                     else:
                         messages.warning(request, 'Sorry, your request could not be processed at the moment')
-
-                        return redirect('services:account_user_airtime')
                 else:
                     messages.warning(request, f'Not sufficient funds, you can only use {request.user.wallet.wallet_balance - reservation_amount} with your current balance')
-
-                    return redirect('services:account_user_airtime')
             else:
                 messages.warning(request, f'Least amount for Airtime is {minimum_amount}')
-
-                return redirect('services:account_user_airtime')
+        else:
+            print(airtime_form.errors)
+        return redirect('services:account_user_airtime')
 
     context = utils.dict_merge(
         external_context(),

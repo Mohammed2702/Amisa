@@ -69,7 +69,7 @@
               	</div>
             	<div class="card-body">
                 	<p class="card-text">
-            			{{notice_notes|safe}}
+            			{{ notice_notes|safe }}
                 	</p>
                 </div>
             </div>
@@ -103,11 +103,11 @@
 
 	                	<div class="card-body">
 	                	    <div class="form-group">
-	                	        <label for="id_code_group">Network Provider</label></th><td>
-    		            			<select name="network" required id="id_code_group" class="form-control">
-    			                        <option value="">-- Network Provider --</option>
+	                	        <label for="id_code_group">Data plan</label></th><td>
+    		            			<select name="product_code" required id="id_code_group" class="form-control">
+    			                        <option value="">-- choose plan --</option>
     			                        {% for network in networks %}
-    				                        	<option value="{{network}}">{{network}}</option>
+    				                        	<option value="{{network.product_code}}">{{network.network}} {{network.data_volume}} @ {{network.price}}</option>
     				                    {% endfor %}
     		                        </select>
     		                    </label>
@@ -121,16 +121,6 @@
 			                    	<input type="text" class="form-control bfh-phone" name="phone_number" required id="phone-number" placeholder="08012345678">
 			                  	</div>
 		                	</div>
-		                	<div class="form-group">
-			                  	<label>Quantity (MG - MegaByte)</label>
-			                  	<div class="input-group">
-				                    <div class="input-group-prepend">
-				                      <span class="input-group-text"><i class="fas fa-internet"></i></span>
-				                    </div>
-			                    	<input type="number" class="form-control bfh-phone" name="amount" required id="amount-number" placeholder="100">
-			                  	</div>
-		                	</div>
-		                </div>
 
 			            <div class="card-footer" style="text-align: center;">
 		                  <button type="submit" class="btn btn-primary">Buy</button>

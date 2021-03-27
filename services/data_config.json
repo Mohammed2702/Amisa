@@ -1,0 +1,38 @@
+{
+	"mtn": {
+		"MTN1GB": {
+			"data_volume": "1GB",
+			"product_code": "MTN1GB",
+			"price": "330"
+		},
+		"MTN2GB": {
+			"data_volume": "2GB",
+			"product_code": "MTN2GB",
+			"price": "660"
+		}
+	},
+	"9mobile": {
+		"MOB250": {
+			"data_volume": "250MB",
+			"product_code": "MOB250",
+			"price": "250"
+		},
+		"MOB500": {
+			"data_volume": "500MB",
+			"product_code": "MOB500",
+			"price": "350"
+		},
+		"MOB1GB": {
+			"data_volume": "1GB",
+			"product_code": "MOB1GB",
+			"price": "650"
+		}
+	},
+	"glo": {
+		"GLO2GB": {
+			"data_volume": "1.6GB or 2GB",
+			"product_code": "GLO2GB",
+			"price": "900"
+		}
+	}
+}

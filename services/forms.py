@@ -4,6 +4,11 @@ from services.models import Advert
 
 
 class DataForm(forms.Form):
+	product_code = forms.CharField(max_length=100)
+	phone_number = forms.CharField(max_length=100)
+
+
+class AirtimeForm(forms.Form):
 	network = forms.CharField(max_length=100)
 	phone_number = forms.CharField(max_length=100)
 	amount = forms.IntegerField()

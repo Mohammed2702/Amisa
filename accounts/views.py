@@ -412,12 +412,16 @@ def account_profile(request):
                     )
                     recipient = request.user.email
 
-                    email_success = utils.deliver_mail(
-                        title=title,
-                        body=body,
-                        recipient=recipient
-                    )
+                    Thread(
+                        target=utils.deliver_mail,
+                        kwargs={
+                            'title':title,
+                            'body':body,
+                            'recipient':recipient
+                        }
+                    ).start()
 
+                    email_success = True
                     if email_success:
                         messages.info(request, 'Password reset Successfull, check your E-Mail for verfication')
                     else:

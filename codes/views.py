@@ -51,7 +51,6 @@ def account_code(request):
                             user_wallet = Wallet.objects.get(user=request.user)
                             code_recharge = code_amount - (rate * code_amount)
                             user_wallet.wallet_balance += code_recharge
-                            user_wallet.save()
 
                             log_history = History.objects.create(
                                 user=request.user,
@@ -68,6 +67,7 @@ def account_code(request):
                             user_code.status = False
 
                             user_code.save()
+                            user_wallet.save()
 
                             messages.info(
                                 request,
