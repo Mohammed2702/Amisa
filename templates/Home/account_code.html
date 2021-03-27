@@ -52,8 +52,6 @@
 					            	<th>Used by</th>
 					            	<th>Date Issued</th>
 					            	<th>Expiry Date</th>
-					            	<th>Toggle</th>
-					            	<th>Delete</th>
 					            </tr>
 				            </thead>
 				            <tbody>
@@ -79,16 +77,6 @@
 							            	<td>{% if code.get_used_by %} {{ code.get_used_by }} {% else %} Unused {% endif %}</td>
 							            	<td>{{code.date_created}}</td>
 							            	<td>{{code.expiry_date}}</td>
-							            	{% if code.status %}
-								            	<td>
-								            		<a href="{% url 'codes:account_code_toggle' code.slug %}" class="btn btn-sm btn-success">Disable</a>
-								            	</td>
-								            {% else %}
-							            		<td>
-							            			<a href="{% url 'codes:account_code_toggle' code.slug %}" class="btn btn-sm btn-success">Enable</a>
-							            		</td>
-							            	{% endif %}
-							            	<td><a href="{% url 'codes:account_code_delete' code.slug %}" class="btn btn-sm btn-danger">Delete</a></td>
 							            </tr>
 							        {% endfor %}
 						        {% endif %}
