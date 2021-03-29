@@ -70,6 +70,9 @@ class API:
         response = requests.get(url=endpoint)
         response = response.json()
 
+        if response.get('code'):
+            print(f'{response}')
+
         return response
 
     def buy_airtime(self, network, user_details, price):
@@ -176,12 +179,17 @@ class API:
         return endpoint
 
     def make_transaction_id(self):
-        if len(list(Order.objects.values_list('transaction_id', flat=True))) > 0:
-            last_id = list(Order.objects.values_list('transaction_id', flat=True))[-1]
-        else:
-            last_id = 1000
+        is_valid = False
 
-        transaction_id = last_id + random.randint(0, 9)
+        while not is_valid:
+            if len(list(Order.objects.values_list('transaction_id', flat=True))) > 0:
+                last_id = list(Order.objects.values_list('transaction_id', flat=True))[-1]
+            else:
+                last_id = 1000
+
+            transaction_id = last_id + random.randint(0, 9)
+            if transaction_id not in list(Order.objects.values_list('transaction_id', flat=True)):
+                is_valid = True
 
         return transaction_id
 

@@ -109,7 +109,7 @@
 						</div>
 						
 						<div class="row border-bottom" style="padding-top: 1rem;">
-							<div class="col-sm-4">
+							<div class="col-sm-3">
 								<label>Minimum Withdrawal</label>
 								<div class="input-group mb-3">
 									<div class="input-group-prepend">
@@ -120,7 +120,7 @@
 								</div>
 							</div>
 
-							<div class="col-sm-4">
+							<div class="col-sm-3">
 								<label>Minimum Airtime</label>
 								<div class="input-group mb-3">
 									<div class="input-group-prepend">
@@ -131,7 +131,7 @@
 								</div>
 							</div>
 							
-							<div class="col-sm-4">
+							<div class="col-sm-3">
 								<label>Minimum Data</label>
 								<div class="input-group mb-3">
 									<div class="input-group-prepend">
@@ -139,6 +139,16 @@
 									</div>
 									<input type="number" name="minimum_data" class="form-control" placeholder="Minimum Data"
 									value="{{get_setting.minimum_data}}" required>
+								</div>
+							</div>
+
+							<div class="col-sm-3">
+								<label>Data charges</label>
+								<div class="input-group mb-3">
+									<div class="input-group-prepend">
+										<span class="input-group-text"><i class="fas fa-wallet"></i></span>
+									</div>
+									<input type="number" name="data_charges" class="form-control" placeholder="Data charges" value="{{ get_setting.data_charges }}" required>
 								</div>
 							</div>
 						</div>

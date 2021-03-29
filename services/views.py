@@ -1,4 +1,4 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.conf import settings
@@ -30,7 +30,7 @@ from Amisacb.decorators import services_required, home_required
 message_dir = os.path.join(settings.BASE_DIR, 'Amisacb/data/messages')
 
 
-@login_required(login_url='accounts:account_signin')
+@login_required
 def account_user_withdrawal(request):
     user_orders = [i for i in reversed(list(Order.objects.all()))]
     user_orders_truncate = [i for i in reversed(
@@ -53,17 +53,19 @@ def account_user_withdrawal(request):
 
             minimum_amount = SiteSetting.objects.get(pk=1).minimum_withdrawal
             reservation_amount = SiteSetting.objects.get(pk=1).reservation_amount
+            feasible_withdrawal_amount = request.user.wallet.wallet_balance - reservation_amount
 
             if amount >= minimum_amount:
-                if amount <= (request.user.wallet.wallet_balance - reservation_amount):
+                if amount <= (feasible_withdrawal_amount):
                     user_wallet = Wallet.objects.get(user=request.user)
                     description = f'{account_name}/ {bank}'
                     create_order = Order.objects.create(
                         user=request.user,
-                        transaction='Withdrawal request',
+                        transaction=f'Withdrawal request {transaction_id}',
                         amount=amount,
                         recipient=account_number,
-                        description=description
+                        description=description,
+                        status='processing'
                     )
 
                     if create_order:
@@ -73,19 +75,6 @@ def account_user_withdrawal(request):
                         create_order.save()
 
                         messages.warning(request, f'''Your order has been placed, keep checking your notifications to track your order(s) :)''')
-                        
-                        mail_thread = threading.Thread(
-                            target=utils.deliver_mail_order,
-                            kwargs={
-                                'title': '',
-                                'body': description
-                            }
-                        )
-                        mail_thread.start()
-                        order_mail = utils.deliver_mail_order(
-                            title='',
-                            body=description
-                        )
 
                         return redirect('services:account_user_withdrawal')
                     else:
@@ -93,7 +82,7 @@ def account_user_withdrawal(request):
 
                         return redirect('services:account_user_withdrawal')
                 else:
-                    messages.warning(request, f'Not sufficient funds, you can only withdraw {request.user.wallet.wallet_balance - reservation_amount} with your current balance')
+                    messages.warning(request, f'Not sufficient funds, you can only withdraw {feasible_withdrawal_amount} with your current balance')
 
                     return redirect('services:account_user_withdrawal')
             else:
@@ -113,7 +102,7 @@ def account_user_withdrawal(request):
     return render(request, template_name, context)
 
 
-@login_required(login_url='accounts:account_signin')
+@login_required
 def account_user_data(request):
     user_orders = [i for i in reversed(list(Order.objects.all()))]
     user_orders_truncate = [i for i in reversed(list(Order.objects.all()))][:5]
@@ -140,23 +129,25 @@ def account_user_data(request):
 
             minimum_amount = SiteSetting.objects.get(pk=1).minimum_data
             reservation_amount = SiteSetting.objects.get(pk=1).reservation_amount
-            data_charges = 20
+            data_charges = SiteSetting.objects.get(pk=1).data_charges
             amount -= data_charges
+            feasible_withdrawal_amount = request.user.wallet.wallet_balance - reservation_amount
 
             if amount >= minimum_amount:
-                if (request.user.wallet.wallet_balance - reservation_amount) >= amount:
+                if (feasible_withdrawal_amount) >= amount:
                     user_wallet = Wallet.objects.get(user=request.user)
 
                     transaction_id = api.make_transaction_id()
 
-                    description = f'Data/{network}'
+                    description = f'Data/{network} + charges (&#8358; {data_charges})'
                     create_order = Order.objects.create(
                         user=request.user,
-                        transaction='Data purchase request',
+                        transaction=f'Data purchase {transaction_id}',
                         amount=amount,
                         recipient=user_phone,
                         description=description,
-                        transaction_id=transaction_id
+                        transaction_id=transaction_id,
+                        status='declined'
                     )
 
                     payload = {
@@ -171,15 +162,9 @@ def account_user_data(request):
 
                     if not api_request.get('code'):
                         if create_order:
-                            threading.Thread(
-                                target=utils.deliver_mail_order,
-                                kwargs={
-                                    'title':'',
-                                    'body':description
-                                }
-                            ).start()
-
                             user_wallet.wallet_balance -= amount
+                            create_order.status = 'processed'
+                            create_order.toggle_count = 1
 
                             user_wallet.save()
                             create_order.save()
@@ -190,7 +175,7 @@ def account_user_data(request):
                     else:
                         messages.warning(request, 'Sorry, your request could not be processed at the moment')
                 else:
-                    messages.warning(request, f'Not sufficient funds, you can only use {request.user.wallet.wallet_balance - reservation_amount} with your current balance')
+                    messages.warning(request, f'Not sufficient funds, you can only use {feasible_withdrawal_amount} with your current balance')
             else:
                 messages.warning(request, f'Least amount for Data is {minimum_amount}')
 
@@ -208,7 +193,7 @@ def account_user_data(request):
     return render(request, template_name, context)
 
 
-@login_required(login_url='accounts:account_signin')
+@login_required
 def account_user_airtime(request):
     user_orders = [i for i in reversed(list(Order.objects.all()))]
     user_orders_truncate = [i for i in reversed(list(Order.objects.all()))][:5]
@@ -229,9 +214,10 @@ def account_user_airtime(request):
 
             minimum_amount = SiteSetting.objects.get(pk=1).minimum_airtime
             reservation_amount = SiteSetting.objects.get(pk=1).reservation_amount
+            feasible_withdrawal_amount = request.user.wallet.wallet_balance - reservation_amount
 
             if amount >= minimum_amount:
-                if (request.user.wallet.wallet_balance - reservation_amount) >= amount:
+                if (feasible_withdrawal_amount) >= amount:
                     user_wallet = Wallet.objects.get(user=request.user)
 
                     api = API()
@@ -241,10 +227,11 @@ def account_user_airtime(request):
                     description = f'Airtime/{network}'
                     create_order = Order.objects.create(
                         user=request.user,
-                        transaction='Airtime purchase request',
+                        transaction=f'Airtime purchase {transaction_id}',
                         amount=amount,
                         recipient=user_phone,
-                        description=description
+                        description=description,
+                        status='declined'
                     )
 
                     payload = {
@@ -259,13 +246,8 @@ def account_user_airtime(request):
 
                     if not api_request.get('code'):
                         if create_order:
-                            threading.Thread(
-                                target=utils.deliver_mail_order,
-                                kwargs={
-                                    'title':'',
-                                    'body':description
-                                }
-                            ).start()
+                            create_order.status = 'processed'
+                            create_order.toggle_count = 1
 
                             user_wallet.save()
                             create_order.save()
@@ -276,11 +258,10 @@ def account_user_airtime(request):
                     else:
                         messages.warning(request, 'Sorry, your request could not be processed at the moment')
                 else:
-                    messages.warning(request, f'Not sufficient funds, you can only use {request.user.wallet.wallet_balance - reservation_amount} with your current balance')
+                    messages.warning(request, f'Not sufficient funds, you can only use {feasible_withdrawal_amount} with your current balance')
             else:
                 messages.warning(request, f'Least amount for Airtime is {minimum_amount}')
-        else:
-            print(airtime_form.errors)
+
         return redirect('services:account_user_airtime')
 
     context = utils.dict_merge(
@@ -295,8 +276,8 @@ def account_user_airtime(request):
     return render(request, template_name, context)
 
 
+@login_required
 @services_required
-@login_required(login_url='accounts:account_signin')
 def show_all_orders(request):
     template_name = 'Home/show_all_orders.html'
     context = utils.dict_merge(external_context(), user_features(request.user.id))
@@ -319,8 +300,8 @@ def show_all_orders(request):
     return render(request, template_name, context)
 
 
+@login_required
 @services_required
-@login_required(login_url='accounts:account_signin')
 def toggle_order(request, order_slug):
     if request.user.is_staff:
         order = Order.objects.get(slug=order_slug)
@@ -355,8 +336,8 @@ def toggle_order(request, order_slug):
         return render(request, template_name)
 
 
+@login_required
 @home_required
-@login_required(login_url='accounts:account_signin')
 def adverts(request):
     template_name = 'Home/adverts.html'
     context = utils.dict_merge(
@@ -375,7 +356,7 @@ def adverts(request):
     return render(request, template_name, context)
 
 
-@login_required(login_url='accounts:account_signin')
+@login_required
 def adverts_list(request):
     template_name = 'Home/adverts_list.html'
     context = utils.dict_merge(
@@ -387,3 +368,12 @@ def adverts_list(request):
     )
 
     return render(request, template_name, context)
+
+
+@login_required
+@home_required
+def advert_delete(request, slug):
+    advert = get_object_or_404(Advert, slug=slug)
+    advert.delete()
+
+    return redirect('services:adverts_list')

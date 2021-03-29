@@ -5,7 +5,6 @@ Dear {}
 Full name:	 	{}
 Username:	 	{}
 Email:		 	{}
-Account Type:	{}
 Reference ID:	{}
 
 In reply to your change in profile. Below is your details.

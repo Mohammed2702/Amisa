@@ -1,32 +1,18 @@
 from django.contrib.auth import get_user_model
-from django.contrib.auth import login, authenticate
 from django.contrib.auth.forms import *
 from django.contrib.auth import *
 from django.contrib import messages
-from django.contrib.auth.decorators import *
-from django.utils import timezone
+from django.contrib.auth.decorators import login_required
 from django.shortcuts import *
 from django.conf import settings
-from django.template import Context
 
-from weasyprint import HTML
-
-import requests
-import random
-import datetime
-import pytz
-import time
 import os
-import datetime
 
 from home.forms import (
     LocatorForm,
     SiteSettingForm
 )
-from home.models import (
-    History,
-    SiteSetting
-)
+from home.models import SiteSetting
 from services.forms import (
     NetworkForm,
     BankForm
@@ -36,10 +22,6 @@ from services.models import (
     Locator,
     Bank,
     Network
-)
-from codes.models import (
-    Code,
-    CodeGroup
 )
 from Amisacb import utils
 from Amisacb.context import user_features, external_context
@@ -65,8 +47,8 @@ def index(request):
     return render(request, template_name, context)
 
 
+@login_required
 @home_required
-@login_required(login_url='accounts:account_signin')
 def site_settings(request):
     if request.user.is_superuser:
         get_setting = SiteSetting.objects.get(pk=1)
@@ -122,6 +104,7 @@ def site_settings(request):
                 how_to = settings_form.cleaned_data.get('how_to')
                 about_us = settings_form.cleaned_data.get('about_us')
                 terms_of_use = settings_form.cleaned_data.get('terms_of_use')
+                data_charges = settings_form.cleaned_data.get('data_charges')
 
                 get_setting.customer_rate = customer_rate
                 get_setting.data_note = data_note
@@ -137,6 +120,7 @@ def site_settings(request):
                 get_setting.how_to = how_to
                 get_setting.about_us = about_us
                 get_setting.terms_of_use = terms_of_use
+                get_setting.data_charges = data_charges
 
                 get_setting.save()
 
@@ -237,7 +221,7 @@ def terms_of_use(request):
         return render(request, template_name, context)
 
 
-@login_required(login_url='accounts:account_signin')
+@login_required
 def locator(request):
     template_name = 'Home/locator.html'
     context = utils.dict_merge(

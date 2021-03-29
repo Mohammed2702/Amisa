@@ -231,7 +231,7 @@ def account_forgot_password_link(request, link):
     return render(request, template_name, context)
 
 
-@login_required(login_url='accounts:account_signin')
+@login_required
 def account_dashboard(request):
     if request.user.is_staff:
         all_code_groups = list(CodeGroup.objects.all())[-5:]
@@ -253,8 +253,8 @@ def account_dashboard(request):
     return render(request, template_name, context)
 
 
+@login_required
 @accounts_required
-@login_required(login_url='accounts:account_signin')
 def account_users_wallet(request):
     template_name = 'Home/account_users_wallet.html'
     user_details = user_features(request.user.id)
@@ -274,6 +274,10 @@ def account_users_wallet(request):
             account = permission_form.cleaned_data.get('account')
 
             get_user = User.objects.get(username=username)
+
+            if home or blog or services or codes or account:
+                get_user.is_staff = True
+
             get_user.is_home = home
             get_user.is_blog = blog
             get_user.is_services = services
@@ -284,8 +288,6 @@ def account_users_wallet(request):
 
             message = f'Permissions for {username} was updated'
             messages.info(request, message)
-        # else:
-        #     print(permission_form.errors)
     else:
         permission_form = PermissionsForm()
 
@@ -295,7 +297,7 @@ def account_users_wallet(request):
 # Profile
 
 
-@login_required(login_url='accounts:account_signin')
+@login_required
 def account_profile(request):
     template_name = 'Home/account_profile.html'
     user_details = user_features(request.user.id)
@@ -310,7 +312,7 @@ def account_profile(request):
         password_reset_form = PasswordResetForm(request.POST)
 
         if profile_form.is_valid():
-            profile_form.save()
+            profile_form.save(commit=True)
 
             new_state = profile_form.cleaned_data.get('state')
             new_phone_number = profile_form.cleaned_data.get('phone_number')
@@ -319,8 +321,6 @@ def account_profile(request):
 
             profile_user.profile.state = new_state
             profile_user.profile.phone_number = new_phone_number
-
-            profile_user.save()
 
             title = 'Profile Update'
             body = open(f'{message_dir}/change_in_login_details.txt', 'r').read().format(
@@ -337,6 +337,8 @@ def account_profile(request):
                 body=body,
                 recipient=recipient
             )
+
+            profile_user.save()
 
             if email_success:
                 messages.info(request, 'Your profile is now up to date :)')
@@ -449,8 +451,8 @@ def account_profile(request):
     return render(request, template_name, context)
 
 
+@login_required
 @accounts_required
-@login_required(login_url='accounts:account_signin')
 def toggle_permission(request, username):
     try:
         if request.user.is_superuser:

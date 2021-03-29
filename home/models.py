@@ -27,6 +27,7 @@ class SiteSetting(models.Model):
     withdrawal_note = models.TextField(blank=True, default='withdrawal note', null=True)
     airtime_note = models.TextField(blank=True, default='airtime note', null=True)
     data_note = models.TextField(blank=True, default='data note', null=True)
+    data_charges = models.PositiveIntegerField(blank=False, default=20)
     reservation_amount = models.PositiveIntegerField(blank=True, default=50)
     minimum_withdrawal = models.PositiveIntegerField(blank=True, default=100)
     minimum_airtime = models.PositiveIntegerField(blank=True, default=100)

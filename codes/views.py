@@ -21,7 +21,7 @@ from home.models import (
 from Amisacb.decorators import codes_required
 
 
-@login_required(login_url='accounts:account_signin')
+@login_required
 def account_code(request):
     template_name = 'Home/account_user_code.html'
     code_redeem_form = CodeRedeemForm(request.POST)
@@ -102,8 +102,8 @@ def account_code(request):
     return render(request, template_name, context)
 
 
+@login_required
 @codes_required
-@login_required(login_url='accounts:account_signin')
 def account_code_group(request, action_type, group_slug):
     if request.user.is_staff:
         code_group = CodeGroup.objects.get(slug=group_slug)
@@ -123,7 +123,7 @@ def account_code_group(request, action_type, group_slug):
         return render(request, 'Home/404Error.html')
 
 
-@login_required(login_url='accounts:account_signin')
+@login_required
 def account_code_details(request, code_slug):
     if request.user.is_active:
         if request.user.is_staff:
@@ -148,8 +148,8 @@ def account_code_details(request, code_slug):
         return render(request, template_name, context)
 
 
+@login_required
 @codes_required
-@login_required(login_url='accounts:account_signin')
 def account_code_delete(request, code_slug):
     if request.user.is_active:
         if request.user.is_staff:
@@ -177,8 +177,8 @@ def account_code_delete(request, code_slug):
         return render(request, template_name, context)
 
 
+@login_required
 @codes_required
-@login_required(login_url='accounts:account_signin')
 def account_code_toggle(request, code_slug):
     code = Code.objects.get(slug=code_slug)
 
@@ -201,8 +201,8 @@ def account_code_toggle(request, code_slug):
     return redirect('codes:account_code')
 
 
+@login_required
 @codes_required
-@login_required(login_url='accounts:account_signin')
 def account_code_request(request):
     template_name = 'Home/account_code_requests.html'
     context = {}
@@ -271,8 +271,8 @@ def html_to_pdf_view(request, page):
     return response
 
 
-@codes_required
 @login_required
+@codes_required
 def code_batch_sheet(request, slug):
     code_batch = get_object_or_404(CodeGroup, slug=slug)
     code = Code.objects.filter(code_group=code_batch)

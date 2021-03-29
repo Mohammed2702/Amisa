@@ -3,6 +3,7 @@ from django.utils import timezone
 from django.contrib.auth import get_user_model
 
 import secrets
+import random
 
 from Amisacb import handlers
 
@@ -24,7 +25,7 @@ class Order(models.Model):
     recipient = models.CharField(max_length=15, default='08012345678')
     description = models.CharField(max_length=100, blank=False, default='Order')
     status = models.CharField(max_length=100, default='processing', choices=ORDER_STATES)
-    transaction_id = models.PositiveIntegerField(blank=False, unique=True, default=537892)
+    transaction_id = models.PositiveIntegerField(blank=False, unique=True)
     toggle_count = models.PositiveIntegerField(default=0)
     slug = models.SlugField(max_length=100, unique=True, blank=True)
     date = models.DateTimeField(auto_now_add=True)
@@ -98,6 +99,7 @@ class Advert(models.Model):
     priority = models.IntegerField(default=1)
     date = models.DateTimeField(auto_now=True)
     updated = models.DateTimeField(auto_now_add=True)
+    slug = models.SlugField(max_length=225, blank=True, unique=True)
 
     def __str__(self):
         return self.client_fullname
@@ -105,3 +107,13 @@ class Advert(models.Model):
     class Meta:
         verbose_name = 'Advert'
         verbose_name_plural = 'Adverts'
+
+    def save(self, *args, **kwargs):
+        if not self.slug:
+            slugs = Advert.objects.values_list('slug', flat=True)
+            self.slug = secrets.token_urlsafe(20)
+
+            if self.slug in slugs:
+                self.slug += f'{random.randint(10, 99)}'
+
+        super().save(*args, **kwargs)

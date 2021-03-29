@@ -188,10 +188,10 @@
                                         </div>
                                         <tr id="{{order.id}}">
                                           <td>{{forloop.counter}}</td>
-                                          <td>{{order.transaction}}</td>
+                                          <td>{{ order.transaction }}</td>
                                           <td>{{order.amount}}</td>
                                           <td>{{order.recipient}}</td>
-                                          <td>{{order.description}}</td>
+                                          <td>{{ order.description|safe }}</td>
                                           <td>
                                             <span class="badge badge-info">
                                               {{order.status}}

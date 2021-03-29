@@ -17,6 +17,7 @@ class SiteSettingForm(forms.Form):
 	minimum_airtime = forms.IntegerField(required=False)
 	minimum_data = forms.IntegerField(required=False)
 	reservation_amount = forms.IntegerField(required=False)
+	data_charges = forms.IntegerField(required=True)
 	call_contact = forms.CharField(required=False)
 	whatsapp_contact = forms.CharField(required=False)
 	email_contact = forms.CharField(required=False)

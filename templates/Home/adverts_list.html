@@ -40,6 +40,7 @@
 	        <th>s/n</th>
 	        <th>Full name</th>
 	        <th>Priority</th>
+	        <th>Delete</th>
 	        <th>Date Joined</th>
 	        <th>Last updated</th>
 	      </tr>
@@ -50,6 +51,13 @@
 	          <td>{{forloop.counter}}</td>
 	          <td>{{client.client_fullname}}</td>
 	          <td>{{client.priority}}</td>
+	          <td>
+	          	<a href="{% url "services:advert_delete" client.slug %}">
+	          		<button class="btn btn-sm btn-danger">
+	          			<i class="fas fa-trash"></i>
+	          		</button>
+	          	</a>
+	          </td>
 	          <td>{{client.date}}</td>
 	          <td>{{client.updated}}</td>
 	        </tr>

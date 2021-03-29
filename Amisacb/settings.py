@@ -141,6 +141,7 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.0/howto/static-files/
 LOGIN_REDIRECT_URL = 'accounts:account_signin'
+LOGIN_URL = LOGIN_REDIRECT_URL
 
 ADMIN_EMAIL = config['ADMIN_EMAIL']
 
