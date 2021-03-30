@@ -2,26 +2,24 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.conf import settings
-import threading
 import os
 
 from services.models import (
-	Order,
-	Network,
-	Bank,
-	Locator,
-	Advert
+    Order,
+    Network,
+    Bank,
+    Locator,
+    Advert
 )
 from accounts.models import Wallet
 from home.models import SiteSetting
 from services.forms import (
-	WithdrawalForm,
-	DataForm,
+    WithdrawalForm,
+    DataForm,
     AirtimeForm,
     AdvertForm
 )
 from services.utils import API
-from home.forms import SiteSettingForm
 from Amisacb import utils
 from Amisacb.context import external_context, user_features
 from Amisacb.decorators import services_required, home_required
@@ -50,6 +48,8 @@ def account_user_withdrawal(request):
             account_name = withdrawal_form.cleaned_data.get('account_name')
             bank = withdrawal_form.cleaned_data.get('bank')
             amount = withdrawal_form.cleaned_data.get('amount')
+
+            transaction_id = API().make_transaction_id()
 
             minimum_amount = SiteSetting.objects.get(pk=1).minimum_withdrawal
             reservation_amount = SiteSetting.objects.get(pk=1).reservation_amount
