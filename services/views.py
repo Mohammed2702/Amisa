@@ -65,7 +65,8 @@ def account_user_withdrawal(request):
                         amount=amount,
                         recipient=account_number,
                         description=description,
-                        status='processing'
+                        status='processing',
+                        transaction_id=transaction_id
                     )
 
                     if create_order:
