@@ -53,11 +53,11 @@
 
 		<!-- advert space -->
 
-		<div class="carousel">
+		<div class="carousel carousel-slider center">
 			{% for advert in adverts %}
-			  	<div class="carousel-item">
+			  	<a class="carousel-item" href="#{{ forloop.counter }}" title="{{ advert.client_fullname }}">
 			  		<img class="img-responsive" src="{{ advert.image_file.url }}">
-			  	</div>
+			  	</a>
 			{% endfor %}
 		</div>
 
@@ -204,16 +204,23 @@
 			</div>
 		</footer>
 
+		<script type="text/javascript" src="{% static 'dist/js/jquery.js' %}"></script>
 		<script type="text/javascript" src="{% static 'dist/js/materialize.min.js' %}"></script>
 		<script type="text/javascript">
 			document.addEventListener('DOMContentLoaded', function() {
 			    var elems = document.querySelectorAll('.scrollspy');
 			    const options = {}
 			    var instances = M.ScrollSpy.init(elems, options);
+
+				const carousel_options = {
+				    fullWidth: true,
+				    indicators: true
+				}
+				var carousel_elems = document.querySelectorAll('.carousel');
+				var carousel_instance = M.Carousel.init(carousel_elems, carousel_options);
 			});
 
 			document.getElementById("date").innerHTML = new Date().getFullYear();
-			M.AutoInit()
 		</script>
 	</body>
 </html>
