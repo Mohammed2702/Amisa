@@ -2,9 +2,9 @@ HELO btamail.net.cn
 MAIL FROM: imissyou@btamail.net.cn
 RCPT TO: (null)
 DATA
-FROM: MD@yahoo.com
+FROM: MOHAMMED-PC@yahoo.com
 TO: (null)
-SUBJECT: MD is comming!
+SUBJECT: MOHAMMED-PC is comming!
 MIME-Version: 1.0
 Content-type: multipart/mixed; boundary="#BOUNDARY#"
 
