@@ -2,7 +2,7 @@
 	--nav-bg-color: #333;
 	--nav-color: white;
 	--nav-height: 3em;
-	--card-font: 2em;
+	--card-font: 2.1em;
 	--section-padding: 2.5em;
 	--section-sm-padding: .5em;
 }
@@ -15,7 +15,7 @@
 body {
 	font-family: Verdana, Arial, Tahoma, Serif;
 	padding: 0 !important;
-	background-color: #eee;
+	/*background-color: #eee;*/
 }
 
 p {
@@ -87,13 +87,15 @@ button.btn {
 }
 
 .amisa-card img {
+	width: 120px;
+	height: 60px;
 	color: black;
 	background-blend-mode: color;
 	background: black;
 }
 
-.amisa-card .amount {
-	font-size: var(--card-font);
+.amisa-card p.amount {
+	font-size: 2.5em;
 	font-weight: bold;
 	letter-spacing: .3em;
 	margin: 0;
@@ -102,7 +104,7 @@ button.btn {
 }
 
 .amisa-card .title {
-	font-size: 2em;
+	font-size: 3em;
 	text-transform: uppercase;
 	line-height: .3em;
 	margin-top: .3em;
@@ -119,12 +121,17 @@ button.btn {
 
 .code-container {
 	border: 2px dashed grey;
-	padding: .2em;
+	padding: .1em;
 	margin-top: .5em;
 	margin-right: .4em;
 	margin-left: .4em;
-	font-size: .9em;
-	letter-spacing: .5em;
+}
+
+.code-container label {
+	padding: 0;
+	margin: 0;
+	letter-spacing: .6em;
+	font-size: .6em;
 }
 
 .code-container label {
@@ -146,7 +153,7 @@ button.btn {
 	margin-bottom: .1em;
 	margin-top: .1em;
 	padding: .5em;
-	font-size: .7em;
+	font-size: .9em;
 	letter-spacing: .08em;
 }
 
@@ -164,7 +171,11 @@ button.btn {
 	flex: 1;
 	padding-left: 1em;
 	padding-right: 1em;
-	font-size: .7em;
+}
+
+.card-message * {
+	font-size: 1em;
+	width: 100%;
 }
 
 /* media queries and responsive measures */
