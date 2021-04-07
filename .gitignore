@@ -3,3 +3,5 @@
 **/*media
 *.pyc
 db.sqlite3
+
+*.eml
