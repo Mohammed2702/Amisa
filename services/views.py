@@ -8,7 +8,6 @@ from services.models import (
     Order,
     Network,
     Bank,
-    Locator,
     Advert
 )
 from accounts.models import Wallet

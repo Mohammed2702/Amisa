@@ -1,9 +1,7 @@
 from django.contrib.auth import get_user_model
-from django.contrib.auth.forms import *
-from django.contrib.auth import *
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
-from django.shortcuts import *
+from django.shortcuts import render, redirect
 from django.conf import settings
 
 import os
@@ -29,7 +27,7 @@ from Amisacb .decorators import home_required
 
 # ENV
 HOST_HEADER = 'https://'
-DOMAIN = f'{HOST_HEADER}amisacb.pythonanywhere.com'
+DOMAIN = f'{HOST_HEADER}amisa360.com.ng'
 password_reset_main = f'{DOMAIN}/forgot_password'
 
 message_dir = os.path.join(settings.BASE_DIR, 'Amisacb/data/messages')
@@ -88,7 +86,6 @@ def site_settings(request):
                     messages.info(request, f'Bank ({bank}) added')
                 else:
                     messages.info(request, f'{bank} already exist')
-
             elif settings_form.is_valid():
                 customer_rate = settings_form.cleaned_data.get('customer_rate')
                 data_note = settings_form.cleaned_data.get('data_note')
@@ -125,15 +122,20 @@ def site_settings(request):
                 get_setting.save()
 
                 messages.warning(request, 'Settings Update Successful !!!')
-
         else:
             settings_form = SiteSettingForm(request.POST)
             network_form = NetworkForm(request.POST)
             bank_form = BankForm(request.POST)
 
         template_name = 'Home/site_settings.html'
-        context = utils.dict_merge(external_context(), user_features(request.user.id))
-        context = utils.dict_merge(context, {'settings_form': settings_form, 'get_setting': get_setting})
+        context = utils.dict_merge(
+            external_context(),
+            user_features(request.user.id),
+            {
+                'settings_form': settings_form,
+                'get_setting': get_setting
+            }
+        )
 
         return render(request, template_name, context)
     else:

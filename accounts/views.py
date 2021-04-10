@@ -1,4 +1,4 @@
-from django.shortcuts import render, redirect, get_object_or_404
+from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout, get_user_model
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
@@ -8,27 +8,27 @@ import datetime
 import os
 
 from accounts.forms import (
-	RegistrationForm,
-	LoginForm,
-	VerificationForm,
-	ForgotPasswordForm,
-	PasswordResetForm,
-	ProfileForm,
+    RegistrationForm,
+    LoginForm,
+    VerificationForm,
+    ForgotPasswordForm,
+    PasswordResetForm,
+    ProfileForm,
     UserUpdateForm,
     PermissionsForm
 )
 from accounts.models import (
-	PasswordReset
+    PasswordReset
 )
 from codes.models import Code, CodeGroup
 from Amisacb.utils import (
-	dict_merge,
-	generate_url_scrambled,
-	generate_ver_code,
-	deliver_mail,
+    dict_merge,
+    generate_url_scrambled,
+    generate_ver_code,
+    deliver_mail,
 )
 
-from Amisacb.context import checker, external_context, user_features
+from Amisacb.context import external_context, user_features
 from Amisacb import utils
 from Amisacb.decorators import accounts_required
 
@@ -84,8 +84,6 @@ def account_signup(request):
 
 
 def account_signin(request):
-    checker()
-
     form = LoginForm(request)
     if request.method == 'POST':
         if True:
@@ -182,8 +180,6 @@ def account_forgot_password(request):
 
 def account_forgot_password_link(request, link):
     from django.db import models as model
-
-    checker()
 
     get_reset = PasswordReset.objects.get(link_slug=link)
 

@@ -1,7 +1,6 @@
-from django.shortcuts import render
+from django.shortcuts import redirect, get_object_or_404, render
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
-from django.shortcuts import redirect, render, get_object_or_404
 from django.core.files.storage import FileSystemStorage
 from django.template.loader import render_to_string
 from django.http import HttpResponse
@@ -23,14 +22,14 @@ from Amisacb.decorators import codes_required
 
 @login_required
 def account_code(request):
+    context = utils.dict_merge(
+        external_context(),
+        user_features(request.user.id)
+    )
     template_name = 'Home/account_user_code.html'
     code_redeem_form = CodeRedeemForm(request.POST)
     if request.user.is_staff:
         template_name = 'Home/account_code.html'
-        context = utils.dict_merge(
-            external_context(),
-            user_features(request.user.id)
-        )
     else:
         context = {}
         rate = SiteSetting.objects.get(pk=1).customer_rate
@@ -94,9 +93,7 @@ def account_code(request):
 
         context = utils.dict_merge(
             context,
-            {'code_redeem_form': code_redeem_form},
-            external_context(),
-            user_features(request.user.id)
+            {'code_redeem_form': code_redeem_form}
         )
 
     return render(request, template_name, context)
@@ -124,57 +121,25 @@ def account_code_group(request, action_type, group_slug):
 
 
 @login_required
+@codes_required
 def account_code_details(request, code_slug):
-    if request.user.is_active:
-        if request.user.is_staff:
-            template_name = 'Home/account_code_details.html'
-            context = {
-                'code': get_object_or_404(Code, slug=code_slug)
-            }
+    template_name = 'Home/account_code_details.html'
+    context = {
+        'code': get_object_or_404(Code, slug=code_slug)
+    }
 
-            context = utils.dict_merge(external_context(), context)
+    context = utils.dict_merge(external_context(), context)
 
-            return render(request, template_name, context)
-        else:
-            return redirect('accounts:home')
-    else:
-        template_name = 'Home/404Error.html'
-        context = {
-            'code': get_object_or_404(Code, slug=code_slug)
-        }
-
-        context = utils.dict_merge(external_context(), context)
-
-        return render(request, template_name, context)
+    return render(request, template_name, context)
 
 
 @login_required
 @codes_required
 def account_code_delete(request, code_slug):
-    if request.user.is_active:
-        if request.user.is_staff:
-            code = Code.objects.get(slug=code_slug)
-            code.delete()
+    code = Code.objects.get(slug=code_slug)
+    code.delete()
 
-            return redirect('codes:account_code')
-        else:
-            code = Code.objects.get(slug=code_slug)
-
-            if request.user.id == code_slip.user.id:
-                code.delete()
-
-                return redirect('codes:account_code')
-            else:
-                logout(request)
-
-                return redirect('Home:account_signin')
-    else:
-        template_name = 'Home/404Error.html'
-        context = {}
-
-        context = utils.dict_merge(external_context(), context)
-
-        return render(request, template_name, context)
+    return redirect('codes:account_code')
 
 
 @login_required
@@ -204,50 +169,46 @@ def account_code_toggle(request, code_slug):
 @login_required
 @codes_required
 def account_code_request(request):
+    context = utils.dict_merge(external_context())
     template_name = 'Home/account_code_requests.html'
-    context = {}
 
-    if request.user.is_staff:
-        all_code_groups = list(CodeGroup.objects.all())[-5:]
-        current_date = str(datetime.datetime.now())
-        all_codes = Code.objects.all()
-        code_value = utils.generate_code(all_codes.values('code'))
+    all_code_groups = list(CodeGroup.objects.all())[-5:]
+    all_codes = Code.objects.all()
+    code_value = utils.generate_code(all_codes.values('code'))
 
-        if request.method == 'POST':
-            code_group_form = CodeGroupForm(request.POST)
+    if request.method == 'POST':
+        code_group_form = CodeGroupForm(request.POST)
 
-            if code_group_form.is_valid():
-                code_group_data = code_group_form.cleaned_data
-                code_batch_number = code_group_data.get('code_batch_number')
+        if code_group_form.is_valid():
+            code_group_data = code_group_form.cleaned_data
+            code_batch_number = code_group_data.get('code_batch_number')
 
-                create_code_group = CodeGroup.objects.create(
-                    code_batch_number=code_batch_number
-                )
-                create_code_group.save()
+            create_code_group = CodeGroup.objects.create(
+                code_batch_number=code_batch_number
+            )
+            create_code_group.save()
 
-                create_code_group.create_codes(**code_group_data)
-            else:
-                for error in code_group_form.errors.values():
-                    messages.info(request, error)
-
-            return redirect('codes:account_code_request')
+            create_code_group.create_codes(**code_group_data)
         else:
-            code_group_form = CodeGroupForm()
+            for error in code_group_form.errors.values():
+                messages.info(request, error)
 
-        context = {
-            'all_code_groups': all_code_groups,
-            'all_codes': all_codes,
-            'code_group_form': code_group_form,
-            'code_value': code_value
-        }
-
-        context = utils.dict_merge(external_context(), context)
+        return redirect('codes:account_code_request')
     else:
-        return redirect('accounts:home') # redirect to 404
+        code_group_form = CodeGroupForm()
+
+    context = {
+        'all_code_groups': all_code_groups,
+        'all_codes': all_codes,
+        'code_group_form': code_group_form,
+        'code_value': code_value
+    }
 
     return render(request, template_name, context)
 
 
+@login_required
+@codes_required
 def html_to_pdf_view(request, page):
     code_batch = get_object_or_404(CodeGroup, slug=page)
     codes = Code.objects.filter(code_group=code_batch)
@@ -291,20 +252,20 @@ def code_batch_sheet(request, slug):
 
 
 @login_required
+@codes_required
 def code_group_codes(request, group_slug):
-    if request.user.is_staff:
-        template_name = 'Home/code_group_codes.html'
+    template_name = 'Home/code_group_codes.html'
 
-        group = CodeGroup.objects.get(slug=group_slug)
-        code_group_children = list(Code.objects.all().filter(code_group=group))
+    group = CodeGroup.objects.get(slug=group_slug)
+    code_group_children = list(Code.objects.all().filter(code_group=group))
 
-        init_context = {
+    context = utils.dict_merge(
+        external_context(),
+        user_features(request.user.id),
+        {
             'group': group,
             'code_group_children': code_group_children,
         }
-        context = utils.dict_merge(external_context(), user_features(request.user.id))
-        context = utils.dict_merge(init_context, context)
+    )
 
-        return render(request, template_name, context)
-    else:
-        return render(request, 'Home/404Error.html')
+    return render(request, template_name, context)
