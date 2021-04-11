@@ -206,25 +206,25 @@ button.btn {
 
 @media only screen and (min-width: 600px) and (max-width: 992px) {
 	.get-started {
-		width: 50%;
-		height: auto;
-		font-size: 1.2em;
+		width: 65% !important;
+		height: 90px !important;
+		font-size: 2.5em !important;
 	}
 }
 
 @media only screen and (max-width: 600px) {
 	.get-started {
-		width: 60%;
-		height: auto;
-		font-size: 1.2em;
+		width: 65% !important;
+		height: 90px !important;
+		font-size: 2.5em !important;
 	}
 }
 
 @media only screen and (max-width: 992px) {
 	.get-started {
-		width: 55%;
-		height: auto;
-		font-size: 1.2em;
+		width: 65% !important;
+		height: 90px !important;
+		font-size: 2.5em !important;
 	}
 }
 
