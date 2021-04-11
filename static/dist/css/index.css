@@ -195,6 +195,12 @@ button.btn {
 		height: 100%;
 	}
 
+	.get-started {
+		width: 400px;
+		height: 70px;
+		font-size: 1.2em;
+	}
+
 	/*.show-on-medium-and-down*/
 }
 
