@@ -1,11 +1,14 @@
 from django.db import models
 from django.utils.text import slugify
 from django.utils import timezone
-from django.shortcuts import redirect
+from django.contrib.auth import get_user_model
 
 import datetime
 
 from Amisacb import utils
+
+
+User = get_user_model()
 
 
 class CodeGroup(models.Model):
