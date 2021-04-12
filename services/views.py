@@ -163,6 +163,7 @@ def account_user_data(request):
                     if not api_request.get('code'):
                         if create_order:
                             user_wallet.wallet_balance -= amount
+
                             create_order.status = 'processed'
                             create_order.toggle_count = 1
 
@@ -247,6 +248,8 @@ def account_user_airtime(request):
 
                     if not api_request.get('code'):
                         if create_order:
+                            user_wallet.wallet_balance -= amount
+
                             create_order.status = 'processed'
                             create_order.toggle_count = 1
 
