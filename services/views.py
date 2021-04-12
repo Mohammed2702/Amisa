@@ -231,6 +231,7 @@ def account_user_airtime(request):
                         amount=amount,
                         recipient=user_phone,
                         description=description,
+                        transaction_id=transaction_id,
                         status='declined'
                     )
 
