@@ -158,10 +158,10 @@ def account_user_data(request):
                             'transaction_id': transaction_id
                         }
                     }
-                    api_request = api.buy_data(**payload)
 
-                    if not api_request.get('code'):
-                        if create_order:
+                    if create_order:
+                        if not api_request.get('code'):
+                            api_request = api.buy_data(**payload)
                             user_wallet.wallet_balance -= amount
 
                             create_order.status = 'processed'
@@ -244,10 +244,10 @@ def account_user_airtime(request):
                         },
                         'price': amount
                     }
-                    api_request = api.buy_airtime(**payload)
 
-                    if not api_request.get('code'):
-                        if create_order:
+                    if create_order:
+                        api_request = api.buy_airtime(**payload)
+                        if not api_request.get('code'):
                             user_wallet.wallet_balance -= amount
 
                             create_order.status = 'processed'
