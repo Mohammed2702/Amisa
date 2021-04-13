@@ -55,7 +55,7 @@ def account_user_withdrawal(request):
             feasible_withdrawal_amount = request.user.wallet.wallet_balance - reservation_amount
 
             if amount >= minimum_amount:
-                if amount <= (feasible_withdrawal_amount):
+                if amount >= (feasible_withdrawal_amount):
                     user_wallet = Wallet.objects.get(user=request.user)
                     description = f'{account_name}/ {bank}'
                     create_order = Order.objects.create(
@@ -218,7 +218,7 @@ def account_user_airtime(request):
             feasible_withdrawal_amount = request.user.wallet.wallet_balance - reservation_amount
 
             if amount >= minimum_amount:
-                if (feasible_withdrawal_amount) >= amount:
+                if amount >= (feasible_withdrawal_amount):
                     user_wallet = Wallet.objects.get(user=request.user)
 
                     api = API()
