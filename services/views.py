@@ -130,7 +130,6 @@ def account_user_data(request):
             minimum_amount = SiteSetting.objects.get(pk=1).minimum_data
             reservation_amount = SiteSetting.objects.get(pk=1).reservation_amount
             data_charges = SiteSetting.objects.get(pk=1).data_charges
-            amount -= data_charges
             feasible_withdrawal_amount = reservation_amount + minimum_amount
 
             if amount >= minimum_amount:
@@ -163,6 +162,7 @@ def account_user_data(request):
                         if not api_request.get('code'):
                             api_request = api.buy_data(**payload)
                             user_wallet.wallet_balance -= amount
+                            user_wallet.wallet_balance -= data_charges
 
                             create_order.status = 'processed'
                             create_order.toggle_count = 1
@@ -215,7 +215,7 @@ def account_user_airtime(request):
 
             minimum_amount = SiteSetting.objects.get(pk=1).minimum_airtime
             reservation_amount = SiteSetting.objects.get(pk=1).reservation_amount
-            feasible_withdrawal_amount = request.user.wallet.wallet_balance - reservation_amount
+            feasible_withdrawal_amount = reservation_amount + minimum_amount
 
             if amount >= minimum_amount:
                 if amount >= (feasible_withdrawal_amount):
