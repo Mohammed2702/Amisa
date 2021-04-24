@@ -138,6 +138,10 @@ button.btn {
 	color: rgba(0, 0, 0, 0.7) !important;
 }
 
+label.code {
+	font-family: 'Source Code Pro', monospace !important;
+}
+
 .code-extra {
 	padding: .3em;
 	display: flex;
