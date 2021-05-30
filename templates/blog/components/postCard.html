@@ -1,0 +1,43 @@
+{% load humanize %}
+
+<div class="border-blue-400 border-l-8 my-2">
+  <div class="w-full h-10 bg-gray-300 p-3 font-bold">
+    <label>{{ post.author.username }}</label>
+
+    <label class="float-right text-gray-400 italic font-light">{{ post.date|timesince }} ago | {{ post.date|date }}</label>
+  </div>
+
+  <div class="p-5">
+    {% if posts %}
+      <p class="break-words truncate">
+        {{ post.content|safe }}
+      </p>
+    {% else %}
+      <p class="break-words">
+        {{ post.content|safe }}
+      </p>
+    {% endif %}
+  </div>
+
+  <div class="w-full h-auto bg-gray-300 p-3">
+    <div class="flex flex-row">
+      <button class="bg-blue-600 w-auto h-auto px-3 py-2 rounded-full text-white mx-1">
+        <span>
+          <i class="fas fa-thumbs-up"></i>
+        </span>
+      </button>
+
+      <a href="{% url "blog:blog-details" post.slug %}">
+        <button class="bg-blue-600 w-auto h-auto px-3 py-2 rounded-full text-white mx-1">
+          <span>
+            <i class="fas fa-comment"></i>
+          </span>
+        </button>
+      </a>
+    </div>
+
+    <div class="border-t-2 border-white w-full my-1">
+      <a href="{% url "blog:blog-details" post.slug %}">view comments ({{ post.comments.all.count }})</a>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    {% load static %}
+
+    <title>Blog | Amisa360</title>
+
+    <link rel="stylesheet" type="text/css" href="{% static 'dist/css/tailwind.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'dist/css/grid.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'dist/css/all.css' %}">
+    <style type="text/css">
+      * {
+        font-family: Arial, Helvetica, sans-serif;
+      }
+    </style>
+  </head>
+  <body>
+    <nav class="bg-blue-500 h-auto">
+      <div class="container">
+        <div class="flex items-center">
+          <a href="{% url 'blog:blog' %}" class="font-bold text-5xl text-white h-full text-center title-font">
+            Amisa360
+          </a>
+        </div>
+      </div>
+    </nav>
+
+    <div class="container pt-5">
+      {% block content %}
+          
+      {% endblock content %}
+    </div>
+
+    <div class="right-5 bottom-16 fixed">
+      <a href="#">
+        <button class="rounded-full p-3 py-2 bg-blue-500 text-white">
+          <i class="fas fa-arrow-up"></i>
+        </button>
+      </a>
+    </div>
+    <div class="h-20"></div>
+    <footer class="bg-blue-500 h-auto bottom-0 fixed w-full p-2 text-white">
+      <label class="float-left">Amisa360 | Blog</label>
+      <label class="float-right" id="year"></label>
+    </footer>
+
+    <script type="text/javascript">
+      var year_elem = document.getElementById('year')
+      var year = new Date().getFullYear()
+
+      year_elem.innerText = year
+    </script>
+  </body>
+</html>

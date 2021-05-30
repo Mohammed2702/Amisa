@@ -1,70 +1,31 @@
-<!DOCTYPE html>
-<html>
-  <head>
-    {% load static %}
+{% extends "blog/base.html" %}
 
-    <title>Blog | Amisa360</title>
+{% block content %}
+  <form method="post">
+    {% csrf_token %}
 
-    <link rel="stylesheet" type="text/css" href="{% static 'dist/css/materialize.css' %}">
-    <link rel="stylesheet" type="text/css" href="{% static 'dist/css/style.css' %}">
-    <link rel="stylesheet" type="text/css" href="{% static 'dist/css/all.css' %}">
-  </head>
-  <body>
-    <nav class="custom-navbar" style="background-image: url('{% static 'img/dev-1.png' %}'); background-repeat: no-repeat; background-size: cover;">
-      <div class="nav-wrapper container">
-        <a href="{% url 'blog:blog' %}" class="brand-logo">Amisa360</a>
-        <a
-          href="#"
-          data-target="mobile"
-          class="sidenav-trigger"
-        >
-          <i class="fas fa-bars"></i>
-        </a>
-        <ul class="right hide-on-med-and-down">
-          <li><a href="#">Home</a></li>
-          <li><a href="#">News</a></li>
-          <li><a href="#">Accounts</a></li>
-          <li><a href="#">New Letters</a></li>
-        </ul>
+    <div class="row">
+      <div class="col s12 m12 l12">
+        <h2>We'd like to here from you ...</h2>
       </div>
-    </nav>
 
-    <ul class="sidenav grey darken-4" id="mobile" style="background-image: url('{% static 'img/dev-1.png' %}'); background-repeat: no-repeat; background-size: cover;">
-      <li>
-        <div class="user-view">
-          <div class="background">
-            <img src="{% static 'img/office.jpg' %}">
-          </div>
-          <a href="#user"><img class="circle" src="{% static 'img/yuna.jpg' %}"></a>
-          <a href="#name"><span class="white-text name">John Doe</span></a>
-          <a href="#email"><span class="white-text email">jdandturk@gmail.com</span></a>
-        </div>
-      </li>
-      <li><a class="white-text waves-effect dark-waves" href="#">Home</a></li>
-      <li><a class="white-text waves-effect dark-waves" href="#">News</a></li>
-      <li><a class="white-text waves-effect dark-waves" href="#">Accounts</a></li>
-      <li><a class="white-text waves-effect dark-waves" href="#">News letters</a></li>
-    </ul>
+      <div class="col s12 m12 l12 my-1">
+        <input type="text" placeholder="Title" name="title" class="bg-gray-300 p-1 w-full" required>
+      </div>
 
-    <div class="fixed-action-btn">
-      <a class="btn-floating btn-large modal-trigger blue darken-4" href="#chat">
-        <i class="fas fa-robot"></i>
-      </a>
+      <div class="col s12 m12 l12 my-1">
+        <textarea class="bg-gray-300 p-1 w-full max-h-32 min-h-0" placeholder="Content" name="content" required></textarea>
+      </div>
 
-      <div id="chat" class="modal bottom-sheet">
-        <div class="modal-content">
-          <h4>Modal Header</h4>
-          <p>A bunch of text</p>
-        </div>
-        <div class="modal-footer">
-          <a href="#!" class="modal-close waves-effect waves-green btn-flat">Agree</a>
-        </div>
+      <div class="col s12 m12 l12">
+        <button type="submit" class="p-2 bg-blue-500 text-white font-bold hover:bg-blue-600">submit</button>
       </div>
     </div>
+  </form>
 
-    <script type="text/javascript" src="{% static 'dist/js/materialize.min.js' %}"></script>
-    <script type="text/javascript">
-      M.AutoInit()
-    </script>
-  </body>
-</html>
+  <div>
+    {% for post in posts %}
+      {% include 'blog/components/postCard.html' %}
+    {% endfor %}
+  </div>    
+{% endblock content %}
